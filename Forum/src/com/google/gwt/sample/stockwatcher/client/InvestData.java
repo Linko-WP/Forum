@@ -4,9 +4,13 @@ import java.io.Serializable;
 
 public class InvestData implements Serializable {
 	
-	  private String city;
+	  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private String city;
 	//TODO : insertar el projecto en todas las funciones (si hay tiempo)
-	  private double org_zip;
 	  private double ammount;
 	  private double change;
 
@@ -17,13 +21,6 @@ public class InvestData implements Serializable {
 	    this.city = city;
 	    this.ammount = ammount;
 	    this.change = change;
-	  }
-	  
-	  public InvestData(String city, double zip,  double ammount, double change) {
-		    this.city = city;
-		    this.org_zip = zip;
-		    this.ammount = ammount;
-		    this.change = change;
 	  }
 
 	  public String getCity() {

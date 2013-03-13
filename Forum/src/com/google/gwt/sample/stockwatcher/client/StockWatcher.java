@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.DOM;
@@ -29,12 +30,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
-import com.google.gwt.sample.stockwatcher.client.MyDbHandlerInterface;
 
 public class StockWatcher implements EntryPoint {
-
- // private MyDbHandlerInterface db_handler = new MyDbHandlerInterface();
-  
+ 
   private AbsolutePanel mainPanel = new AbsolutePanel();
   private AbsolutePanel targetPanel = new AbsolutePanel();
   
@@ -47,42 +45,26 @@ public class StockWatcher implements EntryPoint {
   private HorizontalPanel insertPanel = new HorizontalPanel();
   private TextArea insertCityTextA = new TextArea();
   private Button insertProjectButton = new Button("Insert");
- 
-  // Initial elements
-  private ArrayList<InvestData> initial_elements = new ArrayList<InvestData>(Arrays.asList(
-		  new InvestData("NEW YORK",10027,5000000),
-		  new InvestData("WASHINGTON",20009,3968339),
-		  new InvestData("CHICAGO",60634,4999553),
-		  new InvestData("PORTLAND",97209,6170483),
-		  new InvestData("BRIDGEPORT",6604,4999998),
-		  new InvestData("WESTMINSTER",80234,5000000),
-		  new InvestData("DENVER",80229,4999280),
-		  new InvestData("AUSTIN",20009,3968339),
-		  new InvestData("SAINT PAUL",20009,3968339)));
   
-  private ArrayList<String> cities = new ArrayList<String>(Arrays.asList(
-		  "NEW YORK","WASHINGTON","CHICAGO", "PORTLAND", "BRIDGEPORT", "WESTMINSTER", "DENVER", "AUSTIN", "SAINT PAUL"));
-  private ArrayList<Integer> zips = new ArrayList<Integer>(Arrays.asList(
-		  10027,20009,60634, 97209, 6604, 80234,80229,78714,55104));
-  private ArrayList<Integer> amounts = new ArrayList<Integer>(Arrays.asList(
-		  5000000,3968339,4999553,6170483,4999998,5000000,4999280,4135000,5000000));
+  private String results;
+  private ArrayList<String> cities  = new ArrayList<String>();;
+  private ArrayList<Integer> amounts = new ArrayList<Integer>();;
   
   // Arraylist of InvestData
   private ArrayList<InvestData> elements = new ArrayList<InvestData>();
   private ArrayList<String> awards = new ArrayList<String>();
-  private static final int REFRESH_INTERVAL = 5000; // ms
+  //private static final int REFRESH_INTERVAL = 5000; // ms
   private InvestDataServiceAsync stockPriceSvc = GWT.create(InvestDataService.class);
   private Label errorMsgLabel = new Label();
   public InvestData currentCity = new InvestData();
   
-  //Create a DragController for each logical area where a set of draggable
+  // Create a DragController for each logical area where a set of draggable
   // widgets and drop targets will be allowed to interact with one another.
-  //PickupDragController dragController = new PickupDragController(RootPanel.get(), true);
+  // PickupDragController dragController = new PickupDragController(RootPanel.get(), true);
   FlexTableRowDragController dragController = new FlexTableRowDragController(RootPanel.get());
   
-  //create a DropController for each drop target on which draggable widgets
-  // can be dropped
-  //DropController dropController = new AbsolutePositionDropController(targetPanel);
+  // Create a DropController for each drop target on which draggable widgets can be dropped
+  // DropController dropController = new AbsolutePositionDropController(targetPanel);
   FlexTableRowDropController dropController = new FlexTableRowDropController(targetPanel, this);
   
   /**
@@ -115,18 +97,43 @@ public class StockWatcher implements EntryPoint {
     });
 	    
 	  
-	  
-	  
-	// Add to the arraylist every city of the cities vector
-	Iterator<Integer> itr_zip = zips.iterator();
-	Iterator<Integer> itr_am = amounts.iterator();
+    // (1) Create the client proxy. Note that although you are creating the
+    // service interface proper, you cast the result to the asynchronous
+    // version of the interface. The cast is always safe because the
+    // generated proxy implements the asynchronous interface automatically.
+    //
+    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
 
-	for(String city:cities){ 
-		Integer zip = itr_zip.next();
-		Integer ammt = itr_am.next();
-		elements.add(new InvestData(city,zip,ammt,0));
-	}
+    String temp = " cadena ";
+    emailService.initialize_db(temp, new AsyncCallback<String>(){
+    	public void onSuccess(String result) {
+    		System.out.println("SuccessS:" + result);
+    		results = result;
+    		
+    		//We add the results into the arrays for the cities and amounts
+    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+    		for(int i=0; i<myList.size()-1; i=i+2){
+    			cities.add(myList.get(i));
+    			amounts.add(Integer.parseInt(myList.get(i+1)));
+    		}
+    		
+    		// Add to the elements arraylist every obtained value
+    		Iterator<Integer> itr_am = amounts.iterator();
 
+    		for(String city:cities){ 
+    			Integer ammt = itr_am.next();
+    			elements.add(new InvestData(city,ammt,0));
+    		}
+		
+          }
+
+          public void onFailure(Throwable caught) {
+        	Window.alert("RPC to initialize_db() failed.");
+      		System.out.println("Fail\n" + caught);
+          }
+    } );
+	
+    
 	// Create draggable panel
 	RootPanel.get().setPixelSize(1000, 800);
 	mainPanel.setPixelSize(495, 800);
@@ -183,16 +190,9 @@ public class StockWatcher implements EntryPoint {
     mainPanel.add(insertPanel);
     mainPanel.add(lastUpdatedLabel);
       
-
     // Add both panels to the root panel
     RootPanel.get().add(targetPanel);
     RootPanel.get().add(mainPanel);
-
-    // Prueba de la base de datos
-//    String temp = db_handler.testSQL();
-//    Label tmp = new Label(temp);
-//    RootPanel.get().add(tmp);
-
     
     // Positioner is always constrained to the boundary panel
     // Use 'true' to also constrain the draggable or drag proxy to the boundary panel
@@ -238,8 +238,10 @@ public class StockWatcher implements EntryPoint {
       }
     });
  
+    
+    
   }
-  
+
   
   /**
    * Add cities to FlexTable. Executed when the user clicks the addStockButton or
@@ -380,7 +382,7 @@ public class StockWatcher implements EntryPoint {
 
 	    // Display timestamp showing last refresh.
 	    lastUpdatedLabel.setText("Last update : "
-	        + DateTimeFormat.getMediumDateTimeFormat().format(new Date()));
+	        + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM).format(new Date()));
 	    
 	    // Clear any errors.
 	    errorMsgLabel.setVisible(false);
@@ -404,7 +406,6 @@ public class StockWatcher implements EntryPoint {
 	    		ammount.getAmmount());
 	    NumberFormat changeFormat = NumberFormat.getFormat("+#,##0.00;-#,##0.00");
 	    String changeText = changeFormat.format(ammount.getChange());
-	    String changePercentText = changeFormat.format(ammount.getChangePercent());
 
 	    // Populate the Price and Change fields with new data.
 	    investFlexTable.setText(row, 1, priceText);
@@ -428,28 +429,61 @@ public class StockWatcher implements EntryPoint {
 	 * Inserts a new City on the table that didn't exists until now
 	 * */
 	 private void insertCity( ) {
-	   
+
 	  final String text = insertCityTextA.getText().toUpperCase().trim();
 	  insertCityTextA.setFocus(true);
 	  String[] result = text.split("\\s");
 	  int size = result.length;
 	  int j= 0;
-	  
+	  int obt_amount=0;
+
+	 
+	 /*Checks for invalid input: 
+	  * 	1 - less than 2 parameters
+	  *     2 - City already in the system
+	  *	    3 - Non-numeric character in the amount
+	*/
 	  if (size <2){
 	    	Window.alert("It must content: CITY AMMOUNT");
 		      return;
 	  }
 	  if (cities.contains(result[j])){
+		  
 	    	Window.alert("The city: '" + result[j] + "' is already in the system.");
 		      return;
-	  }
- 		  
-	  int ammount = Integer.parseInt(result[j+1]);
-	
-	  elements.add(new InvestData(result[j],ammount,0));
+	  }	  
+	  String money = result[j+1];
+	  
+	  try {  
+		  //int temp = Integer.parseInt(money);
+	  
+	  }catch(NumberFormatException nfe){  
+		  Window.alert("The parameter amount must be numeric ");
+	      return;  
+	  }  
+
+	  obt_amount = Integer.parseInt(money);
+	  elements.add(new InvestData(result[j],obt_amount,0));
 	  addCity(result[j]);
-	  amounts.add(ammount);
+	  cities.add(result[j]);
+	  amounts.add(obt_amount);
 	  insertCityTextA.setText("");
+	  
+	  
+	    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
+	    emailService.insert_into_db("cities", "('"+result[j]+"', "+ obt_amount +")", new AsyncCallback<String>(){
+	    	public void onSuccess(String result) {
+	    		results = result;
+	          }
+
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("Inserting new city in the DataBase failed.");
+	      		System.out.println("Fail\n" + caught);
+	          }
+	    } );
+	    // Depuration prints
+	    System.out.println(cities);
+	    System.out.println(amounts);
 	}
 }
 

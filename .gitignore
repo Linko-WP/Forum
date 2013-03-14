@@ -3,3 +3,9 @@
 # Package Files #
 *.war
 *.ear
+
+*.gwt
+Forum/war/WEB-INF/classes
+Forum/war/WEB-INF/deploy
+Forum/war/forum
+Forum/gwt-unitCache

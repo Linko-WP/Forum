@@ -1,0 +1,34 @@
+DROP TABLE IF EXISTS threads_to_messages;
+DROP TABLE IF EXISTS topics_to_threads;
+DROP TABLE IF EXISTS messages_to_users;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS topics;
+DROP TABLE IF EXISTS threads;
+DROP TABLE IF EXISTS messages;
+
+CREATE TABLE users(
+	username VARCHAR(30) CHARACTER SET utf8 NOT NULL PRIMARY KEY,
+	email VARCHAR(60) CHARACTER SET utf8,
+	password VARCHAR(20) CHARACTER SET utf8,
+	is_admin BOOLEAN
+);
+
+CREATE TABLE topics(
+	topic_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(100) CHARACTER SET utf8
+);
+
+CREATE TABLE threads(
+	thread_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(100) CHARACTER SET utf8,
+	parent_topic_id INT NOT NULL,
+	messages_no INT
+);
+
+CREATE TABLE messages(
+	message_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	date DATETIME,
+	content TEXT CHARACTER SET latin1,
+	parent_thread_id INT NOT NULL,
+	author_username VARCHAR(30) NOT NULL
+);

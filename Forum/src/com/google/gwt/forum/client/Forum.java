@@ -52,8 +52,6 @@ public class Forum implements EntryPoint {
   
   private ArrayList<Integer> amounts = new ArrayList<Integer>();
   
-  // Arraylist of InvestData
-//  private ArrayList<InvestData> elements = new ArrayList<InvestData>();
   private ArrayList<String> awards = new ArrayList<String>();
   //private static final int REFRESH_INTERVAL = 5000; // ms
  // private InvestDataServiceAsync stockPriceSvc = GWT.create(InvestDataService.class);
@@ -217,10 +215,10 @@ public class Forum implements EntryPoint {
    */
   private void load_topics(){
 
-	    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
+	    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
 
 	    String temp = " cadena ";
-	    emailService.get_topics(temp, new AsyncCallback<String>(){
+	    dbService.get_topics(temp, new AsyncCallback<String>(){
 	    	public void onSuccess(String result) {
 	    		System.out.println("TOPICS:" + result);
 	    		results = result;

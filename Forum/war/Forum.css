@@ -32,3 +32,10 @@ h1 {
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+/** Custom style labels */
+.general{
+	margin: auto;
+	width: 1024px;
+}
+

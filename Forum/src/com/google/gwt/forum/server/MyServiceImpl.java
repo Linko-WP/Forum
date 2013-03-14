@@ -157,6 +157,69 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  
     return auto_id;
   }
+	
+	/**
+	 * Insert a new message into the database
+	 * */
+	public int insert_message(String s) {
+	
+	  int auto_id = -1; //If it's null
+	  String str = "Result:";
+	  Connection conn = connect();	// Connect to database
+	  try {
+		  String sql = "INSERT INTO message(content) values('"+ s +"');";
+		  PreparedStatement prep = (PreparedStatement) conn
+				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+	     prep.execute();
+	     
+	     ResultSet rs= prep.getGeneratedKeys();
+	     rs.next();
+	     auto_id = rs.getInt(1);
+	     
+	     str += " Good";
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return auto_id;
+  }
+	
+	/**
+	 * Insert a new message into the database
+	 * */
+	public int insert_thread(String s) {
+	
+	  int auto_id = -1; //If it's null
+	  String str = "Result:";
+	  Connection conn = connect();	// Connect to database
+	  try {
+		  String sql = "INSERT INTO threads(name) values('"+ s +"');";
+		  PreparedStatement prep = (PreparedStatement) conn
+				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+	     prep.execute();
+	     
+	     ResultSet rs= prep.getGeneratedKeys();
+	     rs.next();
+	     auto_id = rs.getInt(1);
+	     
+	     str += " Good";
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return auto_id;
+  }
+	
 	/**										*
 	 * Connects to local database db_lab3	*
 	 * 										*/

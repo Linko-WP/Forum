@@ -35,14 +35,14 @@ public class Forum implements EntryPoint {
 
   private AbsolutePanel mainPanel = new AbsolutePanel();
   //private AbsolutePanel targetPanel = new AbsolutePanel();
+  private HorizontalPanel addPanel = new HorizontalPanel();
+  private HorizontalPanel insertPanel = new HorizontalPanel();
   
   private FlexTable forumFlexTable = new FlexTable();
-  private HorizontalPanel addPanel = new HorizontalPanel();
   private TextBox newCityTextBox = new TextBox();
   private Button addProjectButton = new Button("Add");
   private Label lastUpdatedLabel = new Label();
  
-  private HorizontalPanel insertPanel = new HorizontalPanel();
   private TextArea insertCityTextA = new TextArea();
   private Button insertProjectButton = new Button("Insert");
   
@@ -116,8 +116,8 @@ public class Forum implements EntryPoint {
 
 	 
  	// Create table for stock data.
-	forumFlexTable.setText(0, 0, "City");
-	forumFlexTable.setText(0, 1, "Ammount");
+	forumFlexTable.setText(0, 0, "Nombre");
+	forumFlexTable.setText(0, 1, "No. Mensajes");
 	forumFlexTable.setText(0, 2, "Applicable Taxes");
 	forumFlexTable.setText(0, 3, "Remove");
 		 
@@ -152,7 +152,6 @@ public class Forum implements EntryPoint {
     mainPanel.add(errorMsgLabel);
 	    
     // Assemble Main panel.
-    mainPanel.setStyleName("main");
     mainPanel.add(forumFlexTable);
     mainPanel.add(addPanel);
     mainPanel.add(insertPanel);

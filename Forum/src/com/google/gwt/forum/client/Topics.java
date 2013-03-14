@@ -37,25 +37,16 @@ public class Topics {
 	 * Class to load the topics int the topic object from the database
 	 */
 	 Topics(String sub){
+ 		subject = sub;
+ 		threads = new ArrayList<Thread>();	
 
-		    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
+		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    String temp = " cadena ";
-		    emailService.get_topics(temp, new AsyncCallback<String>(){
-		    	public void onSuccess(String result) {
-		    		System.out.println("TOPICS:" + result);
-		    //		results = result;
-		    		
-		    	/*	ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-1; i=i+2){
-		    			int obt_id = Integer.parseInt(myList.get(i));
-		    			String obt_topic = myList.get(i+1);
-		    		*/	
-		    			
-		    	//		topics.add(new Topics(obt_id, obt_topic));
+		    Service.insert_topic(sub, new AsyncCallback<Integer>(){
+		    	public void onSuccess(Integer obt_id) {
+		    		System.out.println("ID AUTOGENERADO:" + obt_id);
+		    		id = obt_id;
 
-
-				
 		          }
 
 		          public void onFailure(Throwable caught) {

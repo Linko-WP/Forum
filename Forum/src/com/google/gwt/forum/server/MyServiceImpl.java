@@ -97,9 +97,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
   }
 	
 	/**
-	 * Inserts a row into a table of the database
-	 * @param table	String contaning the name of the table
-	 * @param values String of Values inside () separated by comma
+	 * Obtains the topics from the database
 	 * */
 	public String get_topics(String s) {
 	  
@@ -121,6 +119,39 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  disconnect(conn);
 	  
     return str;
+  }
+	
+	/**
+	 * Insert a new topic into the database
+	 * */
+	public int insert_topic(String s) {
+	
+	  int auto_id = -1; //If it's null
+	  String str = "Result: ";
+	  Connection conn = connect();	// Connect to database
+	  try {
+		  String sql = "INSERT INTO topics (subject) values("+ s +")";
+		  PreparedStatement prep = (PreparedStatement) conn
+				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		  
+	    // PreparedStatement prep = (PreparedStatement) conn
+	     //      .prepareStatement("insert into topics values (");
+	     prep.execute();
+	     
+	     ResultSet rs= prep.getGeneratedKeys();
+	     rs.next();
+	     auto_id = rs.getInt(1);
+	     
+	     str += " Good";
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return auto_id;
   }
 	/**										*
 	 * Connects to local database db_lab3	*

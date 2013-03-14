@@ -9,7 +9,8 @@ DROP TABLE IF EXISTS messages;
 CREATE TABLE users(
 	username VARCHAR(30) CHARACTER SET utf8 NOT NULL PRIMARY KEY,
 	email VARCHAR(60) CHARACTER SET utf8,
-	password VARCHAR(20) CHARACTER SET utf8
+	password VARCHAR(20) CHARACTER SET utf8,
+       is_admin BOOLEAN 
 );
 
 CREATE TABLE topics(

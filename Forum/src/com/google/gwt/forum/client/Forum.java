@@ -34,9 +34,9 @@ public class Forum implements EntryPoint {
  
 
   private AbsolutePanel mainPanel = new AbsolutePanel();
-  private AbsolutePanel targetPanel = new AbsolutePanel();
+  //private AbsolutePanel targetPanel = new AbsolutePanel();
   
-  private FlexTable investFlexTable = new FlexTable();
+  private FlexTable forumFlexTable = new FlexTable();
   private HorizontalPanel addPanel = new HorizontalPanel();
   private TextBox newCityTextBox = new TextBox();
   private Button addProjectButton = new Button("Add");
@@ -50,7 +50,7 @@ public class Forum implements EntryPoint {
   private ArrayList<String> cities = new ArrayList<String>();
   private String results;
   
-  private ArrayList<Integer> amounts = new ArrayList<Integer>();
+  //private ArrayList<Integer> amounts = new ArrayList<Integer>();
   
   private ArrayList<String> awards = new ArrayList<String>();
   //private static final int REFRESH_INTERVAL = 5000; // ms
@@ -61,11 +61,11 @@ public class Forum implements EntryPoint {
   // Create a DragController for each logical area where a set of draggable
   // widgets and drop targets will be allowed to interact with one another.
   // PickupDragController dragController = new PickupDragController(RootPanel.get(), true);
-  FlexTableRowDragController dragController = new FlexTableRowDragController(RootPanel.get());
+  //FlexTableRowDragController dragController = new FlexTableRowDragController(RootPanel.get());
   
   // Create a DropController for each drop target on which draggable widgets can be dropped
   // DropController dropController = new AbsolutePositionDropController(targetPanel);
-  FlexTableRowDropController dropController = new FlexTableRowDropController(targetPanel, this);
+  //FlexTableRowDropController dropController = new FlexTableRowDropController(targetPanel, this);
   
   /**
    * Entry point method.
@@ -105,28 +105,28 @@ public class Forum implements EntryPoint {
 	// Create draggable panel
 	RootPanel.get().setPixelSize(1000, 800);
 	mainPanel.setPixelSize(495, 800);
-	targetPanel.setPixelSize(495, 200);
+	//targetPanel.setPixelSize(495, 200);
 	
 	// Add style for the draggable panel
 	RootPanel.get().addStyleName("rootStyle");
 	mainPanel.addStyleName("mainStyle");
-	targetPanel.addStyleName("targetStyle");
-	targetPanel.addStyleName("watchList");
-    targetPanel.addStyleName("getting-started-blue");
+	//targetPanel.addStyleName("targetStyle");
+	//targetPanel.addStyleName("watchList");
+    //targetPanel.addStyleName("getting-started-blue");
 
 	 
  	// Create table for stock data.
-	investFlexTable.setText(0, 0, "City");
-	investFlexTable.setText(0, 1, "Ammount");
-	investFlexTable.setText(0, 2, "Applicable Taxes");
-	investFlexTable.setText(0, 3, "Remove");
+	forumFlexTable.setText(0, 0, "City");
+	forumFlexTable.setText(0, 1, "Ammount");
+	forumFlexTable.setText(0, 2, "Applicable Taxes");
+	forumFlexTable.setText(0, 3, "Remove");
 		 
 	// Add styles to elements in the stock list table.
-	investFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
-	investFlexTable.addStyleName("watchList");
-	investFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
-	investFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
-	investFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
+	forumFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
+	forumFlexTable.addStyleName("watchList");
+	forumFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
+	forumFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
+	forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
 		
     // Assemble Add Stock panel.
 	newCityTextBox.addStyleName("textBox");
@@ -153,24 +153,24 @@ public class Forum implements EntryPoint {
 	    
     // Assemble Main panel.
     mainPanel.setStyleName("main");
-    mainPanel.add(investFlexTable);
+    mainPanel.add(forumFlexTable);
     mainPanel.add(addPanel);
     mainPanel.add(insertPanel);
     mainPanel.add(lastUpdatedLabel);
       
     // Add both panels to the root panel
-    RootPanel.get().add(targetPanel);
+    //RootPanel.get().add(targetPanel);
     RootPanel.get().add(mainPanel);
     
     // Positioner is always constrained to the boundary panel
     // Use 'true' to also constrain the draggable or drag proxy to the boundary panel
-    dragController.setBehaviorConstrainedToBoundaryPanel(false);
+//    dragController.setBehaviorConstrainedToBoundaryPanel(false);
 
     // Allow multiple widgets to be selected at once using CTRL-click
-    dragController.setBehaviorMultipleSelection(true);
+//    dragController.setBehaviorMultipleSelection(true);
 
     // Don't forget to register each DropController with a DragController
-    dragController.registerDropController(dropController);
+//    dragController.registerDropController(dropController);
 
   // refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
 
@@ -277,7 +277,7 @@ public class Forum implements EntryPoint {
   }
 
   /**
-   * Insert cities to FlexTable. Executed when the user clicks the insertStockButton or
+   * Insert rows to FlexTable. Executed when the user clicks the insertStockButton or
    * presses enter in the newSymbolTextBox.
    * */
   private void addCity(final String city) {
@@ -295,23 +295,23 @@ public class Forum implements EntryPoint {
    * */
   private void addDataToSource(final String city){
 	  
-	  int row = investFlexTable.getRowCount();
+	  int row = forumFlexTable.getRowCount();
 	  awards.add(city);
 	    
 	  HorizontalPanel nameParentPanel = new HorizontalPanel();
 	  final Label cityName = new Label(city);
 	  nameParentPanel.add(cityName);
-	  investFlexTable.setWidget(row, 0, nameParentPanel);
-	  dragController.makeDraggable(cityName);	// Cada ciudad added se vuelve dragable
+	  forumFlexTable.setWidget(row, 0, nameParentPanel);
+//	  dragController.makeDraggable(cityName);	// Cada ciudad added se vuelve dragable
 	  
 	  final Label amount = new Label();
-	  investFlexTable.setWidget(row, 2, amount);
-	  dragController.makeDraggable(amount);
+	  forumFlexTable.setWidget(row, 2, amount);
+//	  dragController.makeDraggable(amount);
 	  
 	  // Style
-	  investFlexTable.getCellFormatter().addStyleName(row, 1, "watchListNumericColumn");
-	  investFlexTable.getCellFormatter().addStyleName(row, 2, "watchListNumericColumn");
-	  investFlexTable.getCellFormatter().addStyleName(row, 3, "watchListRemoveColumn");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListNumericColumn");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListNumericColumn");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListRemoveColumn");
 
 	  // Add a click listener to save the information about the row
 	  cityName.addMouseDownHandler(new MouseDownHandler() {
@@ -329,10 +329,10 @@ public class Forum implements EntryPoint {
 	    public void onClick(ClickEvent event) {
 	      int removedIndex = awards.indexOf(city);
 	      awards.remove(removedIndex);        
-	      investFlexTable.removeRow(removedIndex + 1);
+	      forumFlexTable.removeRow(removedIndex + 1);
 	    }
 	  });
-	  investFlexTable.setWidget(row, 3, removeStockButton);
+	  forumFlexTable.setWidget(row, 3, removeStockButton);
 	  
   }
 
@@ -414,8 +414,8 @@ public class Forum implements EntryPoint {
 	    String changeText = changeFormat.format(ammount.getChange());
 
 	    // Populate the Price and Change fields with new data.
-	    investFlexTable.setText(row, 1, priceText);
-	    Label changeWidget = (Label)investFlexTable.getWidget(row, 2);
+	    forumFlexTable.setText(row, 1, priceText);
+	    Label changeWidget = (Label)forumFlexTable.getWidget(row, 2);
 	    changeWidget.setText(   changeText + "%");
 	    
 	    // Change the color of text in the Change field based on its value.

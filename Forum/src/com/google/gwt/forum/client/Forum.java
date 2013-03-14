@@ -39,7 +39,7 @@ public class Forum implements EntryPoint {
   private HorizontalPanel insertPanel = new HorizontalPanel();
   
   private FlexTable forumFlexTable = new FlexTable();
-  private TextBox newCityTextBox = new TextBox();
+  private TextBox newElementTextBox = new TextBox();
   private Button addProjectButton = new Button("Add");
   private Label lastUpdatedLabel = new Label();
  
@@ -95,12 +95,6 @@ public class Forum implements EntryPoint {
         dialogBox.center();
       }
     });
-	    
-	  
-    //LOADING OF THE TOPICS
-    load_topics();
-    
-	
     
 	// Create draggable panel
 	RootPanel.get().setPixelSize(1000, 800);
@@ -129,10 +123,10 @@ public class Forum implements EntryPoint {
 	forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListNumericColumn");
 		
     // Assemble Add Stock panel.
-	newCityTextBox.addStyleName("textBox");
+	newElementTextBox.addStyleName("textBox");
 	addProjectButton.addStyleName("button");
 	addProjectButton.setWidth("100px");
-    addPanel.add(newCityTextBox);
+    addPanel.add(newElementTextBox);
     addPanel.add(addProjectButton);
     addPanel.addStyleName("addPanel");
     
@@ -176,15 +170,16 @@ public class Forum implements EntryPoint {
     // Listen for mouse events on the Add button.
     addProjectButton.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
-        addCity();
+        //addTopic();
+    	  refreshWatchList();
       }
     });
     
     // Listen for keyboard events in the input box.
-    newCityTextBox.addKeyPressHandler(new KeyPressHandler() {
+    newElementTextBox.addKeyPressHandler(new KeyPressHandler() {
       public void onKeyPress(KeyPressEvent event) {
         if (event.getCharCode() == KeyCodes.KEY_ENTER) {
-          addCity();
+          addTopic();
         }
       }
     });
@@ -204,22 +199,11 @@ public class Forum implements EntryPoint {
         }
       }
     });
- 	
+	
     //LOADING OF THE TOPICS
     load_topics();
     
-    Topics manolo = new Topics();
-    manolo.add_thread("GUAUUUU");
-    
-	//Thread patata = new Thread();
-	//patata.add_message("HOLAAAA");
-	
-<<<<<<< HEAD
-=======
-	Topics patata2 = new Topics();
-	//patata2.add_thread("MENSAGEEEEEE");
->>>>>>> Se muestran los topics
-	
+    // Adding topics to the flextable
 	refreshWatchList();
   }
 
@@ -257,47 +241,36 @@ public class Forum implements EntryPoint {
   
   
   /**
-   * Add cities to FlexTable. Executed when the user clicks the addStockButton or
-   * presses enter in the newSymbolTextBox.
+   * Add a new topic to FlexTable adn db.
    */
-  private void addCity() {
-	  	final String city = newCityTextBox.getText().toUpperCase().trim();
+  private void addTopic() {
+	  
+	  	// The constructor does the work of insert the new topic in the database
+	  	final Topics n_top = new Topics( newElementTextBox.getText().toUpperCase() );
 	 
-	  	newCityTextBox.setFocus(true);
+	  	newElementTextBox.setFocus(true);
 	    
-		if (!cities.contains(city)){
+	  	// TODO: Check there is no topic with the same subject
+	  	/*
+		if (!topics.contains(n_top)){
 			Window.alert("The inserted city: '" + city + "' is not a valid city.");
-		      newCityTextBox.selectAll();
+		      newElementTextBox.selectAll();
+		      return;
+		}*/
+		
+		if (topics.contains(n_top)){
+			Window.alert("The inserted topic: '" + n_top + "' is already in the system.");
+		      newElementTextBox.selectAll();
 		      return;
 		}
 		
-		if (awards.contains(city)){
-			Window.alert("The inserted city: '" + city + "' is already in the system.");
-		      newCityTextBox.selectAll();
-		      return;
-		}
-		
-		// Add the city data
-	    addDataToSource(city,null,null);
+		// Add the city data	TODO: Add the date of the last message
+	    addDataToSource(n_top.subject, "N\\A" ,null);
 
 	    // Get the stock price.
 	    refreshWatchList();
-	    newCityTextBox.setText("");
+	    newElementTextBox.setText("");
 
-  }
-
-  /**
-   * Insert rows to FlexTable. Executed when the user clicks the insertStockButton or
-   * presses enter in the newSymbolTextBox.
-   * */
-  private void addCity(final String city) {
-	 
-	    addDataToSource(city,null,null);
-
-	    // Get the stock price.
-	    refreshWatchList();
-	    newCityTextBox.setText("");
-	    
   }
   
   /**
@@ -350,47 +323,15 @@ public class Forum implements EntryPoint {
   }
 
 	/**
-	 * Generate random stock prices.
+	 * Show the list of topics.
 	 */
 	private void refreshWatchList() {
-		  
-	/*
-	 * 	// Initialize the service proxy.
-	 
-		if (stockPriceSvc == null) {
-		  stockPriceSvc = GWT.create(InvestDataService.class);
-		}
-	
-		// Set up the callback object.
-		AsyncCallback<InvestData[]> callback = new AsyncCallback<InvestData[]>() {
-			
-			public void onFailure(Throwable caught) {
-				  
-				// If the stock code is in the list of delisted codes, display an error message.
-				String details = caught.getMessage();
-				if (caught instanceof DelistedException) {
-					details = "City '" + ((DelistedException)caught).getSymbol() + "' was delisted";
-				}
-			
-				errorMsgLabel.setText("Error: " + details);
-				    errorMsgLabel.setVisible(true);
-				}
-			
-				public void onSuccess(InvestData[] result) {
-					updateTable(result);
-				}
-		};
-	
-	// Make the call to the stock price service.
-	//TODO: que muestre los valores apropiados
-	    InvestData [] elem = elements.toArray(new InvestData[elements.size()]);
-	    stockPriceSvc.getCities(elem, callback);
-	    */
 		
 		for(Topics top:topics){
-			addDataToSource(top.subject, String.valueOf( top.threads.size() ), null);
+			addDataToSource(top.subject, "N\\A", null);
 		}
-	  }
+		
+	}
   
 	  /**
 	   * Update the Price and Change fields all the rows in the stock table.
@@ -401,7 +342,7 @@ public class Forum implements EntryPoint {
 	    for (int i = 0; i < prices.length; i++) {
 	      updateTable(prices[i]);
 	    }
-
+	
 	    // Display timestamp showing last refresh.
 	    lastUpdatedLabel.setText("Last update : "
 	        + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM).format(new Date()));
@@ -488,7 +429,7 @@ public class Forum implements EntryPoint {
 
 	  obt_amount = Integer.parseInt(money);
 	  elements.add(new InvestData(result[j],obt_amount,0));
-	  addCity(result[j]);
+	  addTopic(result[j]);
 	  cities.add(result[j]);
 	  amounts.add(obt_amount);
 	  insertCityTextA.setText("");

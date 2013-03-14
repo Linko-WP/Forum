@@ -104,7 +104,7 @@ public class Forum implements EntryPoint {
     
 	// Create draggable panel
 	RootPanel.get().setPixelSize(1000, 800);
-	mainPanel.setPixelSize(495, 800);
+	mainPanel.setPixelSize(1000, 800);
 	//targetPanel.setPixelSize(495, 200);
 	
 	// Add style for the draggable panel
@@ -116,10 +116,10 @@ public class Forum implements EntryPoint {
 
 	 
  	// Create table for stock data.
-	forumFlexTable.setText(0, 0, "Nombre");
-	forumFlexTable.setText(0, 1, "No. Mensajes");
-	forumFlexTable.setText(0, 2, "Applicable Taxes");
-	forumFlexTable.setText(0, 3, "Remove");
+	forumFlexTable.setText(0, 0, "Subject");
+	forumFlexTable.setText(0, 1, "Messages No.");
+	forumFlexTable.setText(0, 2, "Last Message");
+	forumFlexTable.setText(0, 3, "Enter");
 		 
 	// Add styles to elements in the stock list table.
 	forumFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");

@@ -18,7 +18,7 @@ public class Topics {
 	Topics(){
 		id = -1;
 		subject = null;
-		threads = null;
+		threads = new ArrayList<Thread>();
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class Topics {
 	 * @param new_thread
 	 */
 	void add_thread(String new_thread){
-	//	threads.add(new Thread(new_thread));
+		threads.add(new Thread(new_thread, this.id));
 		
 	}
 	

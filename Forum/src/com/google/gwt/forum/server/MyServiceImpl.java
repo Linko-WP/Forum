@@ -196,13 +196,14 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new message into the database
 	 * */
-	public int insert_thread(String s) {
+	public int insert_thread(ArrayList<String> s) {
 	
+	  int parent_id = Integer.parseInt(s.get(0));
 	  int auto_id = -1; //If it's null
 	  String str = "Result:";
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  String sql = "INSERT INTO threads(name) values('"+ s +"');";
+		  String sql = "INSERT INTO threads(parent_topic_id, name) values("+parent_id+", '"+ s.get(1) +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 

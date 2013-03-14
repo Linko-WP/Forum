@@ -2,6 +2,7 @@ package com.google.gwt.forum.client;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
@@ -12,6 +13,7 @@ public class Thread {
 	int id;
 	String title;
 	int no_messages;//Counter for the number of messages in one thread.
+	int parent_topic_id;
 	ArrayList<Message> messages;
 	
 	/**
@@ -19,9 +21,11 @@ public class Thread {
 	 */
 	Thread(){
 		id = -1;
+		parent_topic_id = -1;
 		title = null;
 		no_messages = 0;
-		messages = null;
+		messages = new ArrayList<Message>();
+		
 	}
 	
 	/**
@@ -29,25 +33,29 @@ public class Thread {
 	 */
 	Thread(int i, String tit){
 		id = i;
+		parent_topic_id = -1;
 		no_messages = 0;
 		messages = new ArrayList<Message>();
+		
 	}
 	
 	/**
 	 * Constructor with parameters.
 	 * @param message
 	 */
-	Thread(String tit){
+	Thread(String tit, int parent_id){
 		//TODO: comprobar que se establece la fecha correcta
 		title = tit;
 		messages = new ArrayList<Message>();
+		parent_topic_id = parent_id;
 		
 		//TODO: obtener el autor de algœn sitio
 		//author = user;	
 
-		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_topic_id), tit));
+		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.insert_thread(tit, new AsyncCallback<Integer>(){
+		    Service.insert_thread(param, new AsyncCallback<Integer>(){
 		    	public void onSuccess(Integer obt_id) {
 		    		System.out.println("ID AUTOGENERADO:" + obt_id);
 		    		id = obt_id;

@@ -208,13 +208,15 @@ public class Forum implements EntryPoint {
     //LOADING OF THE TOPICS
     load_topics();
     
+    User paquito = new User();
+    paquito.insert_user("paquito", "email", "pass", false);
     
     topics.add(new Topics("LA MARIMORENA"));
 	Thread patata = new Thread();
 	//patata.add_message("HOLAAAA");
 	
 	Topics patata2 = new Topics();
-	patata2.add_thread("MENSAGEEEEEE");
+	//patata2.add_thread("MENSAGEEEEEE");
 	
   }
 

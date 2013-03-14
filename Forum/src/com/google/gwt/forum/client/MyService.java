@@ -15,5 +15,6 @@ public interface MyService extends RemoteService {
   public int insert_topic(String s);
   public int insert_message(ArrayList<String> s);
   public int insert_thread(String s);
+  public String insert_user(ArrayList<String> s);
   public String insert_into_db(String table, String values);
 }

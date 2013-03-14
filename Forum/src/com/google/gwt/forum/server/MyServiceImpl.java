@@ -224,6 +224,43 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
     return auto_id;
   }
 	
+	
+	/**
+	 * Insert a new user into the database
+	 * */
+	public String insert_user(ArrayList<String> s) {
+		String name = s.get(0);
+		String email = s.get(1);
+		String password = s.get(2);
+		Boolean admin = Boolean.parseBoolean(s.get(3));
+		
+	
+	  String str = "Result:";
+	  Connection conn = connect();	// Connect to database
+	  try {
+		  String sql = "INSERT INTO users values ('"+ name + "', '"+email+"', '"
+				  		+ password + "', "+admin+");";
+		  
+		  PreparedStatement prep = (PreparedStatement) conn
+				  .prepareStatement(sql);
+
+	     prep.execute();
+	     
+
+	     
+	     str += " Good";
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
+	
+	
 	/**										*
 	 * Connects to local database db_lab3	*
 	 * 										*/

@@ -61,8 +61,9 @@ public class Topics {
 	 * Function to add a thread to the topic.
 	 * @param new_thread
 	 */
-	void add_thread(Thread new_thread){
-		threads.add(new_thread);
+	void add_thread(String new_thread){
+		threads.add(new Thread(new_thread));
+		
 	}
 	
 	

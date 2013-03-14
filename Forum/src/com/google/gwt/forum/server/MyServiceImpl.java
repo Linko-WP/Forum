@@ -167,7 +167,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  String str = "Result:";
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  String sql = "INSERT INTO message(content) values('"+ s +"');";
+		  String sql = "INSERT INTO messages(content) values('"+ s +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 

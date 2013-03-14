@@ -3,22 +3,22 @@
     <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.google.gwt.sample.stockwatcher.server.GreetingServiceImpl</servlet-class>
+    <servlet-class>com.google.forum.server.GreetingServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/stockwatcher/greet</url-pattern>
+    <url-pattern>/forum/greet</url-pattern>
   </servlet-mapping>
   
   <!-- Example servlet loaded into servlet container -->
 	<servlet>
 	  <servlet-name>myServiceImpl</servlet-name>
-	  <servlet-class>com.google.gwt.sample.stockwatcher.server.MyServiceImpl</servlet-class>
+	  <servlet-class>com.google.forum.server.MyServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 	  <servlet-name>myServiceImpl</servlet-name>
-	  <url-pattern>/stockwatcher/ms</url-pattern>
+	  <url-pattern>/forum/ms</url-pattern>
 	</servlet-mapping>
   
   <!-- Default page to serve -->
@@ -29,12 +29,12 @@
 <!-- Servlets -->
   <servlet>
     <servlet-name>AwardDataServiceImpl</servlet-name>
-    <servlet-class>com.google.gwt.sample.stockwatcher.server.InvestDataServiceImpl</servlet-class>
+    <servlet-class>com.google.forum.ServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>AwardDataServiceImpl</servlet-name>
-    <url-pattern>/stockwatcher/AwardDatas</url-pattern>
+    <url-pattern>/forum/AwardDatas</url-pattern>
   </servlet-mapping>
 
   <servlet>

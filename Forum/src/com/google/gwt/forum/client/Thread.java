@@ -66,7 +66,7 @@ public class Thread {
 	 * To add a message to the thread
 	 */
 	void add_message(String new_message){
-		messages.add(new Message(new_message));
+	//	messages.add(new Message(new_message));
 		no_messages++;
 	}
 	

@@ -62,7 +62,7 @@ public class Topics {
 	 * @param new_thread
 	 */
 	void add_thread(String new_thread){
-		threads.add(new Thread(new_thread));
+	//	threads.add(new Thread(new_thread));
 		
 	}
 	

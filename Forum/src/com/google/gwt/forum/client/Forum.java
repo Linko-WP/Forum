@@ -212,7 +212,7 @@ public class Forum implements EntryPoint {
     
     topics.add(new Topics("LA MARIMORENA"));
 	Thread patata = new Thread();
-	patata.add_message("HOLAAAA");
+	//patata.add_message("HOLAAAA");
 	
 	Topics patata2 = new Topics();
 	patata2.add_thread("MENSAGEEEEEE");

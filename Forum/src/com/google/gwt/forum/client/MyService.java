@@ -1,6 +1,8 @@
 package com.google.gwt.forum.client;
 
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -11,7 +13,7 @@ public interface MyService extends RemoteService {
   
   //Insert Part
   public int insert_topic(String s);
-  public int insert_message(String s);
+  public int insert_message(ArrayList<String> s);
   public int insert_thread(String s);
   public String insert_into_db(String table, String values);
 }

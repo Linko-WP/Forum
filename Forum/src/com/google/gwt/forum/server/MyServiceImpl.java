@@ -2,6 +2,7 @@ package com.google.gwt.forum.server;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mysql.jdbc.*;
@@ -161,13 +162,16 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new message into the database
 	 * */
-	public int insert_message(String s) {
+	public int insert_message(ArrayList<String> s) {
 	
 	  int auto_id = -1; //If it's null
 	  String str = "Result:";
+	  int parent_id = Integer.parseInt(s.get(0));
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  String sql = "INSERT INTO messages(content) values('"+ s +"');";
+		  String sql = "INSERT INTO messages(parent_thread_id, content, author_username) values("
+				  	+parent_id+", '"+ s.get(1) +"', '"+ s.get(2) +"');";
+		  
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 

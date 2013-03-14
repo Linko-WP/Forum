@@ -106,7 +106,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  try {
 		  
 	     PreparedStatement prep = (PreparedStatement) conn
-	           .prepareStatement("select id, subject from topics;");
+	           .prepareStatement("select topic_id, name from topics;");
 	     prep.execute();
 	     
 	     str += " Good";

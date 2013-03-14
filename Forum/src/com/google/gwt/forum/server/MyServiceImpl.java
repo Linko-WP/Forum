@@ -133,15 +133,13 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	public int insert_topic(String s) {
 	
 	  int auto_id = -1; //If it's null
-	  String str = "Result: ";
+	  String str = "Result:";
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  String sql = "INSERT INTO topics (subject) values("+ s +")";
+		  String sql = "INSERT INTO topics(name) values('"+ s +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		  
-	    // PreparedStatement prep = (PreparedStatement) conn
-	     //      .prepareStatement("insert into topics values (");
+
 	     prep.execute();
 	     
 	     ResultSet rs= prep.getGeneratedKeys();

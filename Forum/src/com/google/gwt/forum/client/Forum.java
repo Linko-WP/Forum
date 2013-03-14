@@ -207,7 +207,10 @@ public class Forum implements EntryPoint {
     });
  
     
-    
+    topics.add(new Topics("LA MARIMORENA"));
+	
+    //LOADING OF THE TOPICS
+    load_topics();
   }
 
   /**

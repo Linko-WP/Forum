@@ -3,7 +3,6 @@ package com.google.gwt.forum.server;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 
-import com.google.gwt.forum.client.MyService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mysql.jdbc.*;
 
@@ -25,12 +24,18 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  String str = "Result: ";
 	  Connection conn = connect();	// Connect to database
 	  try {
+		 Statement stat = (Statement) conn.createStatement();
 		  
 	     PreparedStatement prep = (PreparedStatement) conn
 	           .prepareStatement("insert into "+ table +" values "+ values +";");
 	     prep.execute();
 	     
-	     str += " Good";
+	     ResultSet rs = stat.executeQuery("select * from "+table+";");
+	     while (rs.next()) {
+	        str += "\n" + rs.getString("topic_id");
+	        str += ", " + rs.getString("name");
+	     }
+	     str += "\n Good";
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
@@ -101,15 +106,16 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	 * */
 	public String get_topics(String s) {
 	  
-	  String str = "Result: ";
+	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  
-	     PreparedStatement prep = (PreparedStatement) conn
-	           .prepareStatement("select topic_id, name from topics;");
-	     prep.execute();
+	     Statement stat = (Statement) conn.createStatement();
 	     
-	     str += " Good";
+	     ResultSet rs = stat.executeQuery("select topic_id, name from topics;");
+	     while (rs.next()) {
+	        str +=  rs.getString("topic_id");
+	        str += ", " + rs.getString("name") + ", ";
+	     }
 	     
 	  } catch (Exception e) {
 	     str += e.toString();

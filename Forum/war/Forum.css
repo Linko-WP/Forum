@@ -6,7 +6,7 @@ h1 {
   font-size: 2em;
   font-weight: bold;
   color: #777777;
-  margin: 40px 0px 70px;
+  margin: 40px 0px 60px;
   text-align: center;
 }
 
@@ -50,6 +50,18 @@ h1 {
 
 /** List styles */
 .watchListHeader{
+	color: white;
+  	font-weight: bold;
+	text-align: center;
 	background-color: blue;
 	border: 1px solid white;
+	width: 80%;
+}
+
+.watchListNumericColumn{
+	color: white;
+  	font-weight: bold;
+	text-align: center;
+	background-color: blue;
+	width: 5%;
 }

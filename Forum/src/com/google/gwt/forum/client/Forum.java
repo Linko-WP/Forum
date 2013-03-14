@@ -126,7 +126,7 @@ public class Forum implements EntryPoint {
 	forumFlexTable.addStyleName("watchList");
 	forumFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
 	forumFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
-	forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
+	forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListNumericColumn");
 		
     // Assemble Add Stock panel.
 	newCityTextBox.addStyleName("textBox");
@@ -214,7 +214,13 @@ public class Forum implements EntryPoint {
 	//Thread patata = new Thread();
 	//patata.add_message("HOLAAAA");
 	
+<<<<<<< HEAD
+=======
+	Topics patata2 = new Topics();
+	//patata2.add_thread("MENSAGEEEEEE");
+>>>>>>> Se muestran los topics
 	
+	refreshWatchList();
   }
 
   /**
@@ -272,7 +278,7 @@ public class Forum implements EntryPoint {
 		}
 		
 		// Add the city data
-	    addDataToSource(city);
+	    addDataToSource(city,null,null);
 
 	    // Get the stock price.
 	    refreshWatchList();
@@ -286,7 +292,7 @@ public class Forum implements EntryPoint {
    * */
   private void addCity(final String city) {
 	 
-	    addDataToSource(city);
+	    addDataToSource(city,null,null);
 
 	    // Get the stock price.
 	    refreshWatchList();
@@ -297,31 +303,34 @@ public class Forum implements EntryPoint {
   /**
    * Insert data on the source table
    * */
-  private void addDataToSource(final String city){
+  private void addDataToSource(final String col1, final String col2, final String col3){
 	  
 	  int row = forumFlexTable.getRowCount();
-	  awards.add(city);
 	    
-	  HorizontalPanel nameParentPanel = new HorizontalPanel();
-	  final Label cityName = new Label(city);
-	  nameParentPanel.add(cityName);
-	  forumFlexTable.setWidget(row, 0, nameParentPanel);
+	  HorizontalPanel col1ParentPanel = new HorizontalPanel();
+	  final Label column_1 = new Label(col1);
+	  col1ParentPanel.add(column_1);
+	  forumFlexTable.setWidget(row, 0, col1ParentPanel);
 //	  dragController.makeDraggable(cityName);	// Cada ciudad added se vuelve dragable
 	  
-	  final Label amount = new Label();
-	  forumFlexTable.setWidget(row, 2, amount);
+	  final Label column_2 = new Label(col2);
+	  forumFlexTable.setWidget(row, 2, column_2);
+//	  dragController.makeDraggable(amount);
+	  
+	  final Label column_3 = new Label(col3);
+	  forumFlexTable.setWidget(row, 2, column_3);
 //	  dragController.makeDraggable(amount);
 	  
 	  // Style
 	  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListNumericColumn");
 	  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListNumericColumn");
-	  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListRemoveColumn");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListNumericColumn");
 
 	  // Add a click listener to save the information about the row
-	  cityName.addMouseDownHandler(new MouseDownHandler() {
+	  column_1.addMouseDownHandler(new MouseDownHandler() {
 	      public void onMouseDown(MouseDownEvent event) {
 	    //    currentCity.setCity(city);
-	        int row = cities.indexOf(city);
+	        //int row = cities.indexOf(city);
 	    //    currentCity.setAmmount( amounts.get(row) );
 	      }
 	    });
@@ -331,7 +340,7 @@ public class Forum implements EntryPoint {
 	  removeStockButton.addStyleDependentName("remove");
 	  removeStockButton.addClickHandler(new ClickHandler() {
 	    public void onClick(ClickEvent event) {
-	      int removedIndex = awards.indexOf(city);
+	      int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
 	      awards.remove(removedIndex);        
 	      forumFlexTable.removeRow(removedIndex + 1);
 	    }
@@ -377,6 +386,10 @@ public class Forum implements EntryPoint {
 	    InvestData [] elem = elements.toArray(new InvestData[elements.size()]);
 	    stockPriceSvc.getCities(elem, callback);
 	    */
+		
+		for(Topics top:topics){
+			addDataToSource(top.subject, String.valueOf( top.threads.size() ), null);
+		}
 	  }
   
 	  /**

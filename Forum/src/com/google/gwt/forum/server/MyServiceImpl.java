@@ -95,7 +95,33 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  
     return str;
   }
-
+	
+	/**
+	 * Inserts a row into a table of the database
+	 * @param table	String contaning the name of the table
+	 * @param values String of Values inside () separated by comma
+	 * */
+	public String get_topics(String s) {
+	  
+	  String str = "Result: ";
+	  Connection conn = connect();	// Connect to database
+	  try {
+		  
+	     PreparedStatement prep = (PreparedStatement) conn
+	           .prepareStatement("select id, subject from topics;");
+	     prep.execute();
+	     
+	     str += " Good";
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
 	/**										*
 	 * Connects to local database db_lab3	*
 	 * 										*/

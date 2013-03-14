@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class Forum implements EntryPoint {
  
+
   private AbsolutePanel mainPanel = new AbsolutePanel();
   private AbsolutePanel targetPanel = new AbsolutePanel();
   
@@ -45,9 +46,11 @@ public class Forum implements EntryPoint {
   private TextArea insertCityTextA = new TextArea();
   private Button insertProjectButton = new Button("Insert");
   
+  private ArrayList<Topics> topics  = new ArrayList<Topics>();
+  private ArrayList<String> cities = new ArrayList<String>();
   private String results;
-  private ArrayList<String> cities  = new ArrayList<String>();;
-  private ArrayList<Integer> amounts = new ArrayList<Integer>();;
+  
+  private ArrayList<Integer> amounts = new ArrayList<Integer>();
   
   // Arraylist of InvestData
 //  private ArrayList<InvestData> elements = new ArrayList<InvestData>();
@@ -96,41 +99,9 @@ public class Forum implements EntryPoint {
     });
 	    
 	  
-    // (1) Create the client proxy. Note that although you are creating the
-    // service interface proper, you cast the result to the asynchronous
-    // version of the interface. The cast is always safe because the
-    // generated proxy implements the asynchronous interface automatically.
-    //
-    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
-
-    String temp = " cadena ";
-    emailService.initialize_db(temp, new AsyncCallback<String>(){
-    	public void onSuccess(String result) {
-    		System.out.println("SuccessS:" + result);
-    		results = result;
-    		
-    		//We add the results into the arrays for the cities and amounts
-    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-    		for(int i=0; i<myList.size()-1; i=i+2){
-    			cities.add(myList.get(i));
-    			amounts.add(Integer.parseInt(myList.get(i+1)));
-    		}
-    		
-    		// Add to the elements arraylist every obtained value
-    		Iterator<Integer> itr_am = amounts.iterator();
-
-    		for(String city:cities){ 
-    			Integer ammt = itr_am.next();
-    		//	elements.add(new InvestData(city,ammt,0));
-    		}
-		
-          }
-
-          public void onFailure(Throwable caught) {
-        	Window.alert("RPC to initialize_db() failed.");
-      		System.out.println("Fail\n" + caught);
-          }
-    } );
+    //LOADING OF THE TOPICS
+    load_topics();
+    
 	
     
 	// Create draggable panel
@@ -241,6 +212,38 @@ public class Forum implements EntryPoint {
     
   }
 
+  /**
+   * Class to load the topics int the topic object from the database
+   */
+  private void load_topics(){
+
+	    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
+
+	    String temp = " cadena ";
+	    emailService.get_topics(temp, new AsyncCallback<String>(){
+	    	public void onSuccess(String result) {
+	    		System.out.println("TOPICS:" + result);
+	    		results = result;
+	    		
+	    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+	    		for(int i=0; i<myList.size()-1; i=i+2){
+	    			int obt_id = Integer.parseInt(myList.get(i));
+	    			String obt_topic = myList.get(i+1);
+	    			
+	    			
+	    			topics.add(new Topics(obt_id, obt_topic));
+	    		}
+
+			
+	          }
+
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("RPC to initialize_db() failed.");
+	      		System.out.println("Fail\n" + caught);
+	          }
+	    } );	  
+  }
+  
   
   /**
    * Add cities to FlexTable. Executed when the user clicks the addStockButton or
@@ -492,4 +495,19 @@ public class Forum implements EntryPoint {
 
 
 
+/*
+ * ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+ 
+for(int i=0; i<myList.size()-1; i=i+2){
+	cities.add(myList.get(i));
+	amounts.add(Integer.parseInt(myList.get(i+1)));
+}
+
+// Add to the elements arraylist every obtained value
+Iterator<Integer> itr_am = amounts.iterator();
+
+for(String city:cities){ 
+	Integer ammt = itr_am.next();
+//	elements.add(new InvestData(city,ammt,0));
+}*/
 

@@ -506,6 +506,10 @@ public class Forum implements EntryPoint {
 	}*/
 	  
 	public void pruebas_mary(){
+		Thread bu = new Thread();
+		ArrayList<Thread> pp =  bu.get_threads(2);
+		System.out.print("FINAL: " +pp);
+		
 		
 	};
 

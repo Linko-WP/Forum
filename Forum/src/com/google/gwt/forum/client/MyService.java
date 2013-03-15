@@ -9,7 +9,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("ms")
 public interface MyService extends RemoteService {
   public String initialize_db(String s);
+  
+  //Getting part
   public String get_topics(String s);
+  public String get_threads(Integer s);
   
   //Insert Part
   public int insert_topic(String s);

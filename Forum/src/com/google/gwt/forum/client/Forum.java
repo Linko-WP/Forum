@@ -1,4 +1,5 @@
 package com.google.gwt.forum.client;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -55,6 +56,7 @@ public class Forum implements EntryPoint {
   public int currentElementId = -1;
   public char currentElementType = 'X';
   private int topics_index = -1;
+  private int threads_index = -1;
   
   /**
    * Entry point method.
@@ -312,6 +314,19 @@ public class Forum implements EntryPoint {
 		
 	}
 	
+	/**
+	 * Show the list of topics.
+	 */
+	private void showMessages() {
+		
+		clean_table();
+		currentElementType = 'M';
+		for(Message ms:topics.get(topics_index).threads.get(threads_index).messages){
+			addDataToSource(ms.author.user_name, ms.content, ms.time_stamp.toString(), ms.id);
+		}
+		
+	}
+	
 	  /**
 	   * Class to load the threads in the topic object from the database
 	   */
@@ -353,6 +368,54 @@ public class Forum implements EntryPoint {
 		  }	    
 	  }
 	  
+	  
+	  /**
+	   * Class to load the threads in the topic object from the database
+	   */
+	  private void load_messages(){
+
+		  final ArrayList<Message> result = new ArrayList<Message>();	
+		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		  
+		  for(int i=0; i<topics.get(topics_index).threads.size(); i++){
+			  if(topics.get(topics_index).threads.get(i).id == currentElementId) threads_index = i;
+		  }
+		    
+		  if( (currentElementId != -1) && (threads_index != -1) ){		    	
+
+		    Service.get_messages(currentElementId, new AsyncCallback<String>(){
+		    	public void onSuccess(String results) {
+		    		System.out.println("RESULTADO GET Messages:" + results);
+		    		
+		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+		    		for(int i=0; i<myList.size()-2; i=i+3){
+		    			int id_n = Integer.parseInt(myList.get(0));
+		    		      Timestamp ts = Timestamp.valueOf(myList.get(1));
+
+		    		        
+		    			String ct = myList.get(2);
+		    			String a_name = myList.get(3);
+		    			Message output = new Message(id_n, ts, ct, currentElementId, a_name);
+
+		    			result.add(output);
+		    		}
+		    		
+		    		// Save the threads in their parent topic arraylist
+		    		topics.get(topics_index).threads.get(threads_index).messages = result;
+		    		for(Message x:topics.get(topics_index).threads.get(threads_index).messages)
+		    			System.out.println("ID: "+x.id+" Content: "+x.content+
+		    					" Parent: "+x.parent_thread_id+" Date: "+x.time_stamp+" Author:"+x.author);
+		    		showMessages();
+
+		          }
+		    	
+		          public void onFailure(Throwable caught) {
+		        	Window.alert("Messages retrieve attempt failed.");
+		      		System.out.println("Fail\n" + caught);
+		          }
+		    } );		    
+		  }	    
+	  }
 	
 	  /**
 	   * Update the Price and Change fields all the rows in the stock table.

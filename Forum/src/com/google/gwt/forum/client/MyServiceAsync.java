@@ -10,6 +10,7 @@ interface MyServiceAsync {
   //Getting part
   public void get_topics(String s, AsyncCallback<String> callback);
   public void get_threads(Integer s, AsyncCallback<String> callback);
+  public void get_messages(Integer s, AsyncCallback<String> callback);
   
   //Insert part
   public void insert_topic(String s, AsyncCallback<Integer> callback);

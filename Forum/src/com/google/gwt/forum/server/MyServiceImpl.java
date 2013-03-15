@@ -161,6 +161,36 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
   }
 	
 	/**
+	 * Obtains the messages from the database
+	 * */
+	public String get_messages(Integer id) {
+	  
+	  String str = "";
+	  Connection conn = connect();	// Connect to database
+	  try {
+	     Statement stat = (Statement) conn.createStatement();
+	     
+	     ResultSet rs = stat.executeQuery("select message_id, ts, content, author_username from messages" +
+	     									" where parent_thread_id="+String.valueOf(id)+";");
+	     while (rs.next()) {
+	        str +=  rs.getString("message_id");
+	        str += ", " + rs.getString("ts");
+	        str += ", " + rs.getString("content");
+	        str += ", " + rs.getString("author_username") + ", ";
+	        
+	     }
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
+	
+	/**
 	 * Insert a new topic into the database
 	 * */
 	public int insert_topic(String s) {

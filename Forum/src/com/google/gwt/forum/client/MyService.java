@@ -13,6 +13,7 @@ public interface MyService extends RemoteService {
   //Getting part
   public String get_topics(String s);
   public String get_threads(Integer s);
+  public String get_messages(Integer s);
   
   //Insert Part
   public int insert_topic(String s);

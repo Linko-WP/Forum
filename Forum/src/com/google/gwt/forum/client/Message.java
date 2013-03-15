@@ -1,6 +1,7 @@
 package com.google.gwt.forum.client;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class Message {
 	
 	int id;
 	int parent_thread_id;
-	Date date;
+	Timestamp time_stamp;
 	String content;
 	User author;
 	
@@ -27,7 +28,7 @@ public class Message {
 	Message(){
 		id = -1;
 		parent_thread_id= -1;
-		date = null;
+		time_stamp = null;
 		content = null;
 		author = null;	
 	}
@@ -42,9 +43,27 @@ public class Message {
 		id = -1;
 		parent_thread_id= -1;
 		//TODO: comprobar que se establece la fecha correcta
-		date = new Date();
+		time_stamp = null;
 		content = message;
 		author = user;	
+
+	}
+	
+	/**
+	 * Constructor with parameters
+	 * @param new_id
+	 * @param ts
+	 * @param cont
+	 * @param p_id
+	 * @param auth
+	 */
+	Message(int new_id, Timestamp ts, String cont, int p_id, String auth){
+		id = new_id;
+		time_stamp = ts;
+		content = cont;
+		parent_thread_id= p_id;
+		
+		//TODO: hacer algo con el author author.name = auth;	
 
 	}
 	
@@ -55,7 +74,7 @@ public class Message {
 	Message(String message, int p_id){
 
 		parent_thread_id= p_id;
-		date = new Date();
+		
 
 		// GET DATE & TIME IN ANY FORMAT
 		/*TODO: ARREGLAR LA MALDITA HORA
@@ -98,6 +117,44 @@ public class Message {
 
 	}
 	
+	
+	/**
+	 * Class to get the threads from the dabatase
+	 */
+	 static ArrayList<Message> get_messages(final int parent_id){
+		 
+ 		final ArrayList<Message> result = new ArrayList<Message>();	
+
+		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+
+		    Service.get_messages(parent_id, new AsyncCallback<String>(){
+		    	public void onSuccess(String results) {
+		    		System.out.println("RESULTADO GET MESSGSS:" + results);
+
+		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+		    		for(int i=0; i<myList.size()-2; i=i+3){
+		    			int id_n = Integer.parseInt(myList.get(0));
+		    			//Date d = Date.parse(myList.get(1));
+		    		      Timestamp ts = Timestamp.valueOf(myList.get(1));
+
+		    		        
+		    			String ct = myList.get(2);
+		    			String a_name = myList.get(3);
+		    			Message output = new Message(i, ts, ct, parent_id, a_name);
+
+		    			result.add(output);
+
+		    		}
+
+		          }
+		    	
+		          public void onFailure(Throwable caught) {
+		        	Window.alert("RPC to initialize_db() failed.");
+		      		System.out.println("Fail\n" + caught);
+		          }
+		    } );
+			return result;	  
+	  }
 	
 	
 

@@ -47,7 +47,6 @@ public class Forum implements EntryPoint {
   private Button insertProjectButton = new Button("Insert");
   
   private ArrayList<Topics> topics  = new ArrayList<Topics>();
-  private ArrayList<String> cities = new ArrayList<String>();
   private String results;
   
   //private ArrayList<Integer> amounts = new ArrayList<Integer>();
@@ -56,7 +55,8 @@ public class Forum implements EntryPoint {
   //private static final int REFRESH_INTERVAL = 5000; // ms
  // private InvestDataServiceAsync stockPriceSvc = GWT.create(InvestDataService.class);
   private Label errorMsgLabel = new Label();
- // public InvestData currentCity = new InvestData();
+  public int currentElementId = -1;
+  public char currentElementType = 'X';
   
   // Create a DragController for each logical area where a set of draggable
   // widgets and drop targets will be allowed to interact with one another.
@@ -171,7 +171,7 @@ public class Forum implements EntryPoint {
     addProjectButton.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         //addTopic();
-    	  refreshWatchList();
+    	  showTopics();
       }
     });
     
@@ -199,12 +199,9 @@ public class Forum implements EntryPoint {
         }
       }
     });
-	
-    //LOADING OF THE TOPICS
-    load_topics();
     
     // Adding topics to the flextable
-	refreshWatchList();
+	load_topics();
   }
 
   /**
@@ -229,7 +226,7 @@ public class Forum implements EntryPoint {
 	    			topics.add(new Topics(obt_id, obt_topic));
 	    		}
 
-			
+	    		showTopics();
 	          }
 
 	          public void onFailure(Throwable caught) {
@@ -265,10 +262,10 @@ public class Forum implements EntryPoint {
 		}
 		
 		// Add the city data	TODO: Add the date of the last message
-	    addDataToSource(n_top.subject, "N\\A" ,null);
+	    addDataToSource(n_top.subject, "N\\A" ,null, n_top.id);
 
 	    // Get the stock price.
-	    refreshWatchList();
+	    showTopics();
 	    newElementTextBox.setText("");
 
   }
@@ -276,7 +273,7 @@ public class Forum implements EntryPoint {
   /**
    * Insert data on the source table
    * */
-  private void addDataToSource(final String col1, final String col2, final String col3){
+  private void addDataToSource(final String col1, final String col2, final String col3, final int id){
 	  
 	  int row = forumFlexTable.getRowCount();
 	    
@@ -284,27 +281,31 @@ public class Forum implements EntryPoint {
 	  final Label column_1 = new Label(col1);
 	  col1ParentPanel.add(column_1);
 	  forumFlexTable.setWidget(row, 0, col1ParentPanel);
-//	  dragController.makeDraggable(cityName);	// Cada ciudad added se vuelve dragable
 	  
 	  final Label column_2 = new Label(col2);
-	  forumFlexTable.setWidget(row, 2, column_2);
-//	  dragController.makeDraggable(amount);
+	  forumFlexTable.setWidget(row, 1, column_2);
 	  
 	  final Label column_3 = new Label(col3);
 	  forumFlexTable.setWidget(row, 2, column_3);
-//	  dragController.makeDraggable(amount);
 	  
 	  // Style
-	  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListNumericColumn");
-	  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListNumericColumn");
-	  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListNumericColumn");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 0, "watchListCell");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListCell");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListCell");
+	  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListCell");
 
 	  // Add a click listener to save the information about the row
 	  column_1.addMouseDownHandler(new MouseDownHandler() {
 	      public void onMouseDown(MouseDownEvent event) {
-	    //    currentCity.setCity(city);
-	        //int row = cities.indexOf(city);
-	    //    currentCity.setAmmount( amounts.get(row) );
+	    	  currentElementId = id;
+	    	  if(currentElementType == 'P'){
+	    		  load_threads();
+	    	  }else if(currentElementType == 'T'){
+	    		  //load_messages();
+	    	  }else{
+	    		  System.out.println("Not able to check current type");
+	    	  }
+	    	  
 	      }
 	    });
 
@@ -325,14 +326,65 @@ public class Forum implements EntryPoint {
 	/**
 	 * Show the list of topics.
 	 */
-	private void refreshWatchList() {
-		
+	private void showTopics() {
+			
 		for(Topics top:topics){
-			addDataToSource(top.subject, "N\\A", null);
+			addDataToSource(top.subject, "N\\A", null, top.id);
 		}
 		
 	}
-  
+
+	/**
+	 * Show the list of topics.
+	 */
+	private void showThreads(final int topics_index) {
+		
+		for(Thread th:topics.get(topics_index).threads){
+			addDataToSource(th.title, String.valueOf( th.no_messages ), null, th.id);
+		}
+		
+	}
+	
+	  /**
+	   * Class to load the topics int the topic object from the database
+	   */
+	  private void load_threads(){
+
+		    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
+		    
+		    final int index = -1;
+		    for(int i=0; i<topics.size(); i++){
+		    	//if(topics.get(i).id == currentElementId) index = i;
+		    }
+		    
+		    if( (currentElementId != -1) && (index != -1) ){
+		    /*	
+			    dbService.get_threads(currentElementId, new AsyncCallback<String>(){
+			    	public void onSuccess(String result) {
+			    		System.out.println("Threads:" + result);
+			    		results = result;
+			    		
+			    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+			    		for(int i=0; i<myList.size()-1; i=i+2){
+			    			int obt_id = Integer.parseInt(myList.get(i));
+			    			String obt_topic = myList.get(i+1);
+			    			
+			    			
+			    			topics.get(index).threads.add(new Thread(obt_id, obt_topic));
+			    		}
+	
+			    		showThreads(index);
+			          }
+	
+			          public void onFailure(Throwable caught) {
+			        	Window.alert("Threads load failed.");
+			      		System.out.println("Fail on threads loading\n" + caught);
+			          }
+			    } );
+		    */
+		    }
+	  }
+	
 	  /**
 	   * Update the Price and Change fields all the rows in the stock table.
 	   *
@@ -450,6 +502,18 @@ public class Forum implements EntryPoint {
 	    System.out.println(cities);
 	    System.out.println(amounts);
 	}*/
+	
+	public static void waiting (int n){
+        
+        long t0, t1;
+
+        t0 =  System.currentTimeMillis();
+
+        do{
+            t1 = System.currentTimeMillis();
+        }
+        while ((t1 - t0) < (n * 100));
+    }
 }
 
 

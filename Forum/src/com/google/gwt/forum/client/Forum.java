@@ -34,7 +34,6 @@ public class Forum implements EntryPoint {
  
 
   private AbsolutePanel mainPanel = new AbsolutePanel();
-  //private AbsolutePanel targetPanel = new AbsolutePanel();
   private HorizontalPanel addPanel = new HorizontalPanel();
   private HorizontalPanel insertPanel = new HorizontalPanel();
   
@@ -49,65 +48,25 @@ public class Forum implements EntryPoint {
   private ArrayList<Topics> topics  = new ArrayList<Topics>();
   private String results;
   
-  //private ArrayList<Integer> amounts = new ArrayList<Integer>();
-  
   private ArrayList<String> awards = new ArrayList<String>();
   //private static final int REFRESH_INTERVAL = 5000; // ms
- // private InvestDataServiceAsync stockPriceSvc = GWT.create(InvestDataService.class);
   private Label errorMsgLabel = new Label();
   public int currentElementId = -1;
   public char currentElementType = 'X';
   private int topics_index = -1;
-  
-  // Create a DragController for each logical area where a set of draggable
-  // widgets and drop targets will be allowed to interact with one another.
-  // PickupDragController dragController = new PickupDragController(RootPanel.get(), true);
-  //FlexTableRowDragController dragController = new FlexTableRowDragController(RootPanel.get());
-  
-  // Create a DropController for each drop target on which draggable widgets can be dropped
-  // DropController dropController = new AbsolutePositionDropController(targetPanel);
-  //FlexTableRowDropController dropController = new FlexTableRowDropController(targetPanel, this);
   
   /**
    * Entry point method.
    */
   public void onModuleLoad() {
 	  
-	// Set uncaught exception handler
-    GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-      public void onUncaughtException(Throwable throwable) {
-        String text = "Uncaught exception: ";
-        while (throwable != null) {
-          StackTraceElement[] stackTraceElements = throwable.getStackTrace();
-          text += throwable.toString() + "\n";
-          for (int i = 0; i < stackTraceElements.length; i++) {
-            text += "    at " + stackTraceElements[i] + "\n";
-          }
-          throwable = throwable.getCause();
-          if (throwable != null) {
-            text += "Caused by: ";
-          }
-        }
-        DialogBox dialogBox = new DialogBox(true, false);
-        DOM.setStyleAttribute(dialogBox.getElement(), "backgroundColor", "#ABCDEF");
-        System.err.print(text);
-        text = text.replaceAll(" ", "&nbsp;");
-        dialogBox.setHTML("<pre>" + text + "</pre>");
-        dialogBox.center();
-      }
-    });
-    
-	// Create draggable panel
-	RootPanel.get().setPixelSize(1000, 800);
-	mainPanel.setPixelSize(1000, 800);
-	//targetPanel.setPixelSize(495, 200);
-	
-	// Add style for the draggable panel
+    setUncaughtExceptionHandler();	// Useful!
+        
+	// Setting panels
+	RootPanel.get().setWidth("1000px");
+	mainPanel.setWidth("1000px");
 	RootPanel.get().addStyleName("rootStyle");
 	mainPanel.addStyleName("mainStyle");
-	//targetPanel.addStyleName("targetStyle");
-	//targetPanel.addStyleName("watchList");
-    //targetPanel.addStyleName("getting-started-blue");
 
 	 
  	// Create table for stock data.
@@ -131,7 +90,7 @@ public class Forum implements EntryPoint {
     addPanel.add(addProjectButton);
     addPanel.addStyleName("addPanel");
     
-    // Assemble Add Stock panel.
+    // Assemble Insert Stock panel.
     insertCityTextA.setVisibleLines(4);
     insertCityTextA.addStyleName("textBox");
     insertProjectButton.addStyleName("button");
@@ -152,19 +111,8 @@ public class Forum implements EntryPoint {
     mainPanel.add(insertPanel);
     mainPanel.add(lastUpdatedLabel);
       
-    // Add both panels to the root panel
-    //RootPanel.get().add(targetPanel);
+    // Add panels to the root panel
     RootPanel.get().add(mainPanel);
-    
-    // Positioner is always constrained to the boundary panel
-    // Use 'true' to also constrain the draggable or drag proxy to the boundary panel
-//    dragController.setBehaviorConstrainedToBoundaryPanel(false);
-
-    // Allow multiple widgets to be selected at once using CTRL-click
-//    dragController.setBehaviorMultipleSelection(true);
-
-    // Don't forget to register each DropController with a DragController
-//    dragController.registerDropController(dropController);
 
   // refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
 
@@ -504,6 +452,38 @@ public class Forum implements EntryPoint {
 	    System.out.println(cities);
 	    System.out.println(amounts);
 	}*/
+	
+	  /**
+	   * Set an uncaught exception handler
+	   * This code is here to make it cleaner
+	   * */
+	  public void setUncaughtExceptionHandler(){
+		  
+		// Set uncaught exception handler
+	    GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+	      public void onUncaughtException(Throwable throwable) {
+	        String text = "Uncaught exception: ";
+	        while (throwable != null) {
+	          StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+	          text += throwable.toString() + "\n";
+	          for (int i = 0; i < stackTraceElements.length; i++) {
+	            text += "    at " + stackTraceElements[i] + "\n";
+	          }
+	          throwable = throwable.getCause();
+	          if (throwable != null) {
+	            text += "Caused by: ";
+	          }
+	        }
+	        DialogBox dialogBox = new DialogBox(true, false);
+	        DOM.setStyleAttribute(dialogBox.getElement(), "backgroundColor", "#ABCDEF");
+	        System.err.print(text);
+	        text = text.replaceAll(" ", "&nbsp;");
+	        dialogBox.setHTML("<pre>" + text + "</pre>");
+	        dialogBox.center();
+	      }
+	    });
+	    
+	  }
 	  
 	public void pruebas_mary(){
 		

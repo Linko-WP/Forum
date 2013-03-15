@@ -487,10 +487,7 @@ public class Forum implements EntryPoint {
 	  
 	public void pruebas_mary(){
 		
-		ArrayList<Message> pp =  Message.get_messages(1);
-		Message cont = pp.get(2);
-		
-		System.out.print("FINAL: " + cont.id);
+		Message nuevo = new Message( "HOLAAAAA", 10);
 		
 		
 	};

@@ -224,7 +224,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new message into the database
 	 * */
-	public ArrayList<Integer> insert_message(ArrayList<String> s) {
+	public String insert_message(ArrayList<String> s) {
 	
 	  ArrayList<Integer> result = new ArrayList<Integer>();
 	  int auto_id = -1; //If it's null
@@ -242,7 +242,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	     
 	     ResultSet rs= prep.getGeneratedKeys();
 	     rs.next();
-	     result.add(rs.getInt(1));
+	     str += rs.getString(1);
 	     
 	     str += " Good";
 	     
@@ -252,9 +252,11 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  } 
 	  
 	  disconnect(conn);
-	result.add(obtain_time_stamp(auto_id));
+	  str += obtain_time_stamp(auto_id);
 	  
-    return result;
+	  System.out.print("INSER MESSAGE: " + str);
+	  
+    return str;
   }
 	
 	/**
@@ -364,61 +366,27 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Obtains the timeStamp from the database for the given message_id;
 	 */
-	int obtain_time_stamp(int auto_id){
+	String obtain_time_stamp(int auto_id){
 	
-		int stamp=-1;
-		/*	
-		String str="";
-		Date adate = null;
-		 Connection conn = connect();	// Connect to database
+		 
+		  String str = "";
+		  Connection conn = connect();	// Connect to database
 		  try {
-			  
-			  Statement stat = (Statement) conn.createStatement();
-			  PreparedStatement prep = (PreparedStatement) conn
-			           .prepareStatement("select ts from messages WHERE message_id = ?;");
-			     prep.setString(1, String.valueOf(auto_id));
-			     ResultSet rs = stat.executeQuery(prep);
-			     
-			 Statement st = (Statement) conn.createStatement(); 
-			 ResultSet rs = st.executeQuery("select ts from messages WHERE message_id = ?;");
-
-		        java.sql.Timestamp dbSqlTimestamp = rs.getTimestamp(1);
-	
-		        System.out.println("dbSqlTimestamp=" + dbSqlTimestamp);
-
-			                                                                 
-
-		//	  String sql = "SELECT ts FROM messages WHERE message_id =  ?;";
-
-			//   PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(sql);
-			 //  pstmt.setString(1, "message_id");
-			  // ResultSet rs = pstmt.executeQuery();
-			   
-			   //while (rs.next()) {
-			     //   System.out.print("OLE " + rs.getTimestamp(2));
-			    //}
-			   
-			//   System.out.println("\nRESULTSET : "+ rs);
-			 // Statement stat = (Statement) conn.createStatement();
-			  //ResultSet rs = stat.executeQuery(sql);
-			  
-			  // Date date = rs.getTimestamp("ts");
-			   //adate = date;
-			 
+		     Statement stat = (Statement) conn.createStatement();
+		     
+		     ResultSet rs = stat.executeQuery("select ts from messages where parent_thread_id="+String.valueOf(auto_id)+";");
+		     while (rs.next()) {
+		        str += ", " + rs.getString("ts");        
+		     }
 		     
 		  } catch (Exception e) {
 		     str += e.toString();
 		     e.printStackTrace();
 		  } 
 		
-		//  String dateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-		 
 		  disconnect(conn);
-		  System.out.println("\nTIMESTAMP OBETNIDO: "+ adate);
-		
-		  //TODO : devolver String */
-		return stamp;
-		
+		  
+	    return str;		
 	}
 
 

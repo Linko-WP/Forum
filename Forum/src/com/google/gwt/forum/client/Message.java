@@ -73,26 +73,12 @@ public class Message {
 	 */
 	Message(String message, int p_id){
 
-		parent_thread_id= p_id;
-		
-
-		// GET DATE & TIME IN ANY FORMAT
-		/*TODO: ARREGLAR LA MALDITA HORA
-		 import java.util.Calendar;
-		import java.text.SimpleDateFormat;
-		public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-
-		public static String now() {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
-		return sdf.format(cal.getTime());
-		}*/
-		
+		parent_thread_id= p_id;	
 		String time = "";
 		content = message;
 		String aut = "PACO";
 		
-	//TODO: 	String aut = author.user_name;
+	// 	String aut = author.user_name;
 		
 		//TODO: obtener el autor de algœn sitio
 		//author = user;	
@@ -100,13 +86,16 @@ public class Message {
 			ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_thread_id), time, message, aut));
 		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.insert_message(param, new AsyncCallback<ArrayList<Integer>>(){
-		    	public void onSuccess(ArrayList<Integer> obt_id) {
+		    Service.insert_message(param, new AsyncCallback<String>(){
+		    	public void onSuccess(String results) {
 		    		
-		    		int id = obt_id.get(0);
-		    		int time_st = obt_id.get(1);
-		    		System.out.println("\nEN MESSAGE:" + id +"y "+time_st);
+		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+		    		for(int i=0; i<myList.size()-2; i=i+3){
 
+			    		int id = Integer.parseInt(myList.get(0));
+			    		Timestamp ts = Timestamp.valueOf(myList.get(1));
+			    		System.out.println("\nEN MESSAGE:" + id +"y "+ ts);
+		    		}
 		          }
 
 		          public void onFailure(Throwable caught) {
@@ -134,7 +123,6 @@ public class Message {
 		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
 		    		for(int i=0; i<myList.size()-2; i=i+3){
 		    			int id_n = Integer.parseInt(myList.get(0));
-		    			//Date d = Date.parse(myList.get(1));
 		    		      Timestamp ts = Timestamp.valueOf(myList.get(1));
 
 		    		        

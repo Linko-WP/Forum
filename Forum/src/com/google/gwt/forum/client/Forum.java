@@ -207,7 +207,6 @@ public class Forum implements EntryPoint {
 	refreshWatchList();
 	
 	
-	Message nan = new Message("patitooo" , 1);
   }
 
   /**

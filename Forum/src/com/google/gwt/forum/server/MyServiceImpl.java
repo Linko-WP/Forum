@@ -132,6 +132,33 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
   }
 	
 	/**
+	 * Obtains the users from the database
+	 * */
+	public String get_users(String s) {
+	  
+	  String str = "";
+	  Connection conn = connect();	// Connect to database
+	  try {
+	     Statement stat = (Statement) conn.createStatement();
+	     
+	     ResultSet rs = stat.executeQuery("select  username, email, password, is_admin from users;");
+	     while (rs.next()) {
+	        str +=  rs.getString("username");
+	        str += ", " + rs.getString("email");
+	        str += ", " + rs.getString("password");
+	        str += ", " + rs.getString("is_admin") + ", ";
+	     }
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
+	/**
 	 * Obtains the threads from the database
 	 * */
 	public String get_threads(Integer id) {

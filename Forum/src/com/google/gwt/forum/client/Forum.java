@@ -205,6 +205,9 @@ public class Forum implements EntryPoint {
     
     // Adding topics to the flextable
 	refreshWatchList();
+	
+	
+	Message nan = new Message("patitooo" , 1);
   }
 
   /**

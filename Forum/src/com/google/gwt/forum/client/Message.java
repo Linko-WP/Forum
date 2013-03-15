@@ -53,8 +53,7 @@ public class Message {
 	 * @param message
 	 */
 	Message(String message, int p_id){
-		//TODO: comprobar que se establece la fecha correcta
-		//TODO: obtener id de la base de datos
+
 		parent_thread_id= p_id;
 		date = new Date();
 
@@ -69,6 +68,7 @@ public class Message {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
 		return sdf.format(cal.getTime());
 		}*/
+		
 		String time = "";
 		content = message;
 		String aut = "PACO";
@@ -81,10 +81,12 @@ public class Message {
 			ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_thread_id), time, message, aut));
 		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.insert_message(param, new AsyncCallback<Integer>(){
-		    	public void onSuccess(Integer obt_id) {
-		    		System.out.println("ID AUTOGENERADO:" + obt_id);
-		    		id = obt_id;
+		    Service.insert_message(param, new AsyncCallback<ArrayList<Integer>>(){
+		    	public void onSuccess(ArrayList<Integer> obt_id) {
+		    		
+		    		int id = obt_id.get(0);
+		    		int time_st = obt_id.get(1);
+		    		System.out.println("\nEN MESSAGE:" + id +"y "+time_st);
 
 		          }
 

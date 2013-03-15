@@ -13,7 +13,7 @@ public interface MyService extends RemoteService {
   
   //Insert Part
   public int insert_topic(String s);
-  public int insert_message(ArrayList<String> s);
+  public ArrayList<Integer> insert_message(ArrayList<String> s);
   public int insert_thread(ArrayList<String> s);
   public String insert_user(ArrayList<String> s);
   public String insert_into_db(String table, String values);

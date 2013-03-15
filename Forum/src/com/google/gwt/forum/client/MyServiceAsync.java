@@ -10,7 +10,7 @@ interface MyServiceAsync {
   
   //Insert part
   public void insert_topic(String s, AsyncCallback<Integer> callback);
-  public void insert_message(ArrayList<String> s, AsyncCallback<Integer> callback);
+  public void insert_message(ArrayList<String> s, AsyncCallback<ArrayList<Integer>> callback);
   public void insert_thread(ArrayList<String> s, AsyncCallback<Integer> callback);
   public void insert_user(ArrayList<String> s, AsyncCallback<String> callback);
   public void insert_into_db(String table, String values, AsyncCallback<String> callback);

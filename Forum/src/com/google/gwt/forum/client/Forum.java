@@ -48,6 +48,8 @@ public class Forum implements EntryPoint {
   private Button insertProjectButton = new Button("Insert");
   
   private ArrayList<Topics> topics  = new ArrayList<Topics>();
+  private ArrayList<Thread> threads = new ArrayList<Thread>();
+  private ArrayList<Message> messages = new ArrayList<Message>();
   private String results;
   
   private ArrayList<String> awards = new ArrayList<String>();
@@ -258,7 +260,7 @@ public class Forum implements EntryPoint {
 	    	  if(currentElementType == 'P'){
 	    		  load_threads();
 	    	  }else if(currentElementType == 'T'){
-	    		  //load_messages();
+	    		  load_messages();
 	    	  }else{
 	    		  System.out.println("Not able to check current type");
 	    	  }
@@ -275,10 +277,13 @@ public class Forum implements EntryPoint {
 	      //awards.remove(removedIndex);        
 	      //forumFlexTable.removeRow(removedIndex + 1);
 	    	currentElementId = id;
+	    	System.out.println("CLICK");
 	    	  if(currentElementType == 'P'){
+	    		  System.out.println("Loading threads");
 	    		  load_threads();
 	    	  }else if(currentElementType == 'T'){
-	    		  //load_messages();
+	    		  System.out.println("Loading messages");
+	    		  load_messages();
 	    	  }else{
 	    		  System.out.println("Not able to check current type");
 	    	  }
@@ -308,8 +313,9 @@ public class Forum implements EntryPoint {
 		
 		clean_table();
 		currentElementType = 'T';
-		for(Thread th:topics.get(topics_index).threads){
-			addDataToSource(th.title, String.valueOf( th.no_messages ), null, th.id);
+		for(Thread th:threads){
+			if(th.parent_topic_id == currentElementId)
+				addDataToSource(th.title, String.valueOf( th.no_messages ), null, th.id);
 		}
 		
 	}
@@ -321,8 +327,9 @@ public class Forum implements EntryPoint {
 		
 		clean_table();
 		currentElementType = 'M';
-		for(Message ms:topics.get(topics_index).threads.get(threads_index).messages){
-			addDataToSource(ms.author.user_name, ms.content, ms.time_stamp.toString(), ms.id);
+		for(Message ms:messages){
+			if(ms.parent_thread_id == currentElementId)
+				addDataToSource(ms.author.user_name, ms.content, ms.time_stamp.toString(), ms.id);
 		}
 		
 	}
@@ -334,12 +341,8 @@ public class Forum implements EntryPoint {
 
 		  final ArrayList<Thread> result = new ArrayList<Thread>();	
 		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-		  
-		  for(int i=0; i<topics.size(); i++){
-			  if(topics.get(i).id == currentElementId) topics_index = i;
-		  }
-		    
-		  if( (currentElementId != -1) && (topics_index != -1) ){		    	
+		  System.out.println(" :"+currentElementId +" "+ topics_index);  
+		  if( (currentElementId != -1) ){		    	
 
 		    Service.get_threads(currentElementId, new AsyncCallback<String>(){
 		    	public void onSuccess(String results) {
@@ -353,15 +356,17 @@ public class Forum implements EntryPoint {
 		    		}
 		    		
 		    		// Save the threads in their parent topic arraylist
-		    		topics.get(topics_index).threads = result;
-		    		for(Thread x:topics.get(topics_index).threads)
+		    		threads = result;
+		    		for(Thread x:threads)
+		    			System.out.println(x.title);
+		    		for(Thread x:threads)
 		    			System.out.println("DI: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
 		    		showThreads();
-
+		    		
 		          }
 		    	
 		          public void onFailure(Throwable caught) {
-		        	Window.alert("RPC to initialize_db() failed.");
+		        	Window.alert("Threads retrive attempt failed.");
 		      		System.out.println("Fail\n" + caught);
 		          }
 		    } );		    
@@ -376,12 +381,8 @@ public class Forum implements EntryPoint {
 
 		  final ArrayList<Message> result = new ArrayList<Message>();	
 		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-		  
-		  for(int i=0; i<topics.get(topics_index).threads.size(); i++){
-			  if(topics.get(topics_index).threads.get(i).id == currentElementId) threads_index = i;
-		  }
 		    
-		  if( (currentElementId != -1) && (threads_index != -1) ){		    	
+		  if( (currentElementId != -1) ){		    	
 
 		    Service.get_messages(currentElementId, new AsyncCallback<String>(){
 		    	public void onSuccess(String results) {
@@ -401,8 +402,8 @@ public class Forum implements EntryPoint {
 		    		}
 		    		
 		    		// Save the threads in their parent topic arraylist
-		    		topics.get(topics_index).threads.get(threads_index).messages = result;
-		    		for(Message x:topics.get(topics_index).threads.get(threads_index).messages)
+		    		messages = result;
+		    		for(Message x:messages)
 		    			System.out.println("ID: "+x.id+" Content: "+x.content+
 		    					" Parent: "+x.parent_thread_id+" Date: "+x.time_stamp+" Author:"+x.author);
 		    		showMessages();

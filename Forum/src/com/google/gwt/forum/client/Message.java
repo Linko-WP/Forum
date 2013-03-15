@@ -1,5 +1,7 @@
 package com.google.gwt.forum.client;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,31 +45,40 @@ public class Message {
 		date = new Date();
 		content = message;
 		author = user;	
-		
-		/*
-		 Para recuperar el autoincrement de la BD 
-		  String sql = "INSERT INTO table (column1, column2) values(?, ?)";
-			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		 */
+
 	}
 	
 	/**
 	 * Constructor with parameters.
 	 * @param message
 	 */
-	Message(String message){
+	Message(String message, int p_id){
 		//TODO: comprobar que se establece la fecha correcta
 		//TODO: obtener id de la base de datos
-		parent_thread_id= 1;
+		parent_thread_id= p_id;
 		date = new Date();
+
+		// GET DATE & TIME IN ANY FORMAT
+		/*TODO: ARREGLAR LA MALDITA HORA
+		 import java.util.Calendar;
+		import java.text.SimpleDateFormat;
+		public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+
+		public static String now() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+		return sdf.format(cal.getTime());
+		}*/
+		String time = "";
 		content = message;
 		String aut = "PACO";
+		
 	//TODO: 	String aut = author.user_name;
 		
 		//TODO: obtener el autor de algœn sitio
 		//author = user;	
 		
-			ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_thread_id), message, aut));
+			ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_thread_id), time, message, aut));
 		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
 		    Service.insert_message(param, new AsyncCallback<Integer>(){

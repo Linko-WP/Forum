@@ -36,6 +36,7 @@ public class Forum implements EntryPoint {
   private AbsolutePanel mainPanel = new AbsolutePanel();
   private HorizontalPanel addPanel = new HorizontalPanel();
   private HorizontalPanel insertPanel = new HorizontalPanel();
+  private HorizontalPanel toolbarPanel = new HorizontalPanel();
   
   private FlexTable forumFlexTable = new FlexTable();
   private TextBox newElementTextBox = new TextBox();
@@ -105,7 +106,10 @@ public class Forum implements EntryPoint {
     errorMsgLabel.setVisible(false);
     mainPanel.add(errorMsgLabel);
 	    
+    createToolbar();
+    
     // Assemble Main panel.
+    mainPanel.add(toolbarPanel);
     mainPanel.add(forumFlexTable);
     mainPanel.add(addPanel);
     mainPanel.add(insertPanel);
@@ -261,7 +265,7 @@ public class Forum implements EntryPoint {
 	    });
 
 	  // Add a button to remove this stock from the table.
-	  Button removeStockButton = new Button("x");
+	  Button removeStockButton = new Button(">");
 	  removeStockButton.addStyleDependentName("remove");
 	  removeStockButton.addClickHandler(new ClickHandler() {
 	    public void onClick(ClickEvent event) {
@@ -287,6 +291,7 @@ public class Forum implements EntryPoint {
 	 */
 	private void showTopics() {
 		
+		clean_table();
 		currentElementType = 'P';
 		for(Topics top:topics){
 			addDataToSource(top.subject, "N\\A", null, top.id);
@@ -299,6 +304,7 @@ public class Forum implements EntryPoint {
 	 */
 	private void showThreads() {
 		
+		clean_table();
 		currentElementType = 'T';
 		for(Thread th:topics.get(topics_index).threads){
 			addDataToSource(th.title, String.valueOf( th.no_messages ), null, th.id);
@@ -465,7 +471,34 @@ public class Forum implements EntryPoint {
 	    System.out.println(cities);
 	    System.out.println(amounts);
 	}*/
-	
+	  public void createToolbar(){
+		  
+		  Button backButton = new Button("<");
+		  backButton.addStyleDependentName("remove");
+		  backButton.addClickHandler(new ClickHandler() {
+		    public void onClick(ClickEvent event) {
+		      //int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
+		      //awards.remove(removedIndex);        
+		      //forumFlexTable.removeRow(removedIndex + 1);
+		    	
+		    	  if(currentElementType == 'P'){
+		    		  // Do nothing
+		    	  }else if(currentElementType == 'T'){
+		    		  showTopics();	// Show not update
+		    	  }else{
+		    		  System.out.println("Not able to check current type");
+		    	  }
+		    }
+		  });
+		  toolbarPanel.add(backButton);
+	  }
+	  
+	  public void clean_table(){
+		  for(int i=forumFlexTable.getRowCount()-1; i > 0 ; --i){
+			  forumFlexTable.removeRow(i);
+		  }
+	  }
+	  
 	  /**
 	   * Set an uncaught exception handler
 	   * This code is here to make it cleaner
@@ -499,8 +532,12 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	public void pruebas_mary(){
+<<<<<<< HEAD
 
+=======
+>>>>>>> Boton back añadido
 		
+				
 	};
 
 }

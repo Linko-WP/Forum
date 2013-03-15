@@ -532,10 +532,6 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	public void pruebas_mary(){
-<<<<<<< HEAD
-
-=======
->>>>>>> Boton back añadido
 		
 				
 	};

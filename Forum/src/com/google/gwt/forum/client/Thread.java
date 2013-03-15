@@ -34,6 +34,7 @@ public class Thread {
 	Thread(int i, String tit){
 		id = i;
 		parent_topic_id = -1;
+		title = tit;
 		no_messages = 0;
 		messages = new ArrayList<Message>();
 		
@@ -45,6 +46,7 @@ public class Thread {
 	Thread(int idd, int p_id,  String tit, int num){
 		id = idd;
 		parent_topic_id = p_id;
+		title = tit;
 		no_messages = num;
 		messages = new ArrayList<Message>();
 		
@@ -60,7 +62,7 @@ public class Thread {
 		messages = new ArrayList<Message>();
 		parent_topic_id = parent_id;
 		
-		//TODO: obtener el autor de algœn sitio
+		//TODO: obtener el autor de algun sitio
 		//author = user;	
 
 		ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_topic_id), tit));
@@ -77,7 +79,6 @@ public class Thread {
 		      		System.out.println("Fail\n" + caught);
 		          }
 		    } );	
-
 	}
 	
 	/**
@@ -88,39 +89,4 @@ public class Thread {
 		no_messages++;
 	}
 	
-	
-	
-	/**
-	 * Class to get the threads from the dabatase
-	 */
-	 ArrayList<Thread> get_threads(final int topic_id){
-		 
- 		final ArrayList<Thread> result = new ArrayList<Thread>();	
-
-		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-
-		    Service.get_threads(topic_id, new AsyncCallback<String>(){
-		    	public void onSuccess(String results) {
-		    		System.out.println("RESULTADO GET THREADS:" + results);
-		    		
-		    		
-		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-2; i=i+3){
-		    			
-		    			
-		    			Thread output = new Thread(Integer.parseInt(myList.get(0)), topic_id, myList.get(1), Integer.parseInt(myList.get(2)));
-
-		    			result.add(output);
-
-		    		}
-
-		          }
-		    	
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("RPC to initialize_db() failed.");
-		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );
-			return result;	  
-	  }
 }

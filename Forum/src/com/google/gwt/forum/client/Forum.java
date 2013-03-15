@@ -265,9 +265,17 @@ public class Forum implements EntryPoint {
 	  removeStockButton.addStyleDependentName("remove");
 	  removeStockButton.addClickHandler(new ClickHandler() {
 	    public void onClick(ClickEvent event) {
-	      int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
-	      awards.remove(removedIndex);        
-	      forumFlexTable.removeRow(removedIndex + 1);
+	      //int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
+	      //awards.remove(removedIndex);        
+	      //forumFlexTable.removeRow(removedIndex + 1);
+	    	currentElementId = id;
+	    	  if(currentElementType == 'P'){
+	    		  load_threads();
+	    	  }else if(currentElementType == 'T'){
+	    		  //load_messages();
+	    	  }else{
+	    		  System.out.println("Not able to check current type");
+	    	  }
 	    }
 	  });
 	  forumFlexTable.setWidget(row, 3, removeStockButton);
@@ -278,7 +286,8 @@ public class Forum implements EntryPoint {
 	 * Show the list of topics.
 	 */
 	private void showTopics() {
-			
+		
+		currentElementType = 'P';
 		for(Topics top:topics){
 			addDataToSource(top.subject, "N\\A", null, top.id);
 		}
@@ -290,6 +299,7 @@ public class Forum implements EntryPoint {
 	 */
 	private void showThreads() {
 		
+		currentElementType = 'T';
 		for(Thread th:topics.get(topics_index).threads){
 			addDataToSource(th.title, String.valueOf( th.no_messages ), null, th.id);
 		}
@@ -297,43 +307,46 @@ public class Forum implements EntryPoint {
 	}
 	
 	  /**
-	   * Class to load the topics int the topic object from the database
+	   * Class to load the threads in the topic object from the database
 	   */
 	  private void load_threads(){
 
-		    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
+		  final ArrayList<Thread> result = new ArrayList<Thread>();	
+		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		  
+		  for(int i=0; i<topics.size(); i++){
+			  if(topics.get(i).id == currentElementId) topics_index = i;
+		  }
 		    
-		    for(int i=0; i<topics.size(); i++){
-		    	if(topics.get(i).id == currentElementId) topics_index = i;
-		    }
-		    
-		    if( (currentElementId != -1) && (topics_index != -1) ){
-		    /*	
-			    dbService.get_threads(currentElementId, new AsyncCallback<String>(){
-			    	public void onSuccess(String result) {
-			    		System.out.println("Threads:" + result);
-			    		results = result;
-			    		
-			    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-			    		for(int i=0; i<myList.size()-1; i=i+2){
-			    			int obt_id = Integer.parseInt(myList.get(i));
-			    			String obt_topic = myList.get(i+1);
-			    			
-			    			
-			    			topics.get(topics_index).threads.add(new Thread(obt_id, obt_topic));
-			    		}
-	
-			    		showThreads();
-			          }
-	
-			          public void onFailure(Throwable caught) {
-			        	Window.alert("Threads load failed.");
-			      		System.out.println("Fail on threads loading\n" + caught);
-			          }
-			    } );
-		    */
-		    }
+		  if( (currentElementId != -1) && (topics_index != -1) ){		    	
+
+		    Service.get_threads(currentElementId, new AsyncCallback<String>(){
+		    	public void onSuccess(String results) {
+		    		System.out.println("RESULTADO GET THREADS:" + results);
+		    		
+		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+		    		for(int i=0; i<myList.size()-2; i=i+3){
+		    			
+		    			Thread output = new Thread(Integer.parseInt(myList.get(0)), currentElementId, myList.get(1), Integer.parseInt(myList.get(2)));
+		    			result.add(output);
+		    		}
+		    		
+		    		// Save the threads in their parent topic arraylist
+		    		topics.get(topics_index).threads = result;
+		    		for(Thread x:topics.get(topics_index).threads)
+		    			System.out.println("DI: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
+		    		showThreads();
+
+		          }
+		    	
+		          public void onFailure(Throwable caught) {
+		        	Window.alert("RPC to initialize_db() failed.");
+		      		System.out.println("Fail\n" + caught);
+		          }
+		    } );		    
+		  }	    
 	  }
+	  
 	
 	  /**
 	   * Update the Price and Change fields all the rows in the stock table.
@@ -486,11 +499,14 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	public void pruebas_mary(){
+<<<<<<< HEAD
 		
 		ArrayList<Message> pp =  Message.get_messages(1);
 		Message cont = pp.get(2);
 		
 		System.out.print("FINAL: " + cont.id);
+=======
+>>>>>>> Now we can get threads
 		
 		
 	};

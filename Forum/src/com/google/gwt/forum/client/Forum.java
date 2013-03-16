@@ -534,10 +534,10 @@ public class Forum implements EntryPoint {
 		  	
 		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 		    
-		  /*Service.check_user(username, password, new AsyncCallback<User>(){
+		  Service.check_user(username, password, new AsyncCallback<User>(){
 			  
 			  public void onSuccess(User result) {
-				  System.out.println("RESULTADO check user:" + result);
+				  System.out.println("RESULTADO check user:" + result.user_name);
 	    		
 				  current_user = result;
 	          }
@@ -546,7 +546,7 @@ public class Forum implements EntryPoint {
 	        	Window.alert("Login attempt failed.");
 	      		System.out.println("Fail\n" + caught);
 	          }
-	    } );*/		    
+	    } );		    
 		  		  
 	  }
 	  
@@ -594,7 +594,7 @@ public class Forum implements EntryPoint {
 		  // Listen for mouse events on the Login button.
 		  login_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) {
-				  // login();
+				   login();
 			  }
 		  });
 		    
@@ -602,7 +602,7 @@ public class Forum implements EntryPoint {
 		  password_textbox.addKeyPressHandler(new KeyPressHandler() {
 		      public void onKeyPress(KeyPressEvent event) {
 		    	  if (event.getCharCode() == KeyCodes.KEY_ENTER) {
-		    		  //login();
+		    		  login();
 		    	  }
 		      }
 		  });
@@ -715,9 +715,7 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	public void pruebas_mary(){
-
-		
-				
+					
 	};
 
 }

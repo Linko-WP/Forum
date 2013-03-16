@@ -5,8 +5,10 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
+import com.google.gwt.forum.client.Topics;
 import com.google.gwt.forum.client.User;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mysql.jdbc.*;
@@ -464,26 +466,32 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	public User check_user(String username, String password){
 			
 		String str = "";
+		User checked = null;
 		Connection conn = connect();	// Connect to database
 			  try {
 			     Statement stat = (Statement) conn.createStatement();
 			     
 			     ResultSet rs = stat.executeQuery("select email, is_admin from users where username='"+username+
 			    		 							"' and password='"+password+"';");
-			  if(rs.next()){
 			     while (rs.next()) {
 			        str += ", " + rs.getString("email");
 			        str += ", " + rs.getString("is_admin") + ", ";
+			        
+			        //Format the result into a User object if not null
+					  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+			    		for(int i=0; i<myList.size()-1; i=i+2){
+			    			String mail = myList.get(i);
+			    			Boolean admin = Boolean.parseBoolean(myList.get(i+1));	
+							checked = new User(username, mail, password, admin);
+			    		}
 			     }
-			  }else{
-				  User checked = null;
-			  }   
+			   
 			  } catch (Exception e) {
 			     str += e.toString();
 			     e.printStackTrace();
 			  } 
 			
-			   User checked = new User(username, "EMAIL", "pass", false);
+			 
 			  disconnect(conn);
 			  
 		    return checked;

@@ -1,5 +1,6 @@
 package com.google.gwt.forum.client;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,7 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class User {
+public class User implements Serializable{
 	
 	String user_name;
 	String email;
@@ -16,7 +17,7 @@ public class User {
 	Boolean is_admin;
 	
 	
-	User(){
+	public User(){
 		user_name = null;
 		email = null;
 		password = null;
@@ -25,9 +26,9 @@ public class User {
 	
 	public User(String name, String mail, String pass, Boolean admin){
 		user_name = name;
-		email = null;
-		password = null;
-		is_admin = false;
+		email = mail;
+		password = pass;
+		is_admin = admin;
 	}
 	
 	void insert_user(String name, String mail, String pass, Boolean admin){

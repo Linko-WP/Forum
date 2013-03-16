@@ -70,19 +70,19 @@ public class Message {
 	 * Constructor with parameters.
 	 * @param message
 	 */
-	Message(String message, int p_id){
+	Message(String message, int p_id, String user){
 
 		parent_thread_id= p_id;	
 		String time = "";
 		content = message;
-		String aut = "PACO";
+		String aut = user;
 		
 	// 	String aut = author.user_name;
 		
 		//TODO: obtener el autor de algun sitio
 		//author = user;	
 		
-			ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_thread_id), time, message, aut));
+			ArrayList<String> param = new ArrayList<String>(Arrays.asList( message, String.valueOf(parent_thread_id),aut));
 		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
 		    Service.insert_message(param, new AsyncCallback<String>(){

@@ -342,11 +342,12 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  ArrayList<Integer> result = new ArrayList<Integer>();
 	  int auto_id = -1; //If it's null
 	  String str = "Result:";
-	  int parent_id = Integer.parseInt(s.get(0));
+	  
+	  int parent_id = Integer.parseInt(s.get(1));
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO messages(parent_thread_id, content, author_username) values("
-				  	+parent_id+", '"+ s.get(1) +"', '"+ s.get(2) +"');";
+				  	+parent_id+", '"+ s.get(0) +"', '"+ s.get(2) +"');";
 		  
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Forum implements EntryPoint {
  
+	private Button insert_text_button = new Button("Insert Text");
 
   private AbsolutePanel mainPanel = new AbsolutePanel();
   private HorizontalPanel addPanel = new HorizontalPanel();
@@ -66,9 +67,7 @@ public class Forum implements EntryPoint {
   private int topics_index = -1;
   private User current_user = null;
   
-  final RichTextArea textArea = new RichTextArea();
-  final RichTextToolbar toolBar = new RichTextToolbar(textArea);
-  VerticalPanel vp = new VerticalPanel();
+  
   
   
   /**
@@ -76,9 +75,7 @@ public class Forum implements EntryPoint {
    */
   public void onModuleLoad() {
 	  
-      textArea.setWidth("100%");  
-      vp.add(toolBar);
-      vp.add(textArea);
+
 
     setUncaughtExceptionHandler();	// Useful!
         
@@ -125,8 +122,7 @@ public class Forum implements EntryPoint {
     mainPanel.add(insertPanel);
     mainPanel.add(lastUpdatedLabel);
 
-    //Text Editor Panel
-	mainPanel.add(vp);
+
 	
     // Add panels to the root panel
 	RootPanel.get().add(toolbarPanel);
@@ -720,6 +716,26 @@ public class Forum implements EntryPoint {
 		public void pruebas_mary(){
 			
 			
+			final RichTextArea textArea = new RichTextArea();
+			  final RichTextToolbar toolBar = new RichTextToolbar(textArea);
+			  VerticalPanel vp = new VerticalPanel();
+		      textArea.setWidth("100%");  
+		      vp.add(toolBar);
+		      vp.add(textArea);
+		      vp.add(insert_text_button);
+			  
+		      //Text Editor Panel
+		  	mainPanel.add(vp);
+
+			// Listen for mouse events on the Login button.
+			  insert_text_button.addClickHandler(new ClickHandler() {
+				  public void onClick(ClickEvent event) { 
+					  //TODO: obtener el parent_topic
+					   //TODO: limpiar el texto despues de guardarlo
+					  int topic =1 ;
+					  Message insert = new Message(textArea.getText(), topic, current_user.user_name);
+				  }
+			  });
 		};
 
 

@@ -546,10 +546,10 @@ public class Forum implements EntryPoint {
 		  
 		  String username = username_textbox.getText();
 		  String password = password_textbox.getText();
-		  	
-		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		  username_textbox.setText("");
+		  password_textbox.setText("");
 		    
-		  Service.check_user(username, password, new AsyncCallback<User>(){
+		  dbService.check_user(username, password, new AsyncCallback<User>(){
 			  
 			  public void onSuccess(User result) {
 				  System.out.println("RESULTADO check user:" + result.user_name);
@@ -789,21 +789,19 @@ public class Forum implements EntryPoint {
 			
 			
 			//TODO: check si funciona el get users
-			 MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
-				
-			    String temp = " cadena ";
-			    dbService.get_users(temp, new AsyncCallback<ArrayList<User>>(){
-			    	public void onSuccess(ArrayList<User> result) {
-			    		System.out.println("TOPICS:" + result);
+		    String temp = " cadena ";
+		    dbService.get_users(temp, new AsyncCallback<ArrayList<User>>(){
+		    	public void onSuccess(ArrayList<User> result) {
+		    		System.out.println("TOPICS:" + result);
 
-			    		showTopics();
-			          }
-		
-			          public void onFailure(Throwable caught) {
-			        	Window.alert("RPC to initialize_db() failed.");
-			      		System.out.println("Fail\n" + caught);
-			          }
-			    } );	  
+		    		showTopics();
+		          }
+	
+		          public void onFailure(Throwable caught) {
+		        	Window.alert("RPC to initialize_db() failed.");
+		      		System.out.println("Fail\n" + caught);
+		          }
+		    } );	  
 			
 		};
 

@@ -59,13 +59,12 @@ public class Forum implements EntryPoint {
   private ArrayList<Message> messages = new ArrayList<Message>();
   private String results;
   
-  private ArrayList<String> awards = new ArrayList<String>();
   //private static final int REFRESH_INTERVAL = 5000; // ms
   private Label errorMsgLabel = new Label();
   public int currentElementId = -1;
   public char currentElementType = 'X';
   private int topics_index = -1;
-  private int threads_index = -1;
+  private User current_user = null;
   
   final RichTextArea textArea = new RichTextArea();
   final RichTextToolbar toolBar = new RichTextToolbar(textArea);
@@ -518,12 +517,53 @@ public class Forum implements EntryPoint {
 	}*/
 	  
 	  /**
+	   * Logs out. Just set the current user to null
+	   * */
+	  public void logout(){
+		  current_user = null;
+	  }
+	  
+	  /**
+	   * Attemps to login in the system. Gets the current user only
+	   * if the username and the password matches with a row of the
+	   * users table in the database
+	   * */
+	  public void login(){
+		  String username = username_textbox.getText();
+		  String password = password_textbox.getText();
+		  	
+		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		    
+		  /*Service.check_user(username, password, new AsyncCallback<User>(){
+			  
+			  public void onSuccess(User result) {
+				  System.out.println("RESULTADO check user:" + result);
+	    		
+				  current_user = result;
+	          }
+	    	
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("Login attempt failed.");
+	      		System.out.println("Fail\n" + caught);
+	          }
+	    } );*/		    
+		  		  
+	  }
+	  
+	  /**
 	   * Creates a toolbar for the forum
 	   * */
 	  public void createToolbar(){
 		  
 		  back_button();
-		  login_zone();
+		  
+		  if(current_user == null){
+			  login_zone();
+		  }else{
+			  // Add here another logged functionalities
+			  logged_message();
+		  }
+		  
 		  
 	  }
 	  
@@ -565,6 +605,33 @@ public class Forum implements EntryPoint {
 		    		  //login();
 		    	  }
 		      }
+		  });
+	  }
+	  
+	  /**
+	   * Shows de username and the logout button in the toolbar panel
+	   * */
+	  public void logged_message(){
+		  
+		  Label username_label = new Label("Welcome " + current_user.user_name);
+		  username_label.addStyleName("loginText");
+		  
+		  // Assemble Login panel.
+		  
+		  login_button.addStyleName("button");
+		  login_button.setWidth("70px");
+		  login_button.setText("Logout");
+			
+		  loginPanel.add(username_label);
+		  loginPanel.add(login_button);
+		  loginPanel.addStyleName("loggedPanel");
+		  toolbarPanel.add(loginPanel);
+		  
+		  // Listen for mouse events on the Login button.
+		  login_button.addClickHandler(new ClickHandler() {
+			  public void onClick(ClickEvent event) {
+				  // logout();
+			  }
 		  });
 	  }
 	  

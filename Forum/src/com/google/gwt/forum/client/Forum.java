@@ -320,29 +320,46 @@ public class Forum implements EntryPoint {
 	  /**
 	   * Removes a row from the local array
 	   * */
-	  public void remove_row(int id, char type){
+ public void remove_row(int id, char type){
 		  
 		  if(type == 'P'){
 			  for(Topics x:topics){
-				  if(x.id == id) topics.remove(x);
-				  // TODO: Erase it also from database
+				  if(x.id == id) topics.remove(x);refresh();			  
+				  dbService.erase_topic(id, new AsyncCallback<String>(){
+				    	public void onSuccess(String results) {}
+				        public void onFailure(Throwable caught) {
+				        	Window.alert("THREADS retrive attempt failed.");
+				      		System.out.println("Fail\n" + caught);
+				        }});		
 				  return;
 			  }
 		  }else if(type == 'T'){
 			  for(Thread x:threads){
-				  if(x.id == id) threads.remove(x);
-				  // TODO: Erase it also from database
+				  if(x.id == id) threads.remove(x);refresh();
+				  	dbService.erase_thread(id, new AsyncCallback<String>(){
+				    	public void onSuccess(String results) {}
+				        public void onFailure(Throwable caught) {
+				        	Window.alert("THREADS retrive attempt failed.");
+				      		System.out.println("Fail\n" + caught);
+				        }});		
 				  return;
 			  }
 		  }else if(type == 'M'){
 			  for(Message x:messages){
-				  if(x.id == id) messages.remove(x);
-				  // TODO: Erase it also from database
+				  if(x.id == id) messages.remove(x);refresh();
+				  	dbService.erase_message(id, new AsyncCallback<String>(){
+				    	public void onSuccess(String results) {}
+				        public void onFailure(Throwable caught) {
+				        	Window.alert("THREADS retrive attempt failed.");
+				      		System.out.println("Fail\n" + caught);
+				        }});		
+				  
 				  return;
 			  }
 		  }else{
 			  System.out.println("Error: fail when trying to erase a row.");
 		  }
+		  
 	  }
 	  
 	  /**
@@ -553,6 +570,7 @@ public class Forum implements EntryPoint {
 				  loginPanel.removeFromParent();
 				  logged_message();
 				  new_message_panel();
+				  refresh();
 	          }
 	    	
 	          public void onFailure(Throwable caught) {

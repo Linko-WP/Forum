@@ -53,7 +53,6 @@ public class Forum implements EntryPoint {
 	private Label errorMsgLabel = new Label();
 	public int currentElementId = -1;
 	public char currentElementType = 'X';
-	private int topics_index = -1;
 	private User current_user = null;
 	  
 	private MyServiceAsync dbService = null;
@@ -61,87 +60,70 @@ public class Forum implements EntryPoint {
 	
 	private ArrayList<User> temp = null;
   
-  /**
-   * Entry point method.
-   */
-  public void onModuleLoad() {
-	  
-    setUncaughtExceptionHandler();	// Useful!
-        
-    dbService = (MyServiceAsync) GWT.create(MyService.class);
-    
-	// Setting panels
-	RootPanel.get().setWidth("1000px");
-	mainPanel.setWidth("1000px");
-	RootPanel.get().addStyleName("rootStyle");
-	mainPanel.addStyleName("mainStyle");
-
- 	// Create table for stock data.
-	forumFlexTable.setText(0, 0, "Subject");
-	forumFlexTable.setText(0, 1, "Messages No.");
-	forumFlexTable.setText(0, 2, "Last Message");
-	forumFlexTable.setText(0, 3, "Enter");
-		 
-	// Add styles to elements in the stock list table.
-	forumFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
-	forumFlexTable.addStyleName("watchList");
-	forumFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
-	forumFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
-	forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListNumericColumn");
-    
-    // Assemble Insert Stock panel.
-    insertCityTextA.setVisibleLines(4);
-    insertCityTextA.addStyleName("textBox");
-    insertProjectButton.addStyleName("button");
-    insertProjectButton.setWidth("100px");
-    insertPanel.add(insertCityTextA);
-    insertPanel.add(insertProjectButton);
+	/**
+	 * Entry point method.
+	 */
+	public void onModuleLoad() {
+		  
+	    setUncaughtExceptionHandler();	// Useful!
+	        
+	    dbService = (MyServiceAsync) GWT.create(MyService.class);
 	    
-    insertPanel.addStyleName("addPanel");
-
-    // Assemble Error panel.
-    errorMsgLabel.setStyleName("errorMessage");
-    errorMsgLabel.setVisible(false);
-    mainPanel.add(errorMsgLabel);
-	    
-    createToolbar();
-
-    // Assemble Main panel.
-    mainPanel.add(forumFlexTable);
-    mainPanel.add(addPanel);
-    mainPanel.add(insertPanel);
-    mainPanel.add(lastUpdatedLabel);
-
-
-    // Add panels to the root panel
-	RootPanel.get().add(toolbarPanel);
-    RootPanel.get().add(mainPanel);
-
-  // refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
-    
-    // Listen for mouse events on the Add button.
-    insertProjectButton.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-       // insertCity();
-      }
-    });
-    
-    // Listen for keyboard events in the input box.
-    insertCityTextA.addKeyPressHandler(new KeyPressHandler() {
-      public void onKeyPress(KeyPressEvent event) {
-        if (event.getCharCode() == KeyCodes.KEY_ENTER) {
-       //   insertCity();
-        }
-      }
-    });
-    
-    // Adding topics to the flextable
-	load_topics();
+		// Setting panels
+		RootPanel.get().setWidth("1000px");
+		mainPanel.setWidth("1000px");
+		RootPanel.get().addStyleName("rootStyle");
+		mainPanel.addStyleName("mainStyle");
 	
-	pruebas_mary();
-  }
+	 	// Create table for stock data.
+		forumFlexTable.setText(0, 0, "Subject");
+		forumFlexTable.setText(0, 1, "Messages No.");
+		forumFlexTable.setText(0, 2, "Last Message");
+		forumFlexTable.setText(0, 3, "Enter");
+			 
+		// Add styles to elements in the stock list table.
+		forumFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
+		forumFlexTable.addStyleName("watchList");
+		forumFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
+		forumFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
+		forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListNumericColumn");
+	    
+	    // Assemble Insert Stock panel.
+	    insertCityTextA.setVisibleLines(4);
+	    insertCityTextA.addStyleName("textBox");
+	    insertProjectButton.addStyleName("button");
+	    insertProjectButton.setWidth("100px");
+	    insertPanel.add(insertCityTextA);
+	    insertPanel.add(insertProjectButton);
+		    
+	    insertPanel.addStyleName("addPanel");
+	
+	    // Assemble Error panel.
+	    errorMsgLabel.setStyleName("errorMessage");
+	    errorMsgLabel.setVisible(false);
+	    mainPanel.add(errorMsgLabel);
+		    
+	    createToolbar();
+	
+	    // Assemble Main panel.
+	    mainPanel.add(forumFlexTable);
+	    mainPanel.add(addPanel);
+	    mainPanel.add(insertPanel);
+	    mainPanel.add(lastUpdatedLabel);
+	
+	
+	    // Add panels to the root panel
+		RootPanel.get().add(toolbarPanel);
+	    RootPanel.get().add(mainPanel);
+	
+	    
+	    // Adding topics to the flextable
+		load_topics();
+		
+		pruebas_mary();
+	}
 
-  /**
+	/**
 	 * Show the list of topics.
 	 */
 	private void showTopics() {
@@ -213,109 +195,76 @@ public class Forum implements EntryPoint {
 		
 	}
   
-	  /**
-	   * Add a new topic to FlexTable adn db.
-	   */
-	  private void addTopic() {
-		  
-		  	// The constructor does the work of insert the new topic in the database
-		  	final Topics n_top = new Topics( username_textbox.getText().toUpperCase() );
-		 
-		  	username_textbox.setFocus(true);
-		    
-		  	// TODO: Check there is no topic with the same subject
-		  	/*
-			if (!topics.contains(n_top)){
-				Window.alert("The inserted city: '" + city + "' is not a valid city.");
-			      username_textbox.selectAll();
-			      return;
-			}*/
-			
-			if (topics.contains(n_top)){
-				Window.alert("The inserted topic: '" + n_top + "' is already in the system.");
-			      username_textbox.selectAll();
-			      return;
-			}
-			
-			// Add the city data	TODO: Add the date of the last message
-		    addDataToSource(n_top.subject, "N\\A" ,null, n_top.id);
-	
-		    // Get the stock price.
-		    showTopics();
-		    username_textbox.setText("");
-	
-	  }
-  
-	  /**
-	   * Insert data on the source table
-	   * */
-	  private void addDataToSource(final String col1, final String col2, final String col3, final int id){
-		  
-		  int row = forumFlexTable.getRowCount();
-		    
-		  HorizontalPanel optionsPanel = new HorizontalPanel();
-		  
-		  final Label column_1 = new Label(col1);
-		  forumFlexTable.setWidget(row, 0, column_1);
-		  
-		  final Label column_2 = new Label(col2);
-		  forumFlexTable.setWidget(row, 1, column_2);
-		  
-		  final Label column_3 = new Label(col3);
-		  forumFlexTable.setWidget(row, 2, column_3);
-		  
-		  // Style
-		  forumFlexTable.getCellFormatter().addStyleName(row, 0, "watchListCell");
-		  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListCell");
-		  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListCell");
-		  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListCell");
-	
-		  // Add a click listener to save the information about the row
-		  // Column1 used to have a click listener, but we will avoid it for now
-	
-		  // Add a button to enter in the element (topic or thread).
-		  Button enterButton = new Button(">");
-		  enterButton.addStyleDependentName("enter");
-		  enterButton.addClickHandler(new ClickHandler() {
-		    public void onClick(ClickEvent event) {
+	/**
+	 * Insert data on the source table
+	 * */
+	private void addDataToSource(final String col1, final String col2, final String col3, final int id){
+	  
+		int row = forumFlexTable.getRowCount();
+	    
+		HorizontalPanel optionsPanel = new HorizontalPanel();
+	  
+		final Label column_1 = new Label(col1);
+		forumFlexTable.setWidget(row, 0, column_1);
+	  
+		final Label column_2 = new Label(col2);
+		forumFlexTable.setWidget(row, 1, column_2);
+	  
+		final Label column_3 = new Label(col3);
+		forumFlexTable.setWidget(row, 2, column_3);
+	  
+		// Style
+		forumFlexTable.getCellFormatter().addStyleName(row, 0, "watchListCell");
+		forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListCell");
+		forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListCell");
+		forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListCell");
 
-		    	currentElementId = id;
-		    	System.out.println("CLICK");
-		    	  if(currentElementType == 'P'){
-		    		  System.out.println("Loading threads");
-		    		  load_threads();
-		    	  }else if(currentElementType == 'T'){
-		    		  System.out.println("Loading messages");
-		    		  load_messages();
-		    	  }else{
-		    		  System.out.println("Not able to check current type");
-		    	  }
-		    }
-		  });
+		// Add a click listener to save the information about the row
+		// Column1 used to have a click listener, but we will avoid it for now
+
+		// Add a button to enter in the element (topic or thread).
+		Button enterButton = new Button(">");
+		enterButton.addStyleDependentName("enter");
+		enterButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+
+				currentElementId = id;
+				System.out.println("CLICK");
+				if(currentElementType == 'P'){
+					System.out.println("Loading threads");
+					load_threads();
+				}else if(currentElementType == 'T'){
+					System.out.println("Loading messages");
+					load_messages();
+				}else{
+					System.out.println("Not able to check current type");
+				}
+			}
+		});
+	  
+	  
+		// Add a button to enter in the element (topic or thread).
+		Button removeButton = new Button("X");
+		removeButton.addStyleDependentName("remove");
+		removeButton.addClickHandler(new ClickHandler() {
 		  
-		  
-		  // Add a button to enter in the element (topic or thread).
-		  Button removeButton = new Button("X");
-		  removeButton.addStyleDependentName("remove");
-		  removeButton.addClickHandler(new ClickHandler() {
-			  
-				int current_id = id;
-			    char current_type = currentElementType;
-			    
-			    public void onClick(ClickEvent event) {
-			    	remove_row(current_id, current_type);
-			    }
+			int current_id = id;
+		    char current_type = currentElementType;
 		    
-		  });  
-		  
-		  // The option you see depends on who is logged in
-		  optionsPanel.add(enterButton);
-		  if( current_user != null ){	// If someone is logged in
-			  if(!current_user.is_admin) optionsPanel.add(removeButton);
-		  }
-		  forumFlexTable.setWidget(row, 3, optionsPanel);
-		  
-	  }
+		    public void onClick(ClickEvent event) {
+		    	remove_row(current_id, current_type);
+		    }
+	    
+		});  
+	  
+		// The option you see depends on who is logged in
+		optionsPanel.add(enterButton);
+		if( current_user != null ){	// If someone is logged in
+			if(!current_user.is_admin) optionsPanel.add(removeButton);
+		}
+		forumFlexTable.setWidget(row, 3, optionsPanel);
+	  
+	}
 	
 	  /**
 	   * Removes a row from the local array
@@ -426,109 +375,7 @@ public class Forum implements EntryPoint {
 		        }
 		    });		    
 		  }	    
-	  }
-	
-	  
-	  /**
-	   * Update a single row in the stock table.
-	   *
-	   * @param price Stock data for a single row.
-	   */
-	/*
-	 private void updateTable(InvestData ammount) {
-	    // Make sure the stock is still in the stock table.
-	    if (!awards.contains(ammount.getCity())) {
-	      return;
-	    }
-
-	    int row = awards.indexOf(ammount.getCity()) + 1;
-
-	    // Format the data in the Price and Change fields.
-	    String priceText = NumberFormat.getFormat("#,##0.00").format(
-	    		ammount.getAmmount());
-	    NumberFormat changeFormat = NumberFormat.getFormat("+#,##0.00;-#,##0.00");
-	    String changeText = changeFormat.format(ammount.getChange());
-
-	    // Populate the Price and Change fields with new data.
-	    forumFlexTable.setText(row, 1, priceText);
-	    Label changeWidget = (Label)forumFlexTable.getWidget(row, 2);
-	    changeWidget.setText(   changeText + "%");
-	    
-	    // Change the color of text in the Change field based on its value.
-	    String changeStyleName = "noChange";
-	    if (ammount.getChange() < -0.1f) {
-	      changeStyleName = "negativeChange";
-	    }
-	    else if (ammount.getChange() > 0.1f) {
-	      changeStyleName = "positiveChange";
-	    }
-
-	    changeWidget.setStyleName(changeStyleName);
-	    
-	  }
-	 */
-	/**
-	 * Inserts a new City on the table that didn't exists until now
-	 * */
-	/*
-	 private void insertCity( ) {
-
-	  final String text = insertCityTextA.getText().toUpperCase().trim();
-	  insertCityTextA.setFocus(true);
-	  String[] result = text.split("\\s");
-	  int size = result.length;
-	  int j= 0;
-	  int obt_amount=0;
-
-	 
-	 Checks for invalid input: 
-	  * 	1 - less than 2 parameters
-	  *     2 - City already in the system
-	  *	    3 - Non-numeric character in the amount
-	*//*
-	  if (size <2){
-	    	Window.alert("It must content: CITY AMMOUNT");
-		      return;
-	  }
-	  if (cities.contains(result[j])){
-		  
-	    	Window.alert("The city: '" + result[j] + "' is already in the system.");
-		      return;
-	  }	  
-	  String money = result[j+1];
-	  
-	  try {  
-		  //int temp = Integer.parseInt(money);
-	  
-	  }catch(NumberFormatException nfe){  
-		  Window.alert("The parameter amount must be numeric ");
-	      return;  
 	  }  
-
-	  obt_amount = Integer.parseInt(money);
-	  elements.add(new InvestData(result[j],obt_amount,0));
-	  addTopic(result[j]);
-	  cities.add(result[j]);
-	  amounts.add(obt_amount);
-	  insertCityTextA.setText("");
-	  
-	  
-	    MyServiceAsync emailService = (MyServiceAsync) GWT.create(MyService.class);
-	    emailService.insert_into_db("cities", "('"+result[j]+"', "+ obt_amount +")", new AsyncCallback<String>(){
-	    	public void onSuccess(String result) {
-	    		results = result;
-	          }
-
-	          public void onFailure(Throwable caught) {
-	        	Window.alert("Inserting new city in the DataBase failed.");
-	      		System.out.println("Fail\n" + caught);
-	          }
-	    } );
-	    // Depuration prints
-	    System.out.println(cities);
-	    System.out.println(amounts);
-	}*/
-	  
 	  
 	  
 	  /**
@@ -683,9 +530,6 @@ public class Forum implements EntryPoint {
 		  backButton.addStyleDependentName("remove");
 		  backButton.addClickHandler(new ClickHandler() {
 		    public void onClick(ClickEvent event) {
-		      //int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
-		      //awards.remove(removedIndex);        
-		      //forumFlexTable.removeRow(removedIndex + 1);
 		    	
 		    	  if(currentElementType == 'P'){
 		    		  // Do nothing. Topics is the upper node of the hierarchy
@@ -748,7 +592,7 @@ public class Forum implements EntryPoint {
 		  insert_text_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) { 
 				  //TODO: obtener el parent_topic (yo diria mas bien parent_thread, a ver si esto rula)
-				  Message insert = new Message(textArea.getText(), currentElementId, current_user.user_name);
+				  new Message(textArea.getText(), currentElementId, current_user.user_name);
 				  
 				  textArea.setText(""); //TODO: limpiar el texto despues de guardarlo
 			  }

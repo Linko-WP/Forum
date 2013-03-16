@@ -529,6 +529,7 @@ public class Forum implements EntryPoint {
 	   * users table in the database
 	   * */
 	  public void login(){
+		  
 		  String username = username_textbox.getText();
 		  String password = password_textbox.getText();
 		  	
@@ -540,14 +541,17 @@ public class Forum implements EntryPoint {
 				  System.out.println("RESULTADO check user:" + result.user_name);
 	    		
 				  current_user = result;
+				  loginPanel.clear();
+				  loginPanel.removeFromParent();
+				  logged_message();	
 	          }
 	    	
 	          public void onFailure(Throwable caught) {
 	        	Window.alert("Login attempt failed.");
 	      		System.out.println("Fail\n" + caught);
 	          }
-	    } );		    
-		  		  
+	    } );
+		 	  
 	  }
 	  
 	  /**
@@ -613,7 +617,7 @@ public class Forum implements EntryPoint {
 	   * */
 	  public void logged_message(){
 		  
-		  Label username_label = new Label("Welcome " + current_user.user_name);
+		  Label username_label = new Label("Welcome " + current_user.user_name + "   ");
 		  username_label.addStyleName("loginText");
 		  
 		  // Assemble Login panel.

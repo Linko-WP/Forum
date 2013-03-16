@@ -258,7 +258,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		for(int i=0; i<myList.size()-3; i=i+4){
 			String user = myList.get(i);
 			String mail = myList.get(i+1);
-			String pass = myList.get(i+22);
+			String pass = myList.get(i+2);
 			Boolean admin = Boolean.parseBoolean(myList.get(i+3));
 
 			

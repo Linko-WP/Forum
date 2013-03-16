@@ -27,9 +27,11 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 public class Forum implements EntryPoint {
@@ -45,6 +47,8 @@ public class Forum implements EntryPoint {
   private Button addProjectButton = new Button("Add");
   private Label lastUpdatedLabel = new Label();
  
+  private RichTextArea messages_editor = new RichTextArea();
+  
   private TextArea insertCityTextA = new TextArea();
   private Button insertProjectButton = new Button("Insert");
   
@@ -61,10 +65,21 @@ public class Forum implements EntryPoint {
   private int topics_index = -1;
   private int threads_index = -1;
   
+  final RichTextArea textArea = new RichTextArea();
+  final RichTextToolbar toolBar = new RichTextToolbar(textArea);
+  VerticalPanel vp = new VerticalPanel();
+  
+  
   /**
    * Entry point method.
    */
   public void onModuleLoad() {
+	  
+      textArea.setWidth("100%");  
+      vp.add(toolBar);
+      vp.add(textArea);
+      
+      
 	  
     setUncaughtExceptionHandler();	// Useful!
         
@@ -74,7 +89,8 @@ public class Forum implements EntryPoint {
 	RootPanel.get().addStyleName("rootStyle");
 	mainPanel.addStyleName("mainStyle");
 
-	 
+
+	
  	// Create table for stock data.
 	forumFlexTable.setText(0, 0, "Subject");
 	forumFlexTable.setText(0, 1, "Messages No.");
@@ -119,7 +135,10 @@ public class Forum implements EntryPoint {
     mainPanel.add(addPanel);
     mainPanel.add(insertPanel);
     mainPanel.add(lastUpdatedLabel);
-      
+
+    //Text Editor Panel
+	mainPanel.add(vp);
+	
     // Add panels to the root panel
     RootPanel.get().add(mainPanel);
 
@@ -595,6 +614,7 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	public void pruebas_mary(){
+
 		
 				
 	};

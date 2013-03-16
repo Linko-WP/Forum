@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.google.gwt.forum.client.User;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mysql.jdbc.*;
 
@@ -40,6 +41,50 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	        str += ", " + rs.getString("name");
 	     }
 	     str += "\n Good";
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
+	
+	/**
+	 * */
+	public String erase_message(Integer id) {
+	  
+	  String str = "";
+	  Connection conn = connect();	// Connect to database
+	  try {
+
+	     Statement stat = (Statement) conn.createStatement();
+	     
+	     ResultSet rs = stat.executeQuery("delete from messages where message_id = "+id+";");
+	     
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
+	
+	/**
+	 * */
+	public String erase_thread(Integer id) {
+	  
+	  String str = "";
+	  Connection conn = connect();	// Connect to database
+	  try {
+
+	     Statement stat = (Statement) conn.createStatement();
+	     
+	     ResultSet rs = stat.executeQuery("delete from threads where thread_id = "+id+";");
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
@@ -416,5 +461,34 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	    return str;		
 	}
 
+	public User check_user(String username, String password){
+			
+		String str = "";
+		Connection conn = connect();	// Connect to database
+			  try {
+			     Statement stat = (Statement) conn.createStatement();
+			     
+			     ResultSet rs = stat.executeQuery("select email, is_admin from users where username='"+username+
+			    		 							"' and password='"+password+"';");
+			  if(rs.next()){
+			     while (rs.next()) {
+			        str += ", " + rs.getString("email");
+			        str += ", " + rs.getString("is_admin") + ", ";
+			     }
+			  }else{
+				  User checked = null;
+			  }   
+			  } catch (Exception e) {
+			     str += e.toString();
+			     e.printStackTrace();
+			  } 
+			
+			   User checked = new User(username, "EMAIL", "pass", false);
+			  disconnect(conn);
+			  
+		    return checked;
+		  }
+		
+		
+	}
 
-}

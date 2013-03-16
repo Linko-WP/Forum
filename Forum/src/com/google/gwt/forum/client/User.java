@@ -23,7 +23,7 @@ public class User {
 		is_admin = false;
 	}
 	
-	User(String name, String mail, String pass, Boolean admin){
+	public User(String name, String mail, String pass, Boolean admin){
 		user_name = name;
 		email = null;
 		password = null;

@@ -41,10 +41,12 @@ public class Forum implements EntryPoint {
   private HorizontalPanel addPanel = new HorizontalPanel();
   private HorizontalPanel insertPanel = new HorizontalPanel();
   private HorizontalPanel toolbarPanel = new HorizontalPanel();
+  private HorizontalPanel loginPanel = new HorizontalPanel();
   
   private FlexTable forumFlexTable = new FlexTable();
-  private TextBox newElementTextBox = new TextBox();
-  private Button addProjectButton = new Button("Add");
+  private TextBox username_textbox = new TextBox();
+  private TextBox password_textbox = new TextBox();
+  private Button login_button = new Button("Login");
   private Label lastUpdatedLabel = new Label();
  
   private RichTextArea messages_editor = new RichTextArea();
@@ -100,14 +102,6 @@ public class Forum implements EntryPoint {
 	forumFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
 	forumFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
 	forumFlexTable.getCellFormatter().addStyleName(0, 3, "watchListNumericColumn");
-		
-    // Assemble Add Stock panel.
-	newElementTextBox.addStyleName("textBox");
-	addProjectButton.addStyleName("button");
-	addProjectButton.setWidth("100px");
-    addPanel.add(newElementTextBox);
-    addPanel.add(addProjectButton);
-    addPanel.addStyleName("addPanel");
     
     // Assemble Insert Stock panel.
     insertCityTextA.setVisibleLines(4);
@@ -140,23 +134,6 @@ public class Forum implements EntryPoint {
     RootPanel.get().add(mainPanel);
 
   // refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
-
-    // Listen for mouse events on the Add button.
-    addProjectButton.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        //addTopic();
-    	  showTopics();
-      }
-    });
-    
-    // Listen for keyboard events in the input box.
-    newElementTextBox.addKeyPressHandler(new KeyPressHandler() {
-      public void onKeyPress(KeyPressEvent event) {
-        if (event.getCharCode() == KeyCodes.KEY_ENTER) {
-          addTopic();
-        }
-      }
-    });
     
     // Listen for mouse events on the Add button.
     insertProjectButton.addClickHandler(new ClickHandler() {
@@ -234,21 +211,21 @@ public class Forum implements EntryPoint {
 	  private void addTopic() {
 		  
 		  	// The constructor does the work of insert the new topic in the database
-		  	final Topics n_top = new Topics( newElementTextBox.getText().toUpperCase() );
+		  	final Topics n_top = new Topics( username_textbox.getText().toUpperCase() );
 		 
-		  	newElementTextBox.setFocus(true);
+		  	username_textbox.setFocus(true);
 		    
 		  	// TODO: Check there is no topic with the same subject
 		  	/*
 			if (!topics.contains(n_top)){
 				Window.alert("The inserted city: '" + city + "' is not a valid city.");
-			      newElementTextBox.selectAll();
+			      username_textbox.selectAll();
 			      return;
 			}*/
 			
 			if (topics.contains(n_top)){
 				Window.alert("The inserted topic: '" + n_top + "' is already in the system.");
-			      newElementTextBox.selectAll();
+			      username_textbox.selectAll();
 			      return;
 			}
 			
@@ -257,7 +234,7 @@ public class Forum implements EntryPoint {
 	
 		    // Get the stock price.
 		    showTopics();
-		    newElementTextBox.setText("");
+		    username_textbox.setText("");
 	
 	  }
   
@@ -546,7 +523,49 @@ public class Forum implements EntryPoint {
 	  public void createToolbar(){
 		  
 		  back_button();
+		  login_zone();
 		  
+	  }
+	  
+	  /**
+	   * Creates the login boxes and the login button
+	   * */
+	  public void login_zone(){
+		  
+		  Label username_label = new Label("Username:");
+		  Label password_label = new Label("Password:");
+		  username_label.addStyleName("loginText");
+		  password_label.addStyleName("loginText");
+		  
+		  // Assemble Login panel.
+		  username_textbox.addStyleName("username_textbox");
+		  password_textbox.addStyleName("password_texrbox");
+		  login_button.addStyleName("button");
+		  login_button.setWidth("70px");
+			
+		  loginPanel.add(username_label);
+		  loginPanel.add(username_textbox);
+		  loginPanel.add(password_label);
+		  loginPanel.add(password_textbox);
+		  loginPanel.add(login_button);
+		  loginPanel.addStyleName("loginPanel");
+		  toolbarPanel.add(loginPanel);
+		  
+		  // Listen for mouse events on the Login button.
+		  login_button.addClickHandler(new ClickHandler() {
+			  public void onClick(ClickEvent event) {
+				  // login();
+			  }
+		  });
+		    
+		  // Listen for keyboard events in the input box.
+		  password_textbox.addKeyPressHandler(new KeyPressHandler() {
+		      public void onKeyPress(KeyPressEvent event) {
+		    	  if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+		    		  //login();
+		    	  }
+		      }
+		  });
 	  }
 	  
 	  /**

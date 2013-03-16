@@ -1,10 +1,6 @@
 package com.google.gwt.forum.client;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
 
+import java.util.ArrayList;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,11 +8,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -25,7 +16,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -38,38 +28,38 @@ public class Forum implements EntryPoint {
  
 	private Button insert_text_button = new Button("Insert Text");
 
-  private AbsolutePanel mainPanel = new AbsolutePanel();
-  private HorizontalPanel addPanel = new HorizontalPanel();
-  private HorizontalPanel insertPanel = new HorizontalPanel();
-  private HorizontalPanel toolbarPanel = new HorizontalPanel();
-  private HorizontalPanel loginPanel = new HorizontalPanel();
-  private VerticalPanel vp = new VerticalPanel();
+	private AbsolutePanel mainPanel = new AbsolutePanel();
+	private HorizontalPanel addPanel = new HorizontalPanel();
+	private HorizontalPanel insertPanel = new HorizontalPanel();
+	private HorizontalPanel toolbarPanel = new HorizontalPanel();
+	private HorizontalPanel loginPanel = new HorizontalPanel();
+	private VerticalPanel vp = new VerticalPanel();
+	  
+	private FlexTable forumFlexTable = new FlexTable();
+	private TextBox username_textbox = new TextBox();
+	private TextBox password_textbox = new TextBox();
+	private Button login_button = new Button("Login");
+	private Label lastUpdatedLabel = new Label();
+	 
+	private TextArea insertCityTextA = new TextArea();
+	private Button insertProjectButton = new Button("Insert");
+	  
+	private ArrayList<Topics> topics  = new ArrayList<Topics>();
+	private ArrayList<Thread> threads = new ArrayList<Thread>();
+	private ArrayList<Message> messages = new ArrayList<Message>();
+	// private ArrayList<Topics> results;
+	  
+	//private static final int REFRESH_INTERVAL = 5000; // ms
+	private Label errorMsgLabel = new Label();
+	public int currentElementId = -1;
+	public char currentElementType = 'X';
+	private int topics_index = -1;
+	private User current_user = null;
+	  
+	private MyServiceAsync dbService = null;
   
-  private FlexTable forumFlexTable = new FlexTable();
-  private TextBox username_textbox = new TextBox();
-  private TextBox password_textbox = new TextBox();
-  private Button login_button = new Button("Login");
-  private Label lastUpdatedLabel = new Label();
- 
-  private RichTextArea messages_editor = new RichTextArea();
-  
-  private TextArea insertCityTextA = new TextArea();
-  private Button insertProjectButton = new Button("Insert");
-  
-  private ArrayList<Topics> topics  = new ArrayList<Topics>();
-  private ArrayList<Thread> threads = new ArrayList<Thread>();
-  private ArrayList<Message> messages = new ArrayList<Message>();
- // private ArrayList<Topics> results;
-  
-  //private static final int REFRESH_INTERVAL = 5000; // ms
-  private Label errorMsgLabel = new Label();
-  public int currentElementId = -1;
-  public char currentElementType = 'X';
-  private int topics_index = -1;
-  private User current_user = null;
-  
-  MyServiceAsync dbService = null;
-  
+	
+	private ArrayList<User> temp = null;
   
   /**
    * Entry point method.
@@ -79,12 +69,12 @@ public class Forum implements EntryPoint {
     setUncaughtExceptionHandler();	// Useful!
         
     dbService = (MyServiceAsync) GWT.create(MyService.class);
+    
 	// Setting panels
 	RootPanel.get().setWidth("1000px");
 	mainPanel.setWidth("1000px");
 	RootPanel.get().addStyleName("rootStyle");
 	mainPanel.addStyleName("mainStyle");
-
 
  	// Create table for stock data.
 	forumFlexTable.setText(0, 0, "Subject");
@@ -789,16 +779,16 @@ public class Forum implements EntryPoint {
 			
 			
 			//TODO: check si funciona el get users
-		    String temp = " cadena ";
-		    dbService.get_users(temp, new AsyncCallback<ArrayList<User>>(){
+		    
+		    dbService.get_users(" cadena ", new AsyncCallback<ArrayList<User>>(){
 		    	public void onSuccess(ArrayList<User> result) {
 		    		System.out.println("TOPICS:" + result);
-
-		    		showTopics();
+		    		temp = result;
+		    		for(User x:temp) System.out.println(" "+x.user_name);
 		          }
 	
 		          public void onFailure(Throwable caught) {
-		        	Window.alert("RPC to initialize_db() failed.");
+		        	Window.alert("Get users failed.");
 		      		System.out.println("Fail\n" + caught);
 		          }
 		    } );	  

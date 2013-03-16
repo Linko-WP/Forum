@@ -1,5 +1,6 @@
 package com.google.gwt.forum.client;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,7 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class Topics {
+public class Topics implements Serializable{
 	int id;
 	String subject;
 	ArrayList<Thread> threads;
@@ -25,7 +26,7 @@ public class Topics {
 	 * Constructor with parameters.
 	 * @param sub
 	 */
-	Topics(int i, String sub){
+	public Topics(int i, String sub){
 		id = i;
 		subject = sub;
 		threads = new ArrayList<Thread>();

@@ -58,7 +58,7 @@ public class Forum implements EntryPoint {
   private ArrayList<Topics> topics  = new ArrayList<Topics>();
   private ArrayList<Thread> threads = new ArrayList<Thread>();
   private ArrayList<Message> messages = new ArrayList<Message>();
-  private String results;
+ // private ArrayList<Topics> results;
   
   //private static final int REFRESH_INTERVAL = 5000; // ms
   private Label errorMsgLabel = new Label();
@@ -301,24 +301,15 @@ public class Forum implements EntryPoint {
 	   * Class to load the topics int the topic object from the database
 	   */
 	  private void load_topics(){
-	
+		  	
 		    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
 	
 		    String temp = " cadena ";
-		    dbService.get_topics(temp, new AsyncCallback<String>(){
-		    	public void onSuccess(String result) {
+		    dbService.get_topics(temp, new AsyncCallback<ArrayList<Topics>>(){
+		    	public void onSuccess(ArrayList<Topics> result) {
 		    		System.out.println("TOPICS:" + result);
-		    		results = result;
-		    		
-		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-1; i=i+2){
-		    			int obt_id = Integer.parseInt(myList.get(i));
-		    			String obt_topic = myList.get(i+1);
-		    			
-		    			
-		    			topics.add(new Topics(obt_id, obt_topic));
-		    		}
-	
+		    		topics = result;
+		 
 		    		showTopics();
 		          }
 	
@@ -339,20 +330,12 @@ public class Forum implements EntryPoint {
 		  System.out.println(" :"+currentElementId +" "+ topics_index);  
 		  if( (currentElementId != -1) ){		    	
 
-		    Service.get_threads(currentElementId, new AsyncCallback<String>(){
-		    	public void onSuccess(String results) {
-		    		System.out.println("RESULTADO GET THREADS:" + results);
-		    		
-		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-2; i=i+3){
-		    			
-		    			Thread output = new Thread(Integer.parseInt(myList.get(i)), currentElementId, myList.get(i+1), Integer.parseInt(myList.get(i+2)));
-		    			result.add(output);
-		    		}
-		    		
+		    Service.get_threads(currentElementId, new AsyncCallback<ArrayList<Thread>>(){
+		    	public void onSuccess(ArrayList<Thread> results) {
+		    		System.out.println("RESULTADO GET THREADS:" + results);	    		
 		    		// Save the threads in their parent topic arraylist
-		    		threads = result;
-		    		for(Thread x:result)
+		    		threads = results;
+		    		for(Thread x:results)
 		    			System.out.println("ID: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
 		    		for(Thread x:threads)
 		    			System.out.println("ID: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
@@ -379,30 +362,18 @@ public class Forum implements EntryPoint {
 		    
 		  if( (currentElementId != -1) ){		    	
 
-		    Service.get_messages(currentElementId, new AsyncCallback<String>(){
-		    	public void onSuccess(String results) {
-		    		System.out.println("RESULTADO GET Messages:" + results);
-		    		
-		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-3; i=i+4){
-		    			int id_n = Integer.parseInt(myList.get(i));
-		    		    Timestamp ts = Timestamp.valueOf(myList.get(i+1));  
-		    			String ct = myList.get(i+2);
-		    			String a_name = myList.get(i+3);
-		    			Message output = new Message(id_n, ts, ct, currentElementId, a_name);
-
-		    			result.add(output);
-		    		}
-		    		
+		    Service.get_messages(currentElementId, new AsyncCallback<ArrayList<Message>>(){
+		    	public void onSuccess(ArrayList<Message> results) {
+		    		System.out.println("RESULTADO GET Messages:" + results.get(0).content);
+	
 		    		// Save the threads in their parent topic arraylist
-		    		messages = result;
-		    		for(Message x:messages)
+		    		messages = results;
+		    		for(Message x:messages){
 		    			System.out.println("ID: "+x.id+" Content: "+x.content+
 		    					" Parent: "+x.parent_thread_id+" Date: "+x.time_stamp+" Author:"+x.author);
+		    		}
 		    		showMessages();
-
 		          }
-		    	
 		          public void onFailure(Throwable caught) {
 		        	Window.alert("Messages retrieve attempt failed.");
 		      		System.out.println("Fail\n" + caught);

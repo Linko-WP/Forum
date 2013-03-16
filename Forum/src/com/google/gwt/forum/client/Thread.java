@@ -1,6 +1,7 @@
 package com.google.gwt.forum.client;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,7 +10,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class Thread {
+public class Thread implements Serializable{
 	int id;
 	String title;
 	int no_messages;//Counter for the number of messages in one thread.
@@ -43,7 +44,7 @@ public class Thread {
 	/**
 	 * Constructor with parameters;
 	 */
-	Thread(int idd, int p_id,  String tit, int num){
+	public Thread(int idd, int p_id,  String tit, int num){
 		id = idd;
 		parent_topic_id = p_id;
 		title = tit;

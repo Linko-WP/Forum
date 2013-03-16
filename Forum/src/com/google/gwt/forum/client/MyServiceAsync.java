@@ -10,10 +10,10 @@ interface MyServiceAsync {
   public void check_user(String username, String password, AsyncCallback<User> callback);
   
   //Getting part
-  public void get_topics(String s, AsyncCallback<String> callback);
+  public void get_topics(String s, AsyncCallback<ArrayList<Topics>> callback);
   public void get_users(String s, AsyncCallback<String> callback);
-  public void get_threads(Integer s, AsyncCallback<String> callback);
-  public void get_messages(Integer s, AsyncCallback<String> callback);
+  public void get_threads(Integer s, AsyncCallback<ArrayList<Thread>> callback);
+  public void get_messages(Integer s, AsyncCallback<ArrayList<Message>> callback);
   
   //Insert part
   public void insert_topic(String s, AsyncCallback<Integer> callback);

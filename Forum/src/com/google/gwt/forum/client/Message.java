@@ -1,5 +1,6 @@
 package com.google.gwt.forum.client;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class Message {
+public class Message implements Serializable{
 	
 	int id;
 	int parent_thread_id;
@@ -57,7 +58,7 @@ public class Message {
 	 * @param p_id
 	 * @param auth
 	 */
-	Message(int new_id, Timestamp ts, String cont, int p_id, String auth){
+	public Message(int new_id, Timestamp ts, String cont, int p_id, String auth){
 		id = new_id;
 		time_stamp = ts;
 		content = cont;
@@ -115,26 +116,12 @@ public class Message {
 
 		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.get_messages(parent_id, new AsyncCallback<String>(){
-		    	public void onSuccess(String results) {
-		    		System.out.println("RESULTADO GET MESSGSS:" + results);
+		    Service.get_messages(parent_id,  new AsyncCallback<ArrayList<Message>>(){
+		    	public void onSuccess(ArrayList<Message> results) {
 
-		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-2; i=i+3){
-		    			int id_n = Integer.parseInt(myList.get(0));
-		    		      Timestamp ts = Timestamp.valueOf(myList.get(1));
-
-		    		        
-		    			String ct = myList.get(2);
-		    			String a_name = myList.get(3);
-		    			Message output = new Message(id_n, ts, ct, parent_id, a_name);
-
-		    			result.add(output);
 
 		    		}
-
-		          }
-		    	
+	    	
 		          public void onFailure(Throwable caught) {
 		        	Window.alert("RPC to initialize_db() failed.");
 		      		System.out.println("Fail\n" + caught);

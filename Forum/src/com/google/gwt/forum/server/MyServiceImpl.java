@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.google.gwt.forum.client.Message;
+import com.google.gwt.forum.client.Thread;
 import com.google.gwt.forum.client.Topics;
 import com.google.gwt.forum.client.User;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -194,8 +196,10 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Obtains the topics from the database
 	 * */
-	public String get_topics(String s) {
-	  
+	public ArrayList<Topics> get_topics(String s) {
+		
+	
+	  ArrayList<Topics> topics = new ArrayList<Topics>();
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
@@ -213,8 +217,15 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  } 
 	
 	  disconnect(conn);
-	  
-    return str;
+
+		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+		for(int i=0; i<myList.size()-1; i=i+2){
+			int obt_id = Integer.parseInt(myList.get(i));
+			String obt_topic = myList.get(i+1);
+			
+			topics.add(new Topics(obt_id, obt_topic));
+		}
+    return topics;
   }
 	
 	/**
@@ -247,8 +258,9 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Obtains the threads from the database
 	 * */
-	public String get_threads(Integer id) {
+	public ArrayList<Thread> get_threads(Integer id) {
 	  
+	  ArrayList<Thread> result = new ArrayList<Thread>();
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
@@ -268,18 +280,26 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	     e.printStackTrace();
 	  } 
 	
+	  	ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+		for(int i=0; i<myList.size()-2; i=i+3){
+			
+			Thread output = new Thread(Integer.parseInt(myList.get(i)), id, myList.get(i+1), Integer.parseInt(myList.get(i+2)));
+			result.add(output);
+		}
+		
 	  disconnect(conn);
 	  
-    return str;
+    return result;
   }
 	
 	/**
 	 * Obtains the messages from the database
 	 * */
-	public String get_messages(Integer id) {
+	public ArrayList<Message> get_messages(Integer id) {
 	  
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
+	  ArrayList<Message> result = new ArrayList<Message>();
 	  try {
 	     Statement stat = (Statement) conn.createStatement();
 	     
@@ -300,7 +320,19 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	
 	  disconnect(conn);
 	  
-    return str;
+	  //Formating the result
+	  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+		for(int i=0; i<myList.size()-3; i=i+4){
+			int id_n = Integer.parseInt(myList.get(i));
+		    Timestamp ts = Timestamp.valueOf(myList.get(i+1));  
+			String ct = myList.get(i+2);
+			String a_name = myList.get(i+3);
+			Message output = new Message(id_n, ts, ct, id, a_name);
+
+			result.add(output);
+		}
+	  
+    return result;
   }
 	
 	/**

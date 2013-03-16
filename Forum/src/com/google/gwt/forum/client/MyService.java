@@ -14,10 +14,12 @@ public interface MyService extends RemoteService {
   
   
   //Getting part
-  public String get_topics(String s);
+  public ArrayList<Topics> get_topics(String s);
   public String get_users(String s);
-  public String get_threads(Integer s);
-  public String get_messages(Integer s);
+  
+  
+  public ArrayList<Message> get_messages(Integer s);
+  public ArrayList<Thread> get_threads(Integer s);
   
   //Insert Part
   public int insert_topic(String s);

@@ -555,6 +555,7 @@ public class Forum implements EntryPoint {
 		  loginPanel.removeFromParent();
 		  login_zone();
 		  vp.clear();
+		  vp.removeFromParent();
 	  }
 	  
 	  /**
@@ -679,7 +680,7 @@ public class Forum implements EntryPoint {
 		  // Listen for mouse events on the Login button.
 		  login_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) {
-				  // logout();
+				  logout();
 			  }
 		  });
 	  }

@@ -199,6 +199,30 @@ public class Forum implements EntryPoint {
 		
 	}
   
+	/**
+	 * Refresh the forum table 
+	 * */
+	private void refresh(){
+		
+		clean_table();
+		if(currentElementType == 'M'){
+
+			for(Message ms:messages){
+				if(ms.parent_thread_id == currentElementId)
+					addDataToSource( ms.content, ms.author, ms.time_stamp.toString(), ms.id);
+			}
+		}else if(currentElementType == 'T'){
+			for(Thread th:threads){
+				if(th.parent_topic_id == currentElementId)
+					addDataToSource(th.title, String.valueOf( th.no_messages ), null, th.id);
+			}
+		}else if(currentElementType == 'P'){
+			for(Topics top:topics){
+				addDataToSource(top.subject, "N\\A", null, top.id);
+			}
+		}
+		
+	}
   
 	  /**
 	   * Add a new topic to FlexTable adn db.
@@ -240,10 +264,10 @@ public class Forum implements EntryPoint {
 		  
 		  int row = forumFlexTable.getRowCount();
 		    
-		  HorizontalPanel col1ParentPanel = new HorizontalPanel();
+		  HorizontalPanel optionsPanel = new HorizontalPanel();
+		  
 		  final Label column_1 = new Label(col1);
-		  col1ParentPanel.add(column_1);
-		  forumFlexTable.setWidget(row, 0, col1ParentPanel);
+		  forumFlexTable.setWidget(row, 0, column_1);
 		  
 		  final Label column_2 = new Label(col2);
 		  forumFlexTable.setWidget(row, 1, column_2);
@@ -258,28 +282,14 @@ public class Forum implements EntryPoint {
 		  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListCell");
 	
 		  // Add a click listener to save the information about the row
-		  column_1.addClickHandler(new ClickHandler() {
-			    public void onClick(ClickEvent event) {
-		    	  currentElementId = id;
-		    	  if(currentElementType == 'P'){
-		    		  load_threads();
-		    	  }else if(currentElementType == 'T'){
-		    		  load_messages();
-		    	  }else{
-		    		  System.out.println("Not able to check current type");
-		    	  }
-		    	  
-		      }
-		    });
+		  // Column1 used to have a click listener, but we will avoid it for now
 	
-		  // Add a button to remove this stock from the table.
-		  Button removeStockButton = new Button(">");
-		  removeStockButton.addStyleDependentName("remove");
-		  removeStockButton.addClickHandler(new ClickHandler() {
+		  // Add a button to enter in the element (topic or thread).
+		  Button enterButton = new Button(">");
+		  enterButton.addStyleDependentName("enter");
+		  enterButton.addClickHandler(new ClickHandler() {
 		    public void onClick(ClickEvent event) {
-		      //int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
-		      //awards.remove(removedIndex);        
-		      //forumFlexTable.removeRow(removedIndex + 1);
+
 		    	currentElementId = id;
 		    	System.out.println("CLICK");
 		    	  if(currentElementType == 'P'){
@@ -293,10 +303,59 @@ public class Forum implements EntryPoint {
 		    	  }
 		    }
 		  });
-		  forumFlexTable.setWidget(row, 3, removeStockButton);
+		  
+		  
+		  // Add a button to enter in the element (topic or thread).
+		  Button removeButton = new Button("X");
+		  removeButton.addStyleDependentName("remove");
+		  removeButton.addClickHandler(new ClickHandler() {
+			  
+				int current_id = id;
+			    char current_type = currentElementType;
+			    
+			    public void onClick(ClickEvent event) {
+			    	remove_row(current_id, current_type);
+			    }
+		    
+		  });  
+		  
+		  // The option you see depends on who is logged in
+		  optionsPanel.add(enterButton);
+		  if( current_user != null ){	// If someone is logged in
+			  if(!current_user.is_admin) optionsPanel.add(removeButton);
+		  }
+		  forumFlexTable.setWidget(row, 3, optionsPanel);
 		  
 	  }
 	
+	  /**
+	   * Removes a row from the local array
+	   * */
+	  public void remove_row(int id, char type){
+		  
+		  if(type == 'P'){
+			  for(Topics x:topics){
+				  if(x.id == id) topics.remove(x);
+				  // TODO: Erase it also from database
+				  return;
+			  }
+		  }else if(type == 'T'){
+			  for(Thread x:threads){
+				  if(x.id == id) threads.remove(x);
+				  // TODO: Erase it also from database
+				  return;
+			  }
+		  }else if(type == 'M'){
+			  for(Message x:messages){
+				  if(x.id == id) messages.remove(x);
+				  // TODO: Erase it also from database
+				  return;
+			  }
+		  }else{
+			  System.out.println("Error: fail when trying to erase a row.");
+		  }
+	  }
+	  
 	  /**
 	   * Class to load the topics int the topic object from the database
 	   */
@@ -512,6 +571,8 @@ public class Forum implements EntryPoint {
 	    System.out.println(amounts);
 	}*/
 	  
+	  
+	  
 	  /**
 	   * Logs out. Just set the current user to null
 	   * */
@@ -556,10 +617,14 @@ public class Forum implements EntryPoint {
 	  public void createToolbar(){
 		  
 		  back_button();
+		  refresh_button();
 		  
 		  if(current_user == null){
 			  login_zone();
 		  }else{
+			  if(!current_user.is_admin){
+				  // Ver usuarios (para poder gestionarlos)
+			  }
 			  // Add here another logged functionalities
 			  logged_message();
 		  }
@@ -671,6 +736,22 @@ public class Forum implements EntryPoint {
 		    }
 		  });
 		  toolbarPanel.add(backButton);
+	  }
+	  
+	  /**
+	   * Creates the back button and its functionality
+	   * */
+	  public void refresh_button(){
+		  
+		  Button refreshButton = new Button("Refresh");
+		  refreshButton.addStyleDependentName("remove");
+		  refreshButton.addClickHandler(new ClickHandler() {
+		    public void onClick(ClickEvent event) {
+		    	refresh();
+		    }
+		  });
+		  
+		  toolbarPanel.add(refreshButton);
 	  }
 	  
 	  /**

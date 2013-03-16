@@ -78,9 +78,7 @@ public class Forum implements EntryPoint {
       textArea.setWidth("100%");  
       vp.add(toolBar);
       vp.add(textArea);
-      
-      
-	  
+
     setUncaughtExceptionHandler();	// Useful!
         
 	// Setting panels
@@ -90,7 +88,6 @@ public class Forum implements EntryPoint {
 	mainPanel.addStyleName("mainStyle");
 
 
-	
  	// Create table for stock data.
 	forumFlexTable.setText(0, 0, "Subject");
 	forumFlexTable.setText(0, 1, "Messages No.");
@@ -130,7 +127,6 @@ public class Forum implements EntryPoint {
     createToolbar();
 
     // Assemble Main panel.
-    mainPanel.add(toolbarPanel);
     mainPanel.add(forumFlexTable);
     mainPanel.add(addPanel);
     mainPanel.add(insertPanel);
@@ -140,6 +136,7 @@ public class Forum implements EntryPoint {
 	mainPanel.add(vp);
 	
     // Add panels to the root panel
+	RootPanel.get().add(toolbarPanel);
     RootPanel.get().add(mainPanel);
 
   // refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
@@ -184,141 +181,13 @@ public class Forum implements EntryPoint {
   }
 
   /**
-   * Class to load the topics int the topic object from the database
-   */
-  private void load_topics(){
-
-	    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
-
-	    String temp = " cadena ";
-	    dbService.get_topics(temp, new AsyncCallback<String>(){
-	    	public void onSuccess(String result) {
-	    		System.out.println("TOPICS:" + result);
-	    		results = result;
-	    		
-	    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-	    		for(int i=0; i<myList.size()-1; i=i+2){
-	    			int obt_id = Integer.parseInt(myList.get(i));
-	    			String obt_topic = myList.get(i+1);
-	    			
-	    			
-	    			topics.add(new Topics(obt_id, obt_topic));
-	    		}
-
-	    		showTopics();
-	          }
-
-	          public void onFailure(Throwable caught) {
-	        	Window.alert("RPC to initialize_db() failed.");
-	      		System.out.println("Fail\n" + caught);
-	          }
-	    } );	  
-  }
-  
-  
-  /**
-   * Add a new topic to FlexTable adn db.
-   */
-  private void addTopic() {
-	  
-	  	// The constructor does the work of insert the new topic in the database
-	  	final Topics n_top = new Topics( newElementTextBox.getText().toUpperCase() );
-	 
-	  	newElementTextBox.setFocus(true);
-	    
-	  	// TODO: Check there is no topic with the same subject
-	  	/*
-		if (!topics.contains(n_top)){
-			Window.alert("The inserted city: '" + city + "' is not a valid city.");
-		      newElementTextBox.selectAll();
-		      return;
-		}*/
-		
-		if (topics.contains(n_top)){
-			Window.alert("The inserted topic: '" + n_top + "' is already in the system.");
-		      newElementTextBox.selectAll();
-		      return;
-		}
-		
-		// Add the city data	TODO: Add the date of the last message
-	    addDataToSource(n_top.subject, "N\\A" ,null, n_top.id);
-
-	    // Get the stock price.
-	    showTopics();
-	    newElementTextBox.setText("");
-
-  }
-  
-  /**
-   * Insert data on the source table
-   * */
-  private void addDataToSource(final String col1, final String col2, final String col3, final int id){
-	  
-	  int row = forumFlexTable.getRowCount();
-	    
-	  HorizontalPanel col1ParentPanel = new HorizontalPanel();
-	  final Label column_1 = new Label(col1);
-	  col1ParentPanel.add(column_1);
-	  forumFlexTable.setWidget(row, 0, col1ParentPanel);
-	  
-	  final Label column_2 = new Label(col2);
-	  forumFlexTable.setWidget(row, 1, column_2);
-	  
-	  final Label column_3 = new Label(col3);
-	  forumFlexTable.setWidget(row, 2, column_3);
-	  
-	  // Style
-	  forumFlexTable.getCellFormatter().addStyleName(row, 0, "watchListCell");
-	  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListCell");
-	  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListCell");
-	  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListCell");
-
-	  // Add a click listener to save the information about the row
-	  column_1.addClickHandler(new ClickHandler() {
-		    public void onClick(ClickEvent event) {
-	    	  currentElementId = id;
-	    	  if(currentElementType == 'P'){
-	    		  load_threads();
-	    	  }else if(currentElementType == 'T'){
-	    		  load_messages();
-	    	  }else{
-	    		  System.out.println("Not able to check current type");
-	    	  }
-	    	  
-	      }
-	    });
-
-	  // Add a button to remove this stock from the table.
-	  Button removeStockButton = new Button(">");
-	  removeStockButton.addStyleDependentName("remove");
-	  removeStockButton.addClickHandler(new ClickHandler() {
-	    public void onClick(ClickEvent event) {
-	      //int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
-	      //awards.remove(removedIndex);        
-	      //forumFlexTable.removeRow(removedIndex + 1);
-	    	currentElementId = id;
-	    	System.out.println("CLICK");
-	    	  if(currentElementType == 'P'){
-	    		  System.out.println("Loading threads");
-	    		  load_threads();
-	    	  }else if(currentElementType == 'T'){
-	    		  System.out.println("Loading messages");
-	    		  load_messages();
-	    	  }else{
-	    		  System.out.println("Not able to check current type");
-	    	  }
-	    }
-	  });
-	  forumFlexTable.setWidget(row, 3, removeStockButton);
-	  
-  }
-
-	/**
 	 * Show the list of topics.
 	 */
 	private void showTopics() {
 		
 		clean_table();
+		forumFlexTable.setText(0, 1, "Messages No.");
+		
 		currentElementType = 'P';
 		for(Topics top:topics){
 			addDataToSource(top.subject, "N\\A", null, top.id);
@@ -332,6 +201,8 @@ public class Forum implements EntryPoint {
 	private void showThreads() {
 		
 		clean_table();
+		forumFlexTable.setText(0, 1, "Messages No.");
+		
 		currentElementType = 'T';
 		for(Thread th:threads){
 			if(th.parent_topic_id == currentElementId)
@@ -346,6 +217,8 @@ public class Forum implements EntryPoint {
 	private void showMessages() {
 		
 		clean_table();
+		forumFlexTable.setText(0, 1, "Author");
+		
 		currentElementType = 'M';
 		for(Message ms:messages){
 			if(ms.parent_thread_id == currentElementId)
@@ -353,7 +226,137 @@ public class Forum implements EntryPoint {
 		}
 		
 	}
+  
+  
+	  /**
+	   * Add a new topic to FlexTable adn db.
+	   */
+	  private void addTopic() {
+		  
+		  	// The constructor does the work of insert the new topic in the database
+		  	final Topics n_top = new Topics( newElementTextBox.getText().toUpperCase() );
+		 
+		  	newElementTextBox.setFocus(true);
+		    
+		  	// TODO: Check there is no topic with the same subject
+		  	/*
+			if (!topics.contains(n_top)){
+				Window.alert("The inserted city: '" + city + "' is not a valid city.");
+			      newElementTextBox.selectAll();
+			      return;
+			}*/
+			
+			if (topics.contains(n_top)){
+				Window.alert("The inserted topic: '" + n_top + "' is already in the system.");
+			      newElementTextBox.selectAll();
+			      return;
+			}
+			
+			// Add the city data	TODO: Add the date of the last message
+		    addDataToSource(n_top.subject, "N\\A" ,null, n_top.id);
 	
+		    // Get the stock price.
+		    showTopics();
+		    newElementTextBox.setText("");
+	
+	  }
+  
+	  /**
+	   * Insert data on the source table
+	   * */
+	  private void addDataToSource(final String col1, final String col2, final String col3, final int id){
+		  
+		  int row = forumFlexTable.getRowCount();
+		    
+		  HorizontalPanel col1ParentPanel = new HorizontalPanel();
+		  final Label column_1 = new Label(col1);
+		  col1ParentPanel.add(column_1);
+		  forumFlexTable.setWidget(row, 0, col1ParentPanel);
+		  
+		  final Label column_2 = new Label(col2);
+		  forumFlexTable.setWidget(row, 1, column_2);
+		  
+		  final Label column_3 = new Label(col3);
+		  forumFlexTable.setWidget(row, 2, column_3);
+		  
+		  // Style
+		  forumFlexTable.getCellFormatter().addStyleName(row, 0, "watchListCell");
+		  forumFlexTable.getCellFormatter().addStyleName(row, 1, "watchListCell");
+		  forumFlexTable.getCellFormatter().addStyleName(row, 2, "watchListCell");
+		  forumFlexTable.getCellFormatter().addStyleName(row, 3, "watchListCell");
+	
+		  // Add a click listener to save the information about the row
+		  column_1.addClickHandler(new ClickHandler() {
+			    public void onClick(ClickEvent event) {
+		    	  currentElementId = id;
+		    	  if(currentElementType == 'P'){
+		    		  load_threads();
+		    	  }else if(currentElementType == 'T'){
+		    		  load_messages();
+		    	  }else{
+		    		  System.out.println("Not able to check current type");
+		    	  }
+		    	  
+		      }
+		    });
+	
+		  // Add a button to remove this stock from the table.
+		  Button removeStockButton = new Button(">");
+		  removeStockButton.addStyleDependentName("remove");
+		  removeStockButton.addClickHandler(new ClickHandler() {
+		    public void onClick(ClickEvent event) {
+		      //int removedIndex = 1;		// TODO: CAMBIAr ESto PARA QUE SIRVA PARA ALGO
+		      //awards.remove(removedIndex);        
+		      //forumFlexTable.removeRow(removedIndex + 1);
+		    	currentElementId = id;
+		    	System.out.println("CLICK");
+		    	  if(currentElementType == 'P'){
+		    		  System.out.println("Loading threads");
+		    		  load_threads();
+		    	  }else if(currentElementType == 'T'){
+		    		  System.out.println("Loading messages");
+		    		  load_messages();
+		    	  }else{
+		    		  System.out.println("Not able to check current type");
+		    	  }
+		    }
+		  });
+		  forumFlexTable.setWidget(row, 3, removeStockButton);
+		  
+	  }
+	
+	  /**
+	   * Class to load the topics int the topic object from the database
+	   */
+	  private void load_topics(){
+	
+		    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
+	
+		    String temp = " cadena ";
+		    dbService.get_topics(temp, new AsyncCallback<String>(){
+		    	public void onSuccess(String result) {
+		    		System.out.println("TOPICS:" + result);
+		    		results = result;
+		    		
+		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+		    		for(int i=0; i<myList.size()-1; i=i+2){
+		    			int obt_id = Integer.parseInt(myList.get(i));
+		    			String obt_topic = myList.get(i+1);
+		    			
+		    			
+		    			topics.add(new Topics(obt_id, obt_topic));
+		    		}
+	
+		    		showTopics();
+		          }
+	
+		          public void onFailure(Throwable caught) {
+		        	Window.alert("RPC to initialize_db() failed.");
+		      		System.out.println("Fail\n" + caught);
+		          }
+		    } );	  
+	  }
+  
 	  /**
 	   * Class to load the threads in the topic object from the database
 	   */
@@ -436,23 +439,6 @@ public class Forum implements EntryPoint {
 		  }	    
 	  }
 	
-	  /**
-	   * Update the Price and Change fields all the rows in the stock table.
-	   *
-	   * @param prices Stock data for all rows.
-	   */
-	/*  private void updateTable(InvestData[] prices) {
-	    for (int i = 0; i < prices.length; i++) {
-	      updateTable(prices[i]);
-	    }
-	
-	    // Display timestamp showing last refresh.
-	    lastUpdatedLabel.setText("Last update : "
-	        + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM).format(new Date()));
-	    
-	    // Clear any errors.
-	    errorMsgLabel.setVisible(false);
-	  }*/
 	  
 	  /**
 	   * Update a single row in the stock table.
@@ -553,7 +539,20 @@ public class Forum implements EntryPoint {
 	    System.out.println(cities);
 	    System.out.println(amounts);
 	}*/
+	  
+	  /**
+	   * Creates a toolbar for the forum
+	   * */
 	  public void createToolbar(){
+		  
+		  back_button();
+		  
+	  }
+	  
+	  /**
+	   * Creates the back button and its functionality
+	   * */
+	  public void back_button(){
 		  
 		  Button backButton = new Button("<");
 		  backButton.addStyleDependentName("remove");
@@ -564,9 +563,22 @@ public class Forum implements EntryPoint {
 		      //forumFlexTable.removeRow(removedIndex + 1);
 		    	
 		    	  if(currentElementType == 'P'){
-		    		  // Do nothing
+		    		  // Do nothing. Topics is the upper node of the hierarchy
 		    	  }else if(currentElementType == 'T'){
-		    		  showTopics();	// Show not update
+		    		  showTopics();	// Show but NOT update. Be careful with that.
+		    	  }else if(currentElementType == 'M'){
+		    		  
+		    		  // Look for the id of the parent topic
+		    		  int index = 0;
+		    		  for(index=0; index < threads.size(); index++){
+		    			  if(threads.get(index).id == currentElementId){
+		    				  currentElementId = threads.get(index).parent_topic_id;
+		    				  index = messages.size();
+		    			  }
+		    		  }
+		    		  
+		    		  // Show the threads of the parent topic
+		    		  showThreads();
 		    	  }else{
 		    		  System.out.println("Not able to check current type");
 		    	  }
@@ -575,6 +587,9 @@ public class Forum implements EntryPoint {
 		  toolbarPanel.add(backButton);
 	  }
 	  
+	  /**
+	   * Cleans the forumFlexTable exept for the headding
+	   * */
 	  public void clean_table(){
 		  for(int i=forumFlexTable.getRowCount()-1; i > 0 ; --i){
 			  forumFlexTable.removeRow(i);

@@ -3,13 +3,40 @@
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 60px;
-  text-align: center;
+	font-size: 2em;
+  	font-weight: bold;
+  	color: #777777;
+  	margin: 40px 0px 60px;
+  	text-align: center;
 }
 
+#container{
+	clear:both;	
+	position: relative;
+  	float: left;
+  	margin-top:12px;
+}
+#img{
+	float:left;
+	height: 152px;
+	width:300px;
+	background: white url(/resources/logo.jpg) left center no-repeat;
+}
+
+#text_header {
+	height: 152px;
+	margin-left:12px;
+	float:left;
+	font-size: 4em;
+  	font-weight: bold;
+  	color: #777777;
+  	margin: 40px 0px 0px;
+  	text-align: center;
+}
+
+#footer {
+  clear: both;
+}
 .sendButton {
   display: block;
   font-size: 16pt;

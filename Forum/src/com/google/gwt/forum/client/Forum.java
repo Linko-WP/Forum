@@ -525,6 +525,8 @@ public class Forum implements EntryPoint {
 		  login_zone();
 		  vp.clear();
 		  vp.removeFromParent();
+		  
+		  //TODO: bug. cuando hace loggout vuelve a hacer login inmediatamente :S
 	  }
 	  
 	  /**

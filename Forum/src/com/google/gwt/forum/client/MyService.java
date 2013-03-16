@@ -15,7 +15,7 @@ public interface MyService extends RemoteService {
   
   //Getting part
   public ArrayList<Topics> get_topics(String s);
-  public String get_users(String s);
+  public ArrayList<User> get_users(String s);
   
   
   public ArrayList<Message> get_messages(Integer s);

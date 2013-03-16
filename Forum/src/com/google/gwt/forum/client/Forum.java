@@ -808,6 +808,22 @@ public class Forum implements EntryPoint {
 		public void pruebas_mary(){
 			
 			
+			//TODO: check si funciona el get users
+			 MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
+				
+			    String temp = " cadena ";
+			    dbService.get_users(temp, new AsyncCallback<ArrayList<User>>(){
+			    	public void onSuccess(ArrayList<User> result) {
+			    		System.out.println("TOPICS:" + result);
+
+			    		showTopics();
+			          }
+		
+			          public void onFailure(Throwable caught) {
+			        	Window.alert("RPC to initialize_db() failed.");
+			      		System.out.println("Fail\n" + caught);
+			          }
+			    } );	  
 			
 		};
 

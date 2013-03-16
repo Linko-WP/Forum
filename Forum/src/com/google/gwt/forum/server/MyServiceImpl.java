@@ -231,8 +231,9 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Obtains the users from the database
 	 * */
-	public String get_users(String s) {
+	public ArrayList<User> get_users(String s) {
 	  
+	  ArrayList<User> users = new ArrayList<User>();
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
@@ -253,7 +254,19 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	
 	  disconnect(conn);
 	  
-    return str;
+	  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+		for(int i=0; i<myList.size()-3; i=i+4){
+			String user = myList.get(i);
+			String mail = myList.get(i+1);
+			String pass = myList.get(i+22);
+			Boolean admin = Boolean.parseBoolean(myList.get(i+3));
+
+			
+			users.add(new User(user, mail, pass, admin));
+		}
+		
+		
+    return users;
   }
 	/**
 	 * Obtains the threads from the database

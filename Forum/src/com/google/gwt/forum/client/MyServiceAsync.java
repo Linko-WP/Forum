@@ -11,7 +11,7 @@ interface MyServiceAsync {
   
   //Getting part
   public void get_topics(String s, AsyncCallback<ArrayList<Topics>> callback);
-  public void get_users(String s, AsyncCallback<String> callback);
+  public void get_users(String s, AsyncCallback<ArrayList<User>> callback);
   public void get_threads(Integer s, AsyncCallback<ArrayList<Thread>> callback);
   public void get_messages(Integer s, AsyncCallback<ArrayList<Message>> callback);
   

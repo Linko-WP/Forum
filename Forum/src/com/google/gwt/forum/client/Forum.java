@@ -68,7 +68,7 @@ public class Forum implements EntryPoint {
   private int topics_index = -1;
   private User current_user = null;
   
-  
+  MyServiceAsync dbService = null;
   
   
   /**
@@ -76,10 +76,9 @@ public class Forum implements EntryPoint {
    */
   public void onModuleLoad() {
 	  
-
-
     setUncaughtExceptionHandler();	// Useful!
         
+    dbService = (MyServiceAsync) GWT.create(MyService.class);
 	// Setting panels
 	RootPanel.get().setWidth("1000px");
 	mainPanel.setWidth("1000px");
@@ -124,7 +123,6 @@ public class Forum implements EntryPoint {
     mainPanel.add(lastUpdatedLabel);
 
 
-	
     // Add panels to the root panel
 	RootPanel.get().add(toolbarPanel);
     RootPanel.get().add(mainPanel);
@@ -362,22 +360,19 @@ public class Forum implements EntryPoint {
 	   */
 	  private void load_topics(){
 		  	
-		    MyServiceAsync dbService = (MyServiceAsync) GWT.create(MyService.class);
-	
-		    String temp = " cadena ";
-		    dbService.get_topics(temp, new AsyncCallback<ArrayList<Topics>>(){
-		    	public void onSuccess(ArrayList<Topics> result) {
-		    		System.out.println("TOPICS:" + result);
-		    		topics = result;
+		dbService.get_topics(" cadena ", new AsyncCallback<ArrayList<Topics>>(){
+			public void onSuccess(ArrayList<Topics> result) {
+		    		
+		    	topics = result;
 		 
-		    		showTopics();
-		          }
-	
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("RPC to initialize_db() failed.");
-		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );	  
+		    	showTopics();
+		    }
+		
+		    public void onFailure(Throwable caught) {
+		    	Window.alert("Load of TOPICS failed.");
+		  		System.out.println("Fail\n" + caught);
+		    }
+		});	  
 	  }
   
 	  /**
@@ -385,29 +380,21 @@ public class Forum implements EntryPoint {
 	   */
 	  private void load_threads(){
 
-		  final ArrayList<Thread> result = new ArrayList<Thread>();	
-		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-		  System.out.println(" :"+currentElementId +" "+ topics_index);  
 		  if( (currentElementId != -1) ){		    	
 
-		    Service.get_threads(currentElementId, new AsyncCallback<ArrayList<Thread>>(){
+		    dbService.get_threads(currentElementId, new AsyncCallback<ArrayList<Thread>>(){
 		    	public void onSuccess(ArrayList<Thread> results) {
-		    		System.out.println("RESULTADO GET THREADS:" + results);	    		
-		    		// Save the threads in their parent topic arraylist
-		    		threads = results;
-		    		for(Thread x:results)
-		    			System.out.println("ID: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
-		    		for(Thread x:threads)
-		    			System.out.println("ID: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
-		    		showThreads();
 		    		
-		          }
+		    		threads = results;
+		    		
+		    		showThreads();
+		        }
 		    	
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("Threads retrive attempt failed.");
+		        public void onFailure(Throwable caught) {
+		        	Window.alert("THREADS retrive attempt failed.");
 		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );		    
+		        }
+		    });		    
 		  }	    
 	  }
 	  
@@ -416,29 +403,21 @@ public class Forum implements EntryPoint {
 	   * Class to load the threads in the topic object from the database
 	   */
 	  private void load_messages(){
-
-		  final ArrayList<Message> result = new ArrayList<Message>();	
-		  MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 		    
 		  if( (currentElementId != -1) ){		    	
 
-		    Service.get_messages(currentElementId, new AsyncCallback<ArrayList<Message>>(){
+		    dbService.get_messages(currentElementId, new AsyncCallback<ArrayList<Message>>(){
 		    	public void onSuccess(ArrayList<Message> results) {
-		    		System.out.println("RESULTADO GET Messages:" + results.get(0).content);
-	
-		    		// Save the threads in their parent topic arraylist
+		    		
 		    		messages = results;
-		    		for(Message x:messages){
-		    			System.out.println("ID: "+x.id+" Content: "+x.content+
-		    					" Parent: "+x.parent_thread_id+" Date: "+x.time_stamp+" Author:"+x.author);
-		    		}
+		    		
 		    		showMessages();
-		          }
-		          public void onFailure(Throwable caught) {
+		        }
+		        public void onFailure(Throwable caught) {
 		        	Window.alert("Messages retrieve attempt failed.");
 		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );		    
+		        }
+		    });		    
 		  }	    
 	  }
 	

@@ -43,6 +43,7 @@ public class Forum implements EntryPoint {
   private HorizontalPanel insertPanel = new HorizontalPanel();
   private HorizontalPanel toolbarPanel = new HorizontalPanel();
   private HorizontalPanel loginPanel = new HorizontalPanel();
+  private VerticalPanel vp = new VerticalPanel();
   
   private FlexTable forumFlexTable = new FlexTable();
   private TextBox username_textbox = new TextBox();
@@ -578,6 +579,11 @@ public class Forum implements EntryPoint {
 	   * */
 	  public void logout(){
 		  current_user = null;
+		  
+		  loginPanel.clear();
+		  loginPanel.removeFromParent();
+		  login_zone();
+		  vp.clear();
 	  }
 	  
 	  /**
@@ -598,9 +604,12 @@ public class Forum implements EntryPoint {
 				  System.out.println("RESULTADO check user:" + result.user_name);
 	    		
 				  current_user = result;
+				  
+				  // Things to be done when a user logs in
 				  loginPanel.clear();
 				  loginPanel.removeFromParent();
-				  logged_message();	
+				  logged_message();
+				  new_message_panel();
 	          }
 	    	
 	          public void onFailure(Throwable caught) {
@@ -627,6 +636,10 @@ public class Forum implements EntryPoint {
 			  }
 			  // Add here another logged functionalities
 			  logged_message();
+			  
+			  // This is not part of the toolbar, but it should be shown
+			  // only when the user is logged
+			  new_message_panel();
 		  }
 		  
 		  
@@ -755,6 +768,33 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	  /**
+	   * Creates and shows the new_message_panel
+	   * */
+	  public void new_message_panel(){
+		  
+		  final RichTextArea textArea = new RichTextArea();
+		  final RichTextToolbar toolBar = new RichTextToolbar(textArea);
+	      textArea.setWidth("100%");  
+	      vp.add(toolBar);
+	      vp.add(textArea);
+	      vp.add(insert_text_button);
+	      vp.addStyleName("messagesPanel");
+		  
+	      //Text Editor Panel
+	  	  RootPanel.get().add(vp);
+
+		  // Listen for mouse events on the Login button.
+		  insert_text_button.addClickHandler(new ClickHandler() {
+			  public void onClick(ClickEvent event) { 
+				  //TODO: obtener el parent_topic (yo diria mas bien parent_thread, a ver si esto rula)
+				  Message insert = new Message(textArea.getText(), currentElementId, current_user.user_name);
+				  
+				  textArea.setText(""); //TODO: limpiar el texto despues de guardarlo
+			  }
+		  });
+	  }
+	  
+	  /**
 	   * Cleans the forumFlexTable exept for the headding
 	   * */
 	  public void clean_table(){
@@ -797,26 +837,7 @@ public class Forum implements EntryPoint {
 		public void pruebas_mary(){
 			
 			
-			final RichTextArea textArea = new RichTextArea();
-			  final RichTextToolbar toolBar = new RichTextToolbar(textArea);
-			  VerticalPanel vp = new VerticalPanel();
-		      textArea.setWidth("100%");  
-		      vp.add(toolBar);
-		      vp.add(textArea);
-		      vp.add(insert_text_button);
-			  
-		      //Text Editor Panel
-		  	mainPanel.add(vp);
-
-			// Listen for mouse events on the Login button.
-			  insert_text_button.addClickHandler(new ClickHandler() {
-				  public void onClick(ClickEvent event) { 
-					  //TODO: obtener el parent_topic
-					   //TODO: limpiar el texto despues de guardarlo
-					  int topic =1 ;
-					  Message insert = new Message(textArea.getText(), topic, current_user.user_name);
-				  }
-			  });
+			
 		};
 
 

@@ -329,7 +329,7 @@ public class Forum implements EntryPoint {
 		currentElementType = 'M';
 		for(Message ms:messages){
 			if(ms.parent_thread_id == currentElementId)
-				addDataToSource(ms.author.user_name, ms.content, ms.time_stamp.toString(), ms.id);
+				addDataToSource( ms.content, ms.author, ms.time_stamp.toString(), ms.id);
 		}
 		
 	}
@@ -351,16 +351,16 @@ public class Forum implements EntryPoint {
 		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
 		    		for(int i=0; i<myList.size()-2; i=i+3){
 		    			
-		    			Thread output = new Thread(Integer.parseInt(myList.get(0)), currentElementId, myList.get(1), Integer.parseInt(myList.get(2)));
+		    			Thread output = new Thread(Integer.parseInt(myList.get(i)), currentElementId, myList.get(i+1), Integer.parseInt(myList.get(i+2)));
 		    			result.add(output);
 		    		}
 		    		
 		    		// Save the threads in their parent topic arraylist
 		    		threads = result;
+		    		for(Thread x:result)
+		    			System.out.println("ID: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
 		    		for(Thread x:threads)
-		    			System.out.println(x.title);
-		    		for(Thread x:threads)
-		    			System.out.println("DI: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
+		    			System.out.println("ID: "+x.id+" Subject: "+x.title+" N.Messages: "+x.no_messages+" Parent: "+x.parent_topic_id);
 		    		showThreads();
 		    		
 		          }
@@ -389,13 +389,11 @@ public class Forum implements EntryPoint {
 		    		System.out.println("RESULTADO GET Messages:" + results);
 		    		
 		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-2; i=i+3){
-		    			int id_n = Integer.parseInt(myList.get(0));
-		    		      Timestamp ts = Timestamp.valueOf(myList.get(1));
-
-		    		        
-		    			String ct = myList.get(2);
-		    			String a_name = myList.get(3);
+		    		for(int i=0; i<myList.size()-3; i=i+4){
+		    			int id_n = Integer.parseInt(myList.get(i));
+		    		    Timestamp ts = Timestamp.valueOf(myList.get(i+1));  
+		    			String ct = myList.get(i+2);
+		    			String a_name = myList.get(i+3);
 		    			Message output = new Message(id_n, ts, ct, currentElementId, a_name);
 
 		    			result.add(output);

@@ -17,7 +17,7 @@ public class Message {
 	int parent_thread_id;
 	Timestamp time_stamp;
 	String content;
-	User author;
+	String author;
 	
 	
 	//TODO: autor e id de la thread
@@ -38,14 +38,14 @@ public class Message {
 	 * @param message
 	 * @param user
 	 */
-	Message(String message, User user){
+	Message(String message, String user){
 		//TODO: obtener id de la base de datos
 		id = -1;
 		parent_thread_id= -1;
 		//TODO: comprobar que se establece la fecha correcta
 		time_stamp = null;
 		content = message;
-		author = user;	
+		author = user;
 
 	}
 	
@@ -62,8 +62,7 @@ public class Message {
 		time_stamp = ts;
 		content = cont;
 		parent_thread_id= p_id;
-		
-		//TODO: hacer algo con el author author.name = auth;	
+		author = auth;
 
 	}
 	
@@ -80,7 +79,7 @@ public class Message {
 		
 	// 	String aut = author.user_name;
 		
-		//TODO: obtener el autor de algœn sitio
+		//TODO: obtener el autor de algun sitio
 		//author = user;	
 		
 			ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_thread_id), time, message, aut));
@@ -128,7 +127,7 @@ public class Message {
 		    		        
 		    			String ct = myList.get(2);
 		    			String a_name = myList.get(3);
-		    			Message output = new Message(i, ts, ct, parent_id, a_name);
+		    			Message output = new Message(id_n, ts, ct, parent_id, a_name);
 
 		    			result.add(output);
 

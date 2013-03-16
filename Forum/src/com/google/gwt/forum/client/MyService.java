@@ -28,4 +28,6 @@ public interface MyService extends RemoteService {
   
   //Deleting Part
   public String erase_message(Integer s);
+  public String erase_thread(Integer s);
+  public String erase_topic(Integer s);
 }

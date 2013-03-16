@@ -713,10 +713,12 @@ public class Forum implements EntryPoint {
 	    });
 	    
 	  }
-	  
-	public void pruebas_mary(){
-					
-	};
+		public void pruebas_mary(){
+			
+			
+		};
+
 
 }
+
 

@@ -24,4 +24,6 @@ interface MyServiceAsync {
   
   //Deleting part
   public void erase_message(Integer s, AsyncCallback<String> callback);
+  public void erase_thread(Integer s, AsyncCallback<String> callback);
+  public void erase_topic(Integer s, AsyncCallback<String> callback);
 }

@@ -62,9 +62,8 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  Connection conn = connect();	// Connect to database
 	  try {
 
-	     Statement stat = (Statement) conn.createStatement();
-	     
-	     ResultSet rs = stat.executeQuery("delete from messages where message_id = "+id+";");
+	     Statement stat = (Statement) conn.createStatement();	     
+	     stat.executeUpdate("delete from messages where message_id = "+id+";");
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
@@ -86,12 +85,52 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 
 	     Statement stat = (Statement) conn.createStatement();
 	     
-	     ResultSet rs = stat.executeQuery("delete from threads where thread_id = "+id+";");
+	     stat.executeUpdate("delete from threads where thread_id = "+id+";");
+	     stat.executeUpdate("delete from messages where parent_thread_id = "+id+";");
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
+	
+	  disconnect(conn);
+	  
+    return str;
+  }
+	
+
+	/**
+	 * */
+	public String erase_topic(Integer id) {
+	  
+	  String str = "";
+	  Connection conn = connect();	// Connect to database
+	  try {
+
+	     Statement stat = (Statement) conn.createStatement();
+	     Statement consult = (Statement) conn.createStatement();
+	     stat.executeUpdate("delete from topics where topic_id = "+id+";");
+	     ResultSet thread_id = consult.executeQuery("select thread_id from threads"+
+					" where parent_topic_id="+id+";");
+	     
+		     while (thread_id.next()) {
+		    	 str +=  thread_id.getString("thread_id");
+		    	 str += ", ";  	
+		     }
+		     
+		   //Format the result into a User object if not null
+			  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+	    		for(int i=0; i<myList.size(); i++){
+	    			Integer t_id = Integer.parseInt(myList.get(i));
+	    			stat.executeUpdate("delete from messages where parent_thread_id = "+t_id+";");
+	    		}
+			     
+	    		
+		     stat.executeUpdate("delete from threads where parent_topic_id = "+id+";");
+	     } catch (Exception e) {
+	    	 str += e.toString();
+	    	 e.printStackTrace();
+	     } 
 	
 	  disconnect(conn);
 	  

@@ -23,7 +23,7 @@ public interface MyService extends RemoteService {
   
   //Inserting into the database
   public int insert_topic(Topics topic);
-  public String insert_message(Message msj);
+  public Message insert_message(Message msj);
   public int insert_thread(Thread thread);
   public String insert_user(User usr);
   public String insert_into_db(String table, String values);

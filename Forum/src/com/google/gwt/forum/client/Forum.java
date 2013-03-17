@@ -649,14 +649,14 @@ public class Forum implements EntryPoint {
 		  insert_text_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) { 
 				  //TODO: obtener el parent_topic (yo diria mas bien parent_thread, a ver si esto rula)
-				  final Message m = new Message(textArea.getText(), currentElementId, current_user.user_name);
+				  Message m = new Message(textArea.getText(), currentElementId,current_user.user_name);
 				  
-				  dbService.insert_message(m, new AsyncCallback<String>(){		// Add message to the bd
+				  dbService.insert_message(m, new AsyncCallback<Message>(){		// Add message to the bd
 					  
-					  public void onSuccess(String result) {
-						  System.out.println("Mensaje insertado: " + m.id);
-						  get_timestamp(m);
+					  public void onSuccess(Message result) {				  
+						  messages.add(result);
 						  textArea.setText("");
+						  refresh();
 						  
 			          }
 			    	
@@ -711,26 +711,7 @@ public class Forum implements EntryPoint {
 	    
 	  }
 	  
-	  public void get_timestamp(final Message m){
-		  System.out.print("\nID RESULT: "+ m.id);
-		 
-		  dbService.obtain_time_stamp(m.id, new AsyncCallback<Timestamp>(){		// Add message to the bd
-		  
-			  public void onSuccess(Timestamp result) {
-				  m.time_stamp = result;
-				  System.out.print("\nTIMESTAMP RESULT: "+ result);
-				  messages.add(m);	// Add it to the local messages vector
-				  refresh();
-	          }
-	          public void onFailure(Throwable caught) {
-	        	Window.alert("New message attempt failed.");
-	      		System.out.println("Fail\n" + caught);
-	          }
-		  } );
-		  System.out.print("\nTIMESTAMP ASYNC: "+ m.time_stamp);
-
-	  }
-	  
+	 	  
 		public void pruebas_mary(){
 			/*
 			Topics top = new Topics("HOLAAAAA");

@@ -361,7 +361,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Inserts a new message into the database
 	 * */
-	public String insert_message(Message msg) {
+	public Message insert_message(Message msg) {
 	
 	  int auto_id = -1; //If it's null
 	  String str = "";  
@@ -379,7 +379,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	      rs.next();
 	      auto_id = rs.getInt(1);
 		  msg.id = auto_id;
-	   //   msg.time_stamp = obtain_time_stamp(auto_id);
+	      msg.time_stamp = obtain_time_stamp(auto_id);
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
@@ -394,7 +394,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  //TODO: eliminar este system.print
 	//  System.out.print("TIME STAMP EN INSER MSG " + msg.time_stamp);
 	  
-    return str;
+    return msg;
   }
 	
 	/**

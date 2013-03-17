@@ -72,11 +72,11 @@ public class Message implements Serializable{
 	 * @param user
 	 */
 	Message(String message, int p_id, String user){
-		id = -1;
+		//id = -1;
 		parent_thread_id= p_id;	
 		content = message;
 		author = user;
-		time_stamp = null;
+		//time_stamp = null;
 
 	}
 	

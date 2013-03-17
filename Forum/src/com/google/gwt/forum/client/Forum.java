@@ -47,7 +47,7 @@ public class Forum implements EntryPoint {
 	private ArrayList<Topics> topics  = new ArrayList<Topics>();
 	private ArrayList<Thread> threads = new ArrayList<Thread>();
 	private ArrayList<Message> messages = new ArrayList<Message>();
-	// private ArrayList<Topics> results;
+	private ArrayList<User> users = new ArrayList<User>();	// Only for admin user
 	  
 	//private static final int REFRESH_INTERVAL = 5000; // ms
 	private Label errorMsgLabel = new Label();
@@ -155,7 +155,7 @@ public class Forum implements EntryPoint {
 	}
 	
 	/**
-	 * Show the list of topics.
+	 * Show the list of messages.
 	 */
 	private void showMessages() {
 		
@@ -166,6 +166,21 @@ public class Forum implements EntryPoint {
 		for(Message ms:messages){
 			if(ms.parent_thread_id == currentElementId)
 				addDataToSource( ms.content, ms.author, ms.time_stamp.toString(), ms.id);
+		}
+		
+	}
+	
+	/**
+	 * Show the list of usres.
+	 */
+	private void showUsers() {
+		
+		clean_table();
+		
+		currentElementType = 'U';
+		for(User x:users){
+			if(x != null)
+				addDataToSource( x.user_name, x.email, x.is_admin.toString(), 0);
 		}
 		
 	}
@@ -258,7 +273,7 @@ public class Forum implements EntryPoint {
 		});  
 	  
 		// The option you see depends on who is logged in
-		optionsPanel.add(enterButton);
+		if(currentElementType != 'M' && currentElementType != 'U') optionsPanel.add(enterButton);
 		if( current_user != null ){	// If someone is logged in
 			if(!current_user.is_admin) optionsPanel.add(removeButton);
 		}
@@ -266,10 +281,10 @@ public class Forum implements EntryPoint {
 	  
 	}
 	
-	  /**
-	   * Removes a row from the local array
-	   * */
- public void remove_row(int id, char type){
+	/**
+	 * Removes a row from the local array
+	 * */
+	public void remove_row(int id, char type){
 		  
 		  if(type == 'P'){
 			  for(Topics x:topics){
@@ -305,6 +320,8 @@ public class Forum implements EntryPoint {
 				  
 				  return;
 			  }
+		  }else if(type == 'U'){
+			  // TODO: Eliminar usuarios tambien tiene que ser una posibilidad para el administrador
 		  }else{
 			  System.out.println("Error: fail when trying to erase a row.");
 		  }
@@ -356,7 +373,7 @@ public class Forum implements EntryPoint {
 	  
 	  
 	  /**
-	   * Class to load the threads in the topic object from the database
+	   * Class to load the messages in the topic object from the database
 	   */
 	  private void load_messages(){
 		    
@@ -376,6 +393,26 @@ public class Forum implements EntryPoint {
 		    });		    
 		  }	    
 	  }  
+	  
+	  
+	  /**
+	   * Class to load the users in the topic object from the database
+	   */
+	  private void load_users(){   	
+
+	    dbService.get_users(" cadena ", new AsyncCallback<ArrayList<User>>(){
+	    	public void onSuccess(ArrayList<User> results) {
+	    		
+	    		users = results;
+	    		
+	    		showUsers();
+	        }
+	        public void onFailure(Throwable caught) {
+	        	Window.alert("Messages retrieve attempt failed.");
+	      		System.out.println("Fail\n" + caught);
+	        }
+	    });		        
+	  }
 	  
 	  
 	  /**
@@ -441,6 +478,7 @@ public class Forum implements EntryPoint {
 		  }else{
 			  if(!current_user.is_admin){
 				  // Ver usuarios (para poder gestionarlos)
+				  user_list_button();
 			  }
 			  // Add here another logged functionalities
 			  logged_message();
@@ -557,7 +595,7 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	  /**
-	   * Creates the back button and its functionality
+	   * Creates the refresh button and its functionality
 	   * */
 	  public void refresh_button(){
 		  
@@ -570,6 +608,22 @@ public class Forum implements EntryPoint {
 		  });
 		  
 		  toolbarPanel.add(refreshButton);
+	  }
+	  
+	  /**
+	   * Creates the "see users" button and its functionality
+	   * */
+	  public void user_list_button(){
+		  
+		  Button userListButton = new Button("User List");
+		  userListButton.addStyleDependentName("userList");
+		  userListButton.addClickHandler(new ClickHandler() {
+		    public void onClick(ClickEvent event) {
+		    	// see_user_list();
+		    }
+		  });
+		  
+		  toolbarPanel.add(userListButton);
 	  }
 	  
 	  /**
@@ -592,9 +646,10 @@ public class Forum implements EntryPoint {
 		  insert_text_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) { 
 				  //TODO: obtener el parent_topic (yo diria mas bien parent_thread, a ver si esto rula)
-				  new Message(textArea.getText(), currentElementId, current_user.user_name);
+				  new Message(textArea.getText(), currentElementId, current_user.user_name);	// Save on BD
 				  
 				  textArea.setText(""); //TODO: limpiar el texto despues de guardarlo
+				  refresh();
 			  }
 		  });
 	  }

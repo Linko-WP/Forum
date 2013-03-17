@@ -15,11 +15,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class User implements Serializable{
 	
-	String user_name;
-	String email;
+	public String user_name;
+	public String email;
 	//TODO : password deberia estar codificado somehow
-	String password;
-	Boolean is_admin;
+	public String password;
+	public Boolean is_admin;
 	
 	/**
 	 * Default constructor
@@ -62,7 +62,7 @@ public class User implements Serializable{
 		ArrayList<String> param = new ArrayList<String>(Arrays.asList(name, mail, pass, ad));
 		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.insert_user(param, new AsyncCallback<String>(){
+		    Service.insert_user(this, new AsyncCallback<String>(){
 		    	public void onSuccess(String result) {
 		        }
 		        public void onFailure(Throwable caught) {

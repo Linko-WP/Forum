@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class Topics implements Serializable{
 	int id;
-	String subject;
+	public String subject;
 	ArrayList<Thread> threads;
 	
 	/**
@@ -47,7 +47,7 @@ public class Topics implements Serializable{
 
 		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-	    Service.insert_topic(sub, new AsyncCallback<Integer>(){
+	    Service.insert_topic(this, new AsyncCallback<Integer>(){
 	    	public void onSuccess(Integer obt_id) {
 	    		id = obt_id;
 	          }

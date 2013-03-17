@@ -16,11 +16,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Contains an array of messages inserted into the thread.
  */
 public class Thread implements Serializable{
-	int id;
-	String title;
+	
+	public int id;
+	public String title;
 	//TODO: number of messages included in the thread
-	int no_messages;
-	int parent_topic_id;
+	public int no_messages;
+	public int parent_topic_id;
 	ArrayList<Message> messages;
 	
 	/**
@@ -80,7 +81,7 @@ public class Thread implements Serializable{
 		ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_topic_id), tit));
 		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-	    Service.insert_thread(param, new AsyncCallback<Integer>(){
+	    Service.insert_thread(this, new AsyncCallback<Integer>(){
 	    	public void onSuccess(Integer obt_id) {
 	    		System.out.println("ID AUTOGENERADO:" + obt_id);
 	    		id = obt_id;

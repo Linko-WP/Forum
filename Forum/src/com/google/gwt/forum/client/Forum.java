@@ -641,12 +641,10 @@ public class Forum implements EntryPoint {
 	  }
 		public void pruebas_mary(){
 			
-			dbService.count_messages(5, new AsyncCallback<Integer>(){
+			Topics top = new Topics("HOLAAAAA");
+			dbService.insert_topic(top, new AsyncCallback<Integer>(){
 		    	public void onSuccess(Integer results) {
 		    		
-		    		System.out.println("NUMBERS: " + results);
-		    		
-		    		showMessages();
 		        }
 		        public void onFailure(Throwable caught) {
 		        	Window.alert("Messages retrieve attempt failed.");

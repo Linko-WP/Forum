@@ -17,10 +17,10 @@ interface MyServiceAsync {
   public void get_messages(Integer s, AsyncCallback<ArrayList<Message>> callback);
   
   //Inserting into the database
-  public void insert_topic(String s, AsyncCallback<Integer> callback);
-  public void insert_message(ArrayList<String> s, AsyncCallback<String> callback);
-  public void insert_thread(ArrayList<String> s, AsyncCallback<Integer> callback);
-  public void insert_user(ArrayList<String> s, AsyncCallback<String> callback);
+  public void insert_topic(Topics topic, AsyncCallback<Integer> callback);
+  public void insert_message(Message msj, AsyncCallback<String> callback);
+  public void insert_thread(Thread thread, AsyncCallback<Integer> callback);
+  public void insert_user(User usr, AsyncCallback<String> callback);
   public void insert_into_db(String table, String values, AsyncCallback<String> callback);
   
   //Deleting from the database

@@ -333,13 +333,14 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new topic into the database
 	 * */
-	public int insert_topic(String s) {
+	public int insert_topic(Topics topic) {
 	
 	  int auto_id = -1; //If it's null
 	  String str = "";
+	  String topic_sub = topic.subject;
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  String sql = "INSERT INTO topics(name) values('"+ s +"');";
+		  String sql = "INSERT INTO topics(name) values('"+ topic_sub +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 	     prep.execute();
@@ -359,16 +360,16 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Inserts a new message into the database
 	 * */
-	public String insert_message(ArrayList<String> s) {
+	public String insert_message(Message msg) {
 	
 	  int auto_id = -1; //If it's null
 	  String str = "";  
-	  int parent_id = Integer.parseInt(s.get(1));
+	  int parent_id = msg.parent_thread_id;
 	  
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO messages(parent_thread_id, content, author_username) values("
-				  	+parent_id+", '"+ s.get(0) +"', '"+ s.get(2) +"');";	  
+				  	+parent_id+", '"+ msg.content +"', '"+ msg.author +"');";	  
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -383,10 +384,12 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  } 
 	  
 	  disconnect(conn);
-	  str += obtain_time_stamp(auto_id);
+	  msg.id = auto_id;
+	  msg.time_stamp = Timestamp.valueOf(obtain_time_stamp(auto_id));
+
 	  //TODO: check que pasa con el texto rico.
 	  //TODO: eliminar este system.print
-	  System.out.print("INSER MESSAGE: " + str);
+	  System.out.print("INSERT MESSAGE: " + str);
 	  
     return str;
   }
@@ -394,28 +397,28 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new thread into the database
 	 * */
-	public int insert_thread(ArrayList<String> s) {
+	public int insert_thread(Thread thread) {
 	
-	  int parent_id = Integer.parseInt(s.get(0));
+	  int parent_id = thread.parent_topic_id;
 	  int auto_id = -1; //If it's null
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-		  String sql = "INSERT INTO threads(parent_topic_id, name) values("+parent_id+", '"+ s.get(1) +"');";
+		  String sql = "INSERT INTO threads(parent_topic_id, name) values("+parent_id+", '"+ thread.title +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 	     prep.execute();     
 	     ResultSet rs= prep.getGeneratedKeys();
 	     rs.next();
-	     auto_id = rs.getInt(1);
-	     
+	     thread.id= rs.getInt(1);
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
 	  disconnect(conn);
 	  
+	  thread.no_messages=count_messages(thread.id);
     return auto_id;
   }
 	
@@ -423,11 +426,11 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new user into the database
 	 * */
-	public String insert_user(ArrayList<String> s) {
-		String name = s.get(0);
-		String email = s.get(1);
-		String password = s.get(2);
-		Boolean admin = Boolean.parseBoolean(s.get(3));
+	public String insert_user(User usr) {
+		String name = usr.user_name;
+		String email = usr.email;
+		String password = usr.password;
+		Boolean admin = usr.is_admin;
 		String str = "";
 		
 	  Connection conn = connect();	// Connect to database

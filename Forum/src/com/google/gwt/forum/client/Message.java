@@ -18,11 +18,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class Message implements Serializable{
 	
-	int id;
-	int parent_thread_id;
-	Timestamp time_stamp;
-	String content;
-	String author;
+	public int id;
+	public int parent_thread_id;
+	public Timestamp time_stamp;
+	public String content;
+	public String author;
 	
 	/**
 	 * Default constructor.
@@ -79,7 +79,7 @@ public class Message implements Serializable{
 		ArrayList<String> param = new ArrayList<String>(Arrays.asList( message, String.valueOf(parent_thread_id),user));
 	    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-	    Service.insert_message(param, new AsyncCallback<String>(){
+	    Service.insert_message(this, new AsyncCallback<String>(){
 	    	public void onSuccess(String results) {	
 	    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
 	    		for(int i=0; i<myList.size()-2; i=i+3){

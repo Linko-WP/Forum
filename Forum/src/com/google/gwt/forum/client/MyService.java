@@ -20,10 +20,10 @@ public interface MyService extends RemoteService {
   public ArrayList<Thread> get_threads(Integer s);
   
   //Inserting into the database
-  public int insert_topic(String s);
-  public String insert_message(ArrayList<String> s);
-  public int insert_thread(ArrayList<String> s);
-  public String insert_user(ArrayList<String> s);
+  public int insert_topic(Topics topic);
+  public String insert_message(Message msj);
+  public int insert_thread(Thread thread);
+  public String insert_user(User usr);
   public String insert_into_db(String table, String values);
   
   //Deleting from the database

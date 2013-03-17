@@ -7,7 +7,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 interface MyServiceAsync {
 	
-  public void initialize_db(String s, AsyncCallback<String> callback);
   public void check_user(String username, String password, AsyncCallback<User> callback);
   public void count_messages(Integer id, AsyncCallback<Integer> callback);
   public void  obtain_time_stamp(Integer auto_id, AsyncCallback<Timestamp> callback);

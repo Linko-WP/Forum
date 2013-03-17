@@ -135,7 +135,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  Connection conn = connect();	// Connect to database
 	  try {
 	     Statement stat = (Statement) conn.createStatement();	     
-	     stat.executeUpdate("delete from users where usermane = '"+ user_name +"';");
+	     stat.executeUpdate("delete from users where username = '"+ user_name +"';");
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();

@@ -619,7 +619,7 @@ public class Forum implements EntryPoint {
 		  userListButton.addStyleDependentName("userList");
 		  userListButton.addClickHandler(new ClickHandler() {
 		    public void onClick(ClickEvent event) {
-		    	// see_user_list();
+		    	load_users();
 		    }
 		  });
 		  

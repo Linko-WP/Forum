@@ -100,17 +100,13 @@ public class Forum implements EntryPoint {
 	    mainPanel.add(addPanel);
 	    mainPanel.add(insertPanel);
 	    mainPanel.add(lastUpdatedLabel);
-	
-	
+		
 	    // Add panels to the root panel
 		RootPanel.get().add(toolbarPanel);
 	    RootPanel.get().add(mainPanel);
-	
-	    
+		    
 	    // Adding topics to the flextable
 		load_topics();
-		
-		//pruebas_mary();
 	}
 
 	/**
@@ -276,8 +272,8 @@ public class Forum implements EntryPoint {
 		// The option you see depends on who is logged in
 		if(currentElementType != 'M' && currentElementType != 'U') optionsPanel.add(enterButton);
 		if( current_user != null ){	// If someone is logged in
-			if(!current_user.is_admin) 
-				optionsPanel.add(removeButton);		// TODO: Comprobar condicion aqui IMPORTANTE
+			if(current_user.is_admin) 
+				optionsPanel.add(removeButton);
 		}
 		forumFlexTable.setWidget(row, 3, optionsPanel);
 	  
@@ -353,12 +349,9 @@ public class Forum implements EntryPoint {
 	   * Removes an user from the list and the database
 	   * */
 	  public void remove_user(String username){
-		  
-		  // TODO: Eliminar usuarios no funciona bien, desaparece cuando te vuelves a loguear como
-		  // admin y ademas no elimina al usuario
-		  // TODO: Refresh en users no funciona
+
 		  for(User x:users){
-			  	// TODO: Check is_admin condition
+			  	
 			    if(x.user_name.equals(username) && !x.is_admin){ 	// If its the required one and it's not admin
 			    	users.remove(x);
 			 
@@ -532,9 +525,8 @@ public class Forum implements EntryPoint {
 		  if(current_user == null){
 			  login_zone();
 		  }else{
-			  System.out.println("aslfkj" + current_user.is_admin.toString() );
-			  // TODO: Check this
-			  if(current_user.is_admin == true){
+			  
+			  if(current_user.is_admin){
 				  // Ver usuarios (para poder gestionarlos)
 				  System.out.println("Is admin");
 				  user_list_button();
@@ -890,15 +882,8 @@ public class Forum implements EntryPoint {
 				  logout();
 				
 			  }
-		  });
-		  
+		  });  
 	 }
-		public void pruebas_mary(){
-			// TODO: Arreglar margen izquierdo panel del login
-
-			
-			
-		};
 
 
 }

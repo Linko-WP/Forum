@@ -7,7 +7,9 @@ import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.user.client.ui.Image;
 
 public interface Resources extends ClientBundle {
-	 
+//TODO: eliminar esta clase si no la vamos a usar
+	
+	
 	//@Source("./resources/logo.png") 
 	//  ImageResource logo();
 

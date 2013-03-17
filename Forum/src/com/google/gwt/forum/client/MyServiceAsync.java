@@ -9,20 +9,20 @@ interface MyServiceAsync {
   public void initialize_db(String s, AsyncCallback<String> callback);
   public void check_user(String username, String password, AsyncCallback<User> callback);
   
-  //Getting part
+  //Getting from the database
   public void get_topics(String s, AsyncCallback<ArrayList<Topics>> callback);
   public void get_users(String s, AsyncCallback<ArrayList<User>> callback);
   public void get_threads(Integer s, AsyncCallback<ArrayList<Thread>> callback);
   public void get_messages(Integer s, AsyncCallback<ArrayList<Message>> callback);
   
-  //Insert part
+  //Inserting into the database
   public void insert_topic(String s, AsyncCallback<Integer> callback);
   public void insert_message(ArrayList<String> s, AsyncCallback<String> callback);
   public void insert_thread(ArrayList<String> s, AsyncCallback<Integer> callback);
   public void insert_user(ArrayList<String> s, AsyncCallback<String> callback);
   public void insert_into_db(String table, String values, AsyncCallback<String> callback);
   
-  //Deleting part
+  //Deleting from the database
   public void erase_message(Integer s, AsyncCallback<String> callback);
   public void erase_thread(Integer s, AsyncCallback<String> callback);
   public void erase_topic(Integer s, AsyncCallback<String> callback);

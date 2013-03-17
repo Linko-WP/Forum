@@ -2,12 +2,14 @@ package com.google.gwt.forum.client;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Implements the object Topic of the forum identified by the id,
+ * the subject and an array of included threads.
+ */
 public class Topics implements Serializable{
 	int id;
 	String subject;
@@ -24,49 +26,44 @@ public class Topics implements Serializable{
 	
 	/**
 	 * Constructor with parameters.
+	 * @param identifier
 	 * @param sub
 	 */
-	public Topics(int i, String sub){
-		id = i;
-		subject = sub;
+	public Topics(int identifier, String new_subject){
+		id = identifier;
+		subject = new_subject;
 		threads = new ArrayList<Thread>();
 		
 	}
 	
 	
 	/**
-	 * Class to load the topics int the topic object from the database
+	 * Constructor that inserts the new topic into the database.
+	 * @param sub
 	 */
 	 Topics(String sub){
  		subject = sub;
  		threads = new ArrayList<Thread>();	
 
-		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.insert_topic(sub, new AsyncCallback<Integer>(){
-		    	public void onSuccess(Integer obt_id) {
-		    		System.out.println("ID AUTOGENERADO:" + obt_id);
-		    		id = obt_id;
-
-		          }
-
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("RPC to initialize_db() failed.");
-		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );	  
+	    Service.insert_topic(sub, new AsyncCallback<Integer>(){
+	    	public void onSuccess(Integer obt_id) {
+	    		id = obt_id;
+	          }
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("Topics constructor and inserting into DB failed.");
+	          }
+	    } );	  
 	  }
 
 	
 	/**
-	 * Function to add a thread to the topic.
+	 * Adds a new thread to the topic.
 	 * @param new_thread
 	 */
 	void add_thread(String new_thread){
 		threads.add(new Thread(new_thread, this.id));
-		
 	}
-	
-	
 	
 }

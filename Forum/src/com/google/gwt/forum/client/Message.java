@@ -12,6 +12,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Messages into the threads in the forum identified by
+ * id, parent thread id, time stamp, content and author.
+ */
 public class Message implements Serializable{
 	
 	int id;
@@ -19,9 +23,6 @@ public class Message implements Serializable{
 	Timestamp time_stamp;
 	String content;
 	String author;
-	
-	
-	//TODO: autor e id de la thread
 	
 	/**
 	 * Default constructor.
@@ -40,10 +41,8 @@ public class Message implements Serializable{
 	 * @param user
 	 */
 	Message(String message, String user){
-		//TODO: obtener id de la base de datos
 		id = -1;
 		parent_thread_id= -1;
-		//TODO: comprobar que se establece la fecha correcta
 		time_stamp = null;
 		content = message;
 		author = user;
@@ -64,72 +63,55 @@ public class Message implements Serializable{
 		content = cont;
 		parent_thread_id= p_id;
 		author = auth;
-
 	}
 	
 	/**
-	 * Constructor with parameters.
+	 * Constructor with parameters and insertinf into the DB.
 	 * @param message
+	 * @param p_id
+	 * @param user
 	 */
 	Message(String message, int p_id, String user){
-
 		parent_thread_id= p_id;	
-		String time = "";
 		content = message;
-		String aut = user;
-		
-	// 	String aut = author.user_name;
-		
-		//TODO: obtener el autor de algun sitio
-		//author = user;	
-		
-			ArrayList<String> param = new ArrayList<String>(Arrays.asList( message, String.valueOf(parent_thread_id),aut));
-		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
+		author = user;
 
-		    Service.insert_message(param, new AsyncCallback<String>(){
-		    	public void onSuccess(String results) {
-		    		
-		    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-		    		for(int i=0; i<myList.size()-2; i=i+3){
+		ArrayList<String> param = new ArrayList<String>(Arrays.asList( message, String.valueOf(parent_thread_id),user));
+	    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-			    		int id = Integer.parseInt(myList.get(0));
-			    		Timestamp ts = Timestamp.valueOf(myList.get(1));
-			    		System.out.println("\nEN MESSAGE:" + id +"y "+ ts);
-		    		}
-		          }
-
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("Insert message into BD failed.");
-		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );	
+	    Service.insert_message(param, new AsyncCallback<String>(){
+	    	public void onSuccess(String results) {	
+	    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
+	    		for(int i=0; i<myList.size()-2; i=i+3){
+		    		id = Integer.parseInt(myList.get(0));
+		    		time_stamp = Timestamp.valueOf(myList.get(1));
+	    		}
+	          }
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("Constructor and inserting message into BD failed.");
+	      		System.out.println("Fail\n" + caught);
+	          }
+	    } );	
 
 	}
 	
 	
 	/**
-	 * Class to get the threads from the dabatase
+	 * Gets the messages from the database given the parent id
+	 * @param parent_id
 	 */
 	 static ArrayList<Message> get_messages(final int parent_id){
-		 
+
  		final ArrayList<Message> result = new ArrayList<Message>();	
+	    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-
-		    Service.get_messages(parent_id,  new AsyncCallback<ArrayList<Message>>(){
-		    	public void onSuccess(ArrayList<Message> results) {
-
-
-		    		}
-	    	
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("RPC to initialize_db() failed.");
-		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );
+	    Service.get_messages(parent_id,  new AsyncCallback<ArrayList<Message>>(){
+	    	public void onSuccess(ArrayList<Message> results) {}
+	        public void onFailure(Throwable caught) {
+	        	Window.alert("Getting messages from the Data Base failed.");
+	        }
+	    } );
 			return result;	  
 	  }
 	
-	
-
 }

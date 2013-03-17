@@ -10,10 +10,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Threads into the topics of the forum identified by
+ * id, title, number of messages and parent topic identifier.
+ * Contains an array of messages inserted into the thread.
+ */
 public class Thread implements Serializable{
 	int id;
 	String title;
-	int no_messages;//Counter for the number of messages in one thread.
+	//TODO: number of messages included in the thread
+	int no_messages;
 	int parent_topic_id;
 	ArrayList<Message> messages;
 	
@@ -31,6 +37,8 @@ public class Thread implements Serializable{
 	
 	/**
 	 * Constructor with parameters;
+	 * @param i
+	 * @param tit
 	 */
 	Thread(int i, String tit){
 		id = i;
@@ -43,6 +51,10 @@ public class Thread implements Serializable{
 	
 	/**
 	 * Constructor with parameters;
+	 * @param idd
+	 * @param p_id
+	 * @param tit
+	 * @param num
 	 */
 	public Thread(int idd, int p_id,  String tit, int num){
 		id = idd;
@@ -54,36 +66,34 @@ public class Thread implements Serializable{
 	}
 	
 	/**
-	 * Constructor with parameters.
-	 * @param message
+	 * Constructor with parameters and inserting into the DB;
+	 * @param tit
+	 * @param parent_id
 	 */
 	Thread(String tit, int parent_id){
-		//TODO: comprobar que se establece la fecha correcta
 		title = tit;
 		messages = new ArrayList<Message>();
 		parent_topic_id = parent_id;
-		
 		//TODO: obtener el autor de algun sitio
 		//author = user;	
-
+		
 		ArrayList<String> param = new ArrayList<String>(Arrays.asList(String.valueOf(parent_topic_id), tit));
 		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
 
-		    Service.insert_thread(param, new AsyncCallback<Integer>(){
-		    	public void onSuccess(Integer obt_id) {
-		    		System.out.println("ID AUTOGENERADO:" + obt_id);
-		    		id = obt_id;
-		          }
-
-		          public void onFailure(Throwable caught) {
-		        	Window.alert("Insert thread into BD failed.");
-		      		System.out.println("Fail\n" + caught);
-		          }
-		    } );	
+	    Service.insert_thread(param, new AsyncCallback<Integer>(){
+	    	public void onSuccess(Integer obt_id) {
+	    		System.out.println("ID AUTOGENERADO:" + obt_id);
+	    		id = obt_id;
+	          }
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("Insert thread into BD failed.");
+	      		System.out.println("Fail\n" + caught);
+	          }
+	    } );	
 	}
 	
 	/**
-	 * To add a message to the thread
+	 * Adds a message to the thread
 	 */
 	void add_message(String new_message, String username){
 		messages.add(new Message(new_message, this.id, username));

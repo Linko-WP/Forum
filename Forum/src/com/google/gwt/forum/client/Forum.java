@@ -55,7 +55,7 @@ public class Forum implements EntryPoint {
 	public int currentElementId = -1;
 	public char currentElementType = 'X';
 	private User current_user = null;
-	  
+	private boolean user_inserted = false;  
 	private MyServiceAsync dbService = null;
   
 	/**
@@ -449,7 +449,12 @@ public class Forum implements EntryPoint {
 		  username_textbox.setText("");
 		  password_textbox.setText("");
 		  
-		  createToolbar();
+		  loginPanel.addStyleName("loginPanel");
+		  loginPanel.clear();
+		  loginPanel.removeFromParent();
+		  login_zone();
+		  vp.clear();
+		  vp.removeFromParent();
 		  
 		  //TODO: bug. cuando hace loggout vuelve a hacer login inmediatamente :S
 	  }
@@ -783,8 +788,7 @@ public class Forum implements EntryPoint {
 	    
 	  }
 	  
-	 void new_user_zone(){
-		  loginPanel.clear();
+	  void new_user_zone(){
 		  loginPanel.removeFromParent();
 		  
 		  Label username_label = new Label("Username:");
@@ -813,27 +817,47 @@ public class Forum implements EntryPoint {
 		  loginPanel.add(cancel_user);
 		  loginPanel.addStyleName("new_user_Panel");
 		  toolbarPanel.add(loginPanel);
-		 
 
 		// Listen for mouse events on the Login button.
 		  insert_user.addClickHandler(new ClickHandler() {
-			  public void onClick(ClickEvent event) { 
-					  User user = new User(username_textbox.getText(), email_textbox.getText(), password_textbox.getText());
-					  dbService.insert_user(user, new AsyncCallback<User>(){				  
-						  public void onSuccess(User result) {				  
-							  users.add(result);
-							  email_textbox.setText("");
-							  logout();
-							  
-				          }
-				    	
-				          public void onFailure(Throwable caught) {
-				        	Window.alert("New message attempt failed.");
-				      		System.out.println("Fail\n" + caught);
-				          }
-					} );
-			  }
+			  public void onClick(ClickEvent event) { 		  
+				  
+				  if(username_textbox.getText().isEmpty() || password_textbox.getText().isEmpty()){
+					  	Window.alert("Please fill in username and password.");
+				  }else{
+					  
+					  for(User us:users){
+						  System.out.print("\nUSERS: " + us.user_name);
+						  System.out.print("\nTEXTBOX: " + username_textbox.getText());
+						  if(us.user_name.equals(username_textbox.getText())){
+							  user_inserted = true;
+							  Window.alert("User already in the database");
+							  username_textbox.setText("");
+							  new_user_zone();
+					      	  System.out.println("Fail\n");
+						  }else{
+							  user_inserted = false;
+						  }
+					  }
+					  if(user_inserted==false){
+						  User user = new User(username_textbox.getText(), email_textbox.getText(), password_textbox.getText());
+						  dbService.insert_user(user, new AsyncCallback<User>(){				  
+							  public void onSuccess(User result) {				  
+								  users.add(result);
+								  email_textbox.setText("");
+								  logout();  
+					          }	
+					          public void onFailure(Throwable caught) {
+					        	Window.alert("New message attempt failed.");
+					          }
+						} );	 
+					    
+					  }
+					 		
+			  }	  
+			 }
 		  });
+				  
 			// Listen for mouse events on the Login button.
 		  cancel_user.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) {

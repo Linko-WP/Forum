@@ -610,7 +610,7 @@ public class Forum implements EntryPoint {
 		    	
 		    	  if(currentElementType == 'P'){
 		    		  // Do nothing. Topics is the upper node of the hierarchy
-		    	  }else if(currentElementType == 'T'){
+		    	  }else if(currentElementType == 'T' || currentElementType == 'U'){
 		    		  showTopics();	// Show but NOT update. Be careful with that.
 		    	  }else if(currentElementType == 'M'){
 		    		  
@@ -627,6 +627,7 @@ public class Forum implements EntryPoint {
 		    		  
 		    		  // Show the threads of the parent topic
 		    		  showThreads();
+		    		  
 		    	  }else{
 		    		  System.out.println("Not able to check current type");
 		    	  }

@@ -282,6 +282,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  	ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 		for(int i=0; i<myList.size()-2; i=i+3){		
 			Thread output = new Thread(Integer.parseInt(myList.get(i)), id, myList.get(i+1), Integer.parseInt(myList.get(i+2)));
+			output.no_messages = count_messages(output.id);
 			result.add(output);
 		}
 	  disconnect(conn);

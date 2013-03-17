@@ -19,7 +19,6 @@ public class Thread implements Serializable{
 	
 	public int id;
 	public String title;
-	//TODO: number of messages included in the thread
 	public int no_messages;
 	public int parent_topic_id;
 	ArrayList<Message> messages;

@@ -237,7 +237,7 @@ public class Forum implements EntryPoint {
 			public void onClick(ClickEvent event) {
 
 				currentElementId = id;
-				System.out.println("CLICK");
+				
 				if(currentElementType == 'P'){
 					System.out.println("Loading threads");
 					load_threads();
@@ -496,7 +496,7 @@ public class Forum implements EntryPoint {
 						  createToolbar();
 						  refresh();
 					  }else{
-						  Window.alert("User not valid.");
+						  //Window.alert("User not valid.");
 					  }
 		          }
 		    	
@@ -528,7 +528,6 @@ public class Forum implements EntryPoint {
 			  
 			  if(current_user.is_admin){
 				  // Ver usuarios (para poder gestionarlos)
-				  System.out.println("Is admin");
 				  user_list_button();
 			  }
 			  // Add here another logged functionalities
@@ -635,8 +634,7 @@ public class Forum implements EntryPoint {
 		    	  }else if(currentElementType == 'T' || currentElementType == 'U'){
 		    		  showTopics();	// Show but NOT update. Be careful with that.
 		    	  }else if(currentElementType == 'M'){
-		    		  
-		    		  System.out.println("Current id = "+currentElementId);
+
 		    		  // Look for the id of the parent topic
 		    		  int index = 0;
 		    		  for(index=0; index < threads.size(); index++){
@@ -645,7 +643,6 @@ public class Forum implements EntryPoint {
 		    				  index = messages.size();
 		    			  }
 		    		  }
-		    		  System.out.println("Modified id = "+currentElementId);
 		    		  
 		    		  // Show the threads of the parent topic
 		    		  showThreads();

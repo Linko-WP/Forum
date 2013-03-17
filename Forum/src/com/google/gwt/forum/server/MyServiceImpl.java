@@ -426,7 +426,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		try {
 			Class.forName(driver).newInstance();
 			conn = (Connection) DriverManager.getConnection(url+dbName,userName,password);
-			System.out.println("Connected to the database");
+			//System.out.println("Connected to the database");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

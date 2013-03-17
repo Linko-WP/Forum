@@ -128,6 +128,26 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
     return str;
   }
 	
+	
+	/**
+	 * Erases an user from the database
+	 * @param id Id of the user to erase
+	 */
+	public String erase_user(String user_name) {  
+	  String str = "";
+	  Connection conn = connect();	// Connect to database
+	  try {
+	     Statement stat = (Statement) conn.createStatement();	     
+	     stat.executeUpdate("delete from users where usermane = '"+ user_name +"';");
+	  } catch (Exception e) {
+	     str += e.toString();
+	     e.printStackTrace();
+	  } 
+	  disconnect(conn);
+	  
+	  return str;
+    }
+	
 	//TODO: borrar esta funcion, verdaD?
 	/**
 	 * Initializes the database with some default values for the table of cities
@@ -334,7 +354,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new topic into the database
 	 * */
-	public int insert_topic(Topics topic) {
+	public Topics insert_topic(Topics topic) {
 	
 	  int auto_id = -1; //If it's null
 	  String str = "";
@@ -348,14 +368,14 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	     
 	     ResultSet rs= prep.getGeneratedKeys();
 	     rs.next();
-	     auto_id = rs.getInt(1);
+	     topic.id = rs.getInt(1);
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 	
 	  disconnect(conn);
 	  
-    return auto_id;
+    return topic;
   }
 	
 	/**
@@ -400,7 +420,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new thread into the database
 	 * */
-	public int insert_thread(Thread thread) {
+	public Thread insert_thread(Thread thread) {
 	
 	  int parent_id = thread.parent_topic_id;
 	  int auto_id = -1; //If it's null
@@ -422,7 +442,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  disconnect(conn);
 	  
 	  thread.no_messages=count_messages(thread.id);
-    return auto_id;
+    return thread;
   }
 	
 	

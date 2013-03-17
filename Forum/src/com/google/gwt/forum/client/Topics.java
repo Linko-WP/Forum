@@ -14,7 +14,7 @@ public class Topics implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	int id;
+	public int id;
 	public String subject;
 	ArrayList<Thread> threads;
 	

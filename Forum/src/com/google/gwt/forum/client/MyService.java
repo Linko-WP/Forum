@@ -22,9 +22,9 @@ public interface MyService extends RemoteService {
   public ArrayList<Thread> get_threads(Integer s);
   
   //Inserting into the database
-  public int insert_topic(Topics topic);
+  public Topics insert_topic(Topics topic);
   public Message insert_message(Message msj);
-  public int insert_thread(Thread thread);
+  public Thread insert_thread(Thread thread);
   public String insert_user(User usr);
   public String insert_into_db(String table, String values);
   
@@ -32,4 +32,5 @@ public interface MyService extends RemoteService {
   public String erase_message(Integer s);
   public String erase_thread(Integer s);
   public String erase_topic(Integer s);
+  public String erase_user(String user_name);
 }

@@ -11,6 +11,7 @@ interface MyServiceAsync {
   public void check_user(String username, String password, AsyncCallback<User> callback);
   public void count_messages(Integer id, AsyncCallback<Integer> callback);
   public void  obtain_time_stamp(Integer auto_id, AsyncCallback<Timestamp> callback);
+  public void  exists_user(String username, AsyncCallback<Boolean> callback);
   
   //Getting from the database
   public void get_topics(String s, AsyncCallback<ArrayList<Topics>> callback);

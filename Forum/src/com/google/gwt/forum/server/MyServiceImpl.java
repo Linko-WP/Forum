@@ -594,5 +594,25 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		  return number_msgs;
 		}
 	
+		
+	public Boolean exists_user(String username){		
+		  Boolean exists = false;
+		  int result=-1;
+		  
+		  Connection conn = connect();	// Connect to database
+		  try {
+		    Statement stat = (Statement) conn.createStatement();
+		    ResultSet rs = stat.executeQuery("select count(username) from users where username = '"+username+"';");
+		    rs.next();
+		    result = rs.getInt(1);
+		  } catch (Exception e) {
+			  String str = e.toString();
+		     e.printStackTrace();
+		  } 
+		  if(result == 1) exists = true;
+		  disconnect(conn);  
+		  	System.out.print("USUARIO EXISTE: " +exists);
+		    return exists;
+		  }
 }
 

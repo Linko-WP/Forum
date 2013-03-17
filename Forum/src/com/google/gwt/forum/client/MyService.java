@@ -14,6 +14,7 @@ public interface MyService extends RemoteService {
   public User check_user(String username, String password);
   public int count_messages(Integer thread_id);
   public Timestamp obtain_time_stamp(Integer auto_id);
+  public Boolean exists_user(String username);
   
   //Getting from the database
   public ArrayList<Topics> get_topics(String s);

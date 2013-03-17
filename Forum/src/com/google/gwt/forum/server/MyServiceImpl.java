@@ -3,11 +3,8 @@ package com.google.gwt.forum.server;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-
 import com.google.gwt.forum.client.Message;
 import com.google.gwt.forum.client.Thread;
 import com.google.gwt.forum.client.Topics;
@@ -147,61 +144,6 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  
 	  return str;
     }
-	
-	//TODO: borrar esta funcion, verdaD?
-	/**
-	 * Initializes the database with some default values for the table of cities
-	 * @param s String Not needed 
-	 * */
-	public String initialize_db(String s) {
-		// Do something interesting with 's' here on the server.
-	  
-	  String str = "";
-	  Connection conn = connect();	// Connect to database
-	  try {
-	     Statement stat = (Statement) conn.createStatement();
-	     stat.executeUpdate("drop table if exists cities;");
-	
-	     stat.executeUpdate("create table cities (name varchar(20), invest INT);");
-	
-	     PreparedStatement prep = (PreparedStatement) conn
-	           .prepareStatement("insert into cities values (?, ?),(?, ?),(?, ?),(?, ?),(?, ?),(?, ?),(?, ?),(?, ?),(?, ?);");
-	     prep.setString(1, "NEW YORK");
-	     prep.setInt(2, 5000000);
-	     prep.setString(3, "WASHINGTON");
-	     prep.setInt(4, 3968339);
-	     prep.setString(5, "CHICAGO");
-	     prep.setInt(6, 4999553);
-	     prep.setString(7, "PORTLAND");
-	     prep.setInt(8, 6170483);
-	     prep.setString(9, "BRIDGEPORT");
-	     prep.setInt(10, 4999998);
-	     prep.setString(11, "WESTMINSTER");
-	     prep.setInt(12, 5000000);
-	     prep.setString(13, "DENVER");
-	     prep.setInt(14, 4999280);
-	     prep.setString(15, "AUSTIN");
-	     prep.setInt(16, 3968339);
-	     prep.setString(17, "SAINT PAUL");
-	     prep.setInt(18, 3968339);
-	     prep.execute();
-	
-	     ResultSet rs = stat.executeQuery("select * from cities;");
-	     while (rs.next()) {
-	        str +=  rs.getString("name");
-	        str += ", " + rs.getString("invest");
-	        str += ", ";
-	     }
-	     rs.close();
-	  } catch (Exception e) {
-	     str += e.toString();
-	     e.printStackTrace();
-	  } 
-	
-	  disconnect(conn);
-	  
-    return str;
-  }
 	
 	/**
 	 * Obtains all the topics from the database
@@ -356,8 +298,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	 * */
 	public Topics insert_topic(Topics topic) {
 	
-	  int auto_id = -1; //If it's null
-	  String str = "";
+	  //int auto_id = -1; //If it's null
 	  String topic_sub = topic.subject;
 	  Connection conn = connect();	// Connect to database
 	  try {
@@ -370,7 +311,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	     rs.next();
 	     topic.id = rs.getInt(1);
 	  } catch (Exception e) {
-	     str += e.toString();
+		 System.out.println(e.toString());	// On server console
 	     e.printStackTrace();
 	  } 	
 	  disconnect(conn);
@@ -384,7 +325,6 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	public Message insert_message(Message msg) {
 	
 	  int auto_id = -1; //If it's null
-	  String str = "";  
 	  int parent_id = msg.parent_thread_id;
 	  
 	  Connection conn = connect();	// Connect to database
@@ -402,17 +342,13 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	      msg.time_stamp = obtain_time_stamp(auto_id);
 	     
 	  } catch (Exception e) {
-	     str += e.toString();
+		 System.out.println(e.toString());	// On server console
 	     e.printStackTrace();
 	  } 
 	  
 	  disconnect(conn);
 
-	  
-	  
 	  //TODO: check que pasa con el texto rico.
-	  //TODO: eliminar este system.print
-	//  System.out.print("TIME STAMP EN INSER MSG " + msg.time_stamp);
 	  
     return msg;
   }
@@ -423,8 +359,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	public Thread insert_thread(Thread thread) {
 	
 	  int parent_id = thread.parent_topic_id;
-	  int auto_id = -1; //If it's null
-	  String str = "";
+
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO threads(parent_topic_id, name) values("+parent_id+", '"+ thread.title +"');";
@@ -436,7 +371,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	     rs.next();
 	     thread.id= rs.getInt(1);
 	  } catch (Exception e) {
-	     str += e.toString();
+		 System.out.println(e.toString());	// On server console
 	     e.printStackTrace();
 	  } 
 	  disconnect(conn);
@@ -454,7 +389,6 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		String email = usr.email;
 		String password = usr.password;
 		Boolean admin = usr.is_admin;
-		String str = "";
 		
 	  Connection conn = connect();	// Connect to database
 	  try {
@@ -465,7 +399,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 				  .prepareStatement(sql);
 	     prep.execute();  
 	  } catch (Exception e) {
-	     str += e.toString();
+	     System.out.println(e.toString());	// On server console
 	     e.printStackTrace();
 	  } 	
 	  disconnect(conn);
@@ -517,7 +451,6 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	public Timestamp obtain_time_stamp(Integer auto_id){
 		System.out.print("\nAUTO ID: "+auto_id);
 		Timestamp ts=null;
-		  String str = "";
 		  Connection conn = connect();	// Connect to database
 		  try {
 		     Statement stat = (Statement) conn.createStatement();
@@ -529,7 +462,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		     }
 		     
 		  } catch (Exception e) {
-		     str += e.toString();
+			 System.out.println(e.toString());	// On server console
 		     e.printStackTrace();
 		  } 
 	  
@@ -579,7 +512,6 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	 */
 	public int count_messages(Integer thread_id) {
 		  int number_msgs = 0;
-		  String str = "";
 		  Connection conn = connect();	// Connect to database
 		  try {
 		    Statement stat = (Statement) conn.createStatement();
@@ -587,7 +519,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		    rs.next();
 		    number_msgs = rs.getInt(1);
 		  } catch (Exception e) {
-		     str += e.toString();
+			 System.out.println(e.toString());	// On server console
 		     e.printStackTrace();
 		  } 
 		  disconnect(conn);  
@@ -606,7 +538,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		    rs.next();
 		    result = rs.getInt(1);
 		  } catch (Exception e) {
-			  String str = e.toString();
+			 System.out.println(e.toString());	// On server console
 		     e.printStackTrace();
 		  } 
 		  if(result == 1) exists = true;

@@ -10,7 +10,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("ms")
 public interface MyService extends RemoteService {
 	
-  public String initialize_db(String s);
   public User check_user(String username, String password);
   public int count_messages(Integer thread_id);
   public Timestamp obtain_time_stamp(Integer auto_id);

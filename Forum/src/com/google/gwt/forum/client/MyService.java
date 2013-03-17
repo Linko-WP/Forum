@@ -25,7 +25,7 @@ public interface MyService extends RemoteService {
   public Topics insert_topic(Topics topic);
   public Message insert_message(Message msj);
   public Thread insert_thread(Thread thread);
-  public String insert_user(User usr);
+  public User insert_user(User usr);
   public String insert_into_db(String table, String values);
   
   //Deleting from the database

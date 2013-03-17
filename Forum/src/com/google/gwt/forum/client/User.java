@@ -38,6 +38,20 @@ public class User implements Serializable{
 	 * @param pass
 	 * @param admin
 	 */
+	public User(String name, String mail, String pass){
+		user_name = name;
+		email = mail;
+		password = pass;
+		is_admin = false;
+	}
+	
+	/**
+	 * Constructor with parameters
+	 * @param name
+	 * @param mail
+	 * @param pass
+	 * @param admin
+	 */
 	public User(String name, String mail, String pass, Boolean admin){
 		user_name = name;
 		email = mail;

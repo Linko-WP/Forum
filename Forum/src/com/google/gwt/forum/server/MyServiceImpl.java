@@ -449,7 +449,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Insert a new user into the database
 	 * */
-	public String insert_user(User usr) {
+	public User insert_user(User usr) {
 		String name = usr.user_name;
 		String email = usr.email;
 		String password = usr.password;
@@ -470,7 +470,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  } 	
 	  disconnect(conn);
 	  
-    return str;
+    return usr;
   }
 	
 	

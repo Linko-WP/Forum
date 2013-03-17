@@ -22,7 +22,7 @@ interface MyServiceAsync {
   public void insert_topic(Topics topic, AsyncCallback<Topics> callback);
   public void insert_message(Message msj, AsyncCallback<Message> callback);
   public void insert_thread(Thread thread, AsyncCallback<Thread> callback);
-  public void insert_user(User usr, AsyncCallback<String> callback);
+  public void insert_user(User usr, AsyncCallback<User> callback);
   public void insert_into_db(String table, String values, AsyncCallback<String> callback);
   
   //Deleting from the database

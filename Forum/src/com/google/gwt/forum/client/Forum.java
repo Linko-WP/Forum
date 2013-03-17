@@ -37,7 +37,11 @@ public class Forum implements EntryPoint {
 	private FlexTable forumFlexTable = new FlexTable();
 	private TextBox username_textbox = new TextBox();
 	private TextBox password_textbox = new TextBox();
+	private TextBox email_textbox = new TextBox();
 	private Button login_button = new Button("Login");
+	private Button new_user = new Button("New User");
+	private Button insert_user = new Button("Insert");
+	private Button cancel_user = new Button("Cancel");
 	private Label lastUpdatedLabel = new Label();
 	  
 	private ArrayList<Topics> topics  = new ArrayList<Topics>();
@@ -418,7 +422,10 @@ public class Forum implements EntryPoint {
 	   * */
 	  public void logout(){
 		  current_user = null;
+		  username_textbox.setText("");
+		  password_textbox.setText("");
 		  
+		  loginPanel.addStyleName("loginPanel");
 		  loginPanel.clear();
 		  loginPanel.removeFromParent();
 		  login_zone();
@@ -443,7 +450,7 @@ public class Forum implements EntryPoint {
 		  dbService.check_user(username, password, new AsyncCallback<User>(){
 			  
 			  public void onSuccess(User result) {
-				  System.out.println("RESULTADO check user:" + result.user_name);
+			//	  System.out.println("RESULTADO check user:" + result.user_name);
 	    		
 				  current_user = result;
 				  
@@ -504,12 +511,15 @@ public class Forum implements EntryPoint {
 		  password_textbox.addStyleName("password_texrbox");
 		  login_button.addStyleName("button");
 		  login_button.setWidth("70px");
+		  new_user.addStyleName("button");
+		  new_user.setWidth("80px");
 			
 		  loginPanel.add(username_label);
 		  loginPanel.add(username_textbox);
 		  loginPanel.add(password_label);
 		  loginPanel.add(password_textbox);
 		  loginPanel.add(login_button);
+		  loginPanel.add(new_user);
 		  loginPanel.addStyleName("loginPanel");
 		  toolbarPanel.add(loginPanel);
 		  
@@ -527,6 +537,13 @@ public class Forum implements EntryPoint {
 		    		  login();
 		    	  }
 		      }
+		  });
+		  
+		  // Listen for mouse events on the Login button.
+		  new_user.addClickHandler(new ClickHandler() {
+			  public void onClick(ClickEvent event) {
+				   new_user_zone();
+			  }
 		  });
 	  }
 	  
@@ -701,7 +718,7 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	  /**
-	   * Cleans the forumFlexTable exept for the headding
+	   * Cleans the forumFlexTable exept for the heading
 	   * */
 	  public void clean_table(){
 		  for(int i=forumFlexTable.getRowCount()-1; i > 0 ; --i){
@@ -741,12 +758,70 @@ public class Forum implements EntryPoint {
 	    
 	  }
 	  
-	 	  
+	 void new_user_zone(){
+		  loginPanel.clear();
+		  loginPanel.removeFromParent();
+		  
+		  Label username_label = new Label("Username:");
+		  Label password_label = new Label("Password:");
+		  Label email_label = new Label("Email:");
+		  username_label.addStyleName("loginText");
+		  password_label.addStyleName("loginText");
+		  email_label.addStyleName("loginText");
+		  
+		  // Assemble Login panel.
+		  username_textbox.addStyleName("username_textbox");
+		  password_textbox.addStyleName("password_textbox");
+		  email_textbox.addStyleName("email_textbox");
+		  cancel_user.addStyleName("button");
+		  cancel_user.setWidth("80px");
+		  insert_user.addStyleName("button");
+		  insert_user.setWidth("80px");
+			
+		  loginPanel.add(username_label);
+		  loginPanel.add(username_textbox);
+		  loginPanel.add(password_label);
+		  loginPanel.add(password_textbox);
+		  loginPanel.add(email_label);
+		  loginPanel.add(email_textbox);
+		  loginPanel.add(insert_user);
+		  loginPanel.add(cancel_user);
+		  loginPanel.addStyleName("new_user_Panel");
+		  toolbarPanel.add(loginPanel);
+		 
+
+		// Listen for mouse events on the Login button.
+		  insert_user.addClickHandler(new ClickHandler() {
+			  public void onClick(ClickEvent event) { 
+					  User user = new User(username_textbox.getText(), email_textbox.getText(), password_textbox.getText());
+					  dbService.insert_user(user, new AsyncCallback<User>(){				  
+						  public void onSuccess(User result) {				  
+							  users.add(result);
+							  email_textbox.setText("");
+							  logout();
+							  
+				          }
+				    	
+				          public void onFailure(Throwable caught) {
+				        	Window.alert("New message attempt failed.");
+				      		System.out.println("Fail\n" + caught);
+				          }
+					} );
+			  }
+		  });
+			// Listen for mouse events on the Login button.
+		  cancel_user.addClickHandler(new ClickHandler() {
+			  public void onClick(ClickEvent event) {
+				  logout();
+				
+			  }
+		  });
+		  
+	 }
 		public void pruebas_mary(){
-			// TODO: Eliminar clase resources
 			// TODO: Eliminar GreetingService y asegurarse de que no se le llama desde ningun sitio
 			// TODO: Borrar el servlet GreetingService del web.xml
-			// TODO: Crear boton de "nuevo usuario" al lado del boton de login
+			// TODO: Arreglar margen izquierdo panel del login
 			// TODO: Crear boton de "grant admin priviledges" en el panel de administracion
 			// 		 de usuarios, para que el admin pueda nombrar otros admins
 			

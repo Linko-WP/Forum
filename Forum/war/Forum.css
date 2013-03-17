@@ -95,7 +95,11 @@ h1 {
 }
 
 .loginPanel{
-	margin-left: 380px;
+	margin-left: 300px;
+}
+
+.new_user_Panel{
+	margin-left:80px;
 }
 
 .loggedPanel{

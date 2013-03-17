@@ -276,7 +276,8 @@ public class Forum implements EntryPoint {
 		// The option you see depends on who is logged in
 		if(currentElementType != 'M' && currentElementType != 'U') optionsPanel.add(enterButton);
 		if( current_user != null ){	// If someone is logged in
-			if(!current_user.is_admin) optionsPanel.add(removeButton);
+			if(!current_user.is_admin) 
+				optionsPanel.add(removeButton);		// TODO: Comprobar condicion aqui IMPORTANTE
 		}
 		forumFlexTable.setWidget(row, 3, optionsPanel);
 	  
@@ -350,8 +351,8 @@ public class Forum implements EntryPoint {
 		  // admin y ademas no elimina al usuario
 		  // TODO: Refresh en users no funciona
 		  for(User x:users){
-			  	System.out.println("Obtenido: "+username + " Comparado:"+ x.user_name);
-			    if(x.user_name.equals(username)){ 	// If its the required one and it's not admin
+			  	// TODO: Check is_admin condition
+			    if(x.user_name.equals(username) && !x.is_admin){ 	// If its the required one and it's not admin
 			    	users.remove(x);
 			 
 				  	dbService.erase_user(username, new AsyncCallback<String>(){
@@ -463,7 +464,8 @@ public class Forum implements EntryPoint {
 		  username_textbox.setText("");
 		  password_textbox.setText("");
 		  
-		  loginPanel.addStyleName("loginPanel");
+		  userlist_panel.clear();	// Remove users button
+		  loginPanel.setStyleName("loginPanel");
 		  loginPanel.clear();
 		  loginPanel.removeFromParent();
 		  login_zone();
@@ -523,8 +525,11 @@ public class Forum implements EntryPoint {
 		  if(current_user == null){
 			  login_zone();
 		  }else{
-			  if(!current_user.is_admin){
+			  System.out.println("aslfkj" + current_user.is_admin.toString() );
+			  // TODO: Check this
+			  if(current_user.is_admin == true){
 				  // Ver usuarios (para poder gestionarlos)
+				  System.out.println("Is admin");
 				  user_list_button();
 			  }
 			  // Add here another logged functionalities
@@ -534,9 +539,6 @@ public class Forum implements EntryPoint {
 			  // only when the user is logged
 			  new_message_panel();
 		  }
-		  // TODO: Habria que hacer que la barra de herramientas se crease de nuevo cada vez que
-		  // alguien se loguea o desloguea, para evitar el problema de que las cosas se desplacen
-		  // por valores css que no se controlan bien
 		  
 	  }
 	  
@@ -554,6 +556,7 @@ public class Forum implements EntryPoint {
 		  username_textbox.addStyleName("username_textbox");
 		  password_textbox.addStyleName("password_texrbox");
 		  login_button.addStyleName("button");
+		  login_button.setText("Login");
 		  login_button.setWidth("70px");
 		  new_user.addStyleName("button");
 		  new_user.setWidth("80px");
@@ -564,7 +567,7 @@ public class Forum implements EntryPoint {
 		  loginPanel.add(password_textbox);
 		  loginPanel.add(login_button);
 		  loginPanel.add(new_user);
-		  loginPanel.addStyleName("loginPanel");
+		  loginPanel.setStyleName("loginPanel");
 		  toolbarPanel.add(loginPanel);
 		  
 		  // Listen for mouse events on the Login button.
@@ -607,7 +610,7 @@ public class Forum implements EntryPoint {
 			
 		  loginPanel.add(username_label);
 		  loginPanel.add(login_button);
-		  loginPanel.addStyleName("loggedPanel");
+		  loginPanel.setStyleName("loggedPanel");
 		  toolbarPanel.add(loginPanel);
 		  
 		  // Listen for mouse events on the Login button.

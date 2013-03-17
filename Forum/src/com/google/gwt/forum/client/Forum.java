@@ -33,6 +33,7 @@ public class Forum implements EntryPoint {
 	private HorizontalPanel toolbarPanel = new HorizontalPanel();
 	private HorizontalPanel loginPanel = new HorizontalPanel();
 	private VerticalPanel vp = new VerticalPanel();
+	HorizontalPanel userlist_panel = new HorizontalPanel();
 	  
 	private FlexTable forumFlexTable = new FlexTable();
 	private TextBox username_textbox = new TextBox();
@@ -54,7 +55,7 @@ public class Forum implements EntryPoint {
 	public int currentElementId = -1;
 	public char currentElementType = 'X';
 	private User current_user = null;
-	private boolean user_inserted = false;  
+	  
 	private MyServiceAsync dbService = null;
   
 	/**
@@ -71,6 +72,8 @@ public class Forum implements EntryPoint {
 		mainPanel.setWidth("1000px");
 		RootPanel.get().addStyleName("rootStyle");
 		mainPanel.addStyleName("mainStyle");
+		
+		toolbarPanel.setWidth("1000px");
 	
 	 	// Create table for stock data.
 		forumFlexTable.setText(0, 0, "Subject");
@@ -106,7 +109,7 @@ public class Forum implements EntryPoint {
 	    
 	    // Adding topics to the flextable
 		load_topics();
-		preload_users();
+		
 		//pruebas_mary();
 	}
 
@@ -179,10 +182,8 @@ public class Forum implements EntryPoint {
 		
 		clean_table();
 		if(currentElementType == 'M'){
-
 			for(Message ms:messages){
 				if(ms.parent_thread_id == currentElementId){
-					System.out.print("TIMESTAMP: "+ms.time_stamp);
 					addDataToSource( ms.content, ms.author, ms.time_stamp.toString(), ms.id);
 				}
 			}
@@ -195,6 +196,13 @@ public class Forum implements EntryPoint {
 			for(Topics top:topics){
 				addDataToSource(top.subject, "N\\A", null, top.id);
 			}
+		}else if(currentElementType == 'U'){
+			for(User x:users){
+				if(x != null)
+					addDataToSource( x.user_name, x.email, x.is_admin.toString(), 0);
+			}
+		}else{
+			System.out.println("Refresh is not possible");
 		}
 		
 	}
@@ -256,7 +264,11 @@ public class Forum implements EntryPoint {
 		    char current_type = currentElementType;
 		    
 		    public void onClick(ClickEvent event) {
-		    	remove_row(current_id, current_type);
+		    	if(current_type != 'U'){
+		    		remove_row(current_id, current_type);
+		    	}else{
+		    		remove_user(col1);
+		    	}
 		    }
 	    
 		});  
@@ -309,25 +321,37 @@ public class Forum implements EntryPoint {
 				  
 				  return;
 			  }
-		  }else if(type == 'U'){
-			  // TODO: Eliminar usuarios tambien tiene que ser una posibilidad para el administrador
-			  for(User x:users){
-				/*	//TODO: id tiene que ser = user_name ? :S
-				 *   if(x.user_name == id) users.remove(x);refresh();
-				 
-				  	dbService.erase_user(id, new AsyncCallback<String>(){
-				    	public void onSuccess(String results) {}
-				        public void onFailure(Throwable caught) {
-				        	Window.alert("Users retrive attempt failed.");
-				      		System.out.println("Fail\n" + caught);
-				        }});		
-				  */
-				  return;
-			  }
 		  }else{
 			  System.out.println("Error: fail when trying to erase a row.");
 		  }
 		  
+	  }
+	
+	  /**
+	   * Removes an user from the list and the database
+	   * */
+	  public void remove_user(String username){
+		  
+		  // TODO: Eliminar usuarios no funciona bien, desaparece cuando te vuelves a loguear como
+		  // admin y ademas no elimina al usuario
+		  // TODO: Refresh en users no funciona
+		  for(User x:users){
+			  	System.out.println("Obtenido: "+username + " Comparado:"+ x.user_name);
+			    if(x.user_name.equals(username)){ 	// If its the required one and it's not admin
+			    	users.remove(x);
+			 
+				  	dbService.erase_user(username, new AsyncCallback<String>(){
+				    	public void onSuccess(String results) {
+				    		refresh();
+				    	}
+				        public void onFailure(Throwable caught) {
+				        	Window.alert("Users retrive attempt failed.");
+				      		System.out.println("Fail\n" + caught);
+				        }
+				    });
+				  	return;
+			     }
+		  }
 	  }
 	  
 	  /**
@@ -416,22 +440,6 @@ public class Forum implements EntryPoint {
 	    });		        
 	  }
 	  
-	  /**
-	   * Class to load the users in the topic object from the database
-	   */
-	  private void preload_users(){   	
-
-	    dbService.get_users(" cadena ", new AsyncCallback<ArrayList<User>>(){
-	    	public void onSuccess(ArrayList<User> results) {
-	    		
-	    		users = results;
-	  	    }
-	        public void onFailure(Throwable caught) {
-	        	Window.alert("Messages retrieve attempt failed.");
-	      		System.out.println("Fail\n" + caught);
-	        }
-	    });		        
-	  }
 	  
 	  /**
 	   * Logs out. Just set the current user to null
@@ -441,12 +449,7 @@ public class Forum implements EntryPoint {
 		  username_textbox.setText("");
 		  password_textbox.setText("");
 		  
-		  loginPanel.addStyleName("loginPanel");
-		  loginPanel.clear();
-		  loginPanel.removeFromParent();
-		  login_zone();
-		  vp.clear();
-		  vp.removeFromParent();
+		  createToolbar();
 		  
 		  //TODO: bug. cuando hace loggout vuelve a hacer login inmediatamente :S
 	  }
@@ -462,27 +465,28 @@ public class Forum implements EntryPoint {
 		  String password = password_textbox.getText();
 		  username_textbox.setText("");
 		  password_textbox.setText("");
-		    
-		  dbService.check_user(username, password, new AsyncCallback<User>(){
-			  
-			  public void onSuccess(User result) {
-			//	  System.out.println("RESULTADO check user:" + result.user_name);
-	    		
-				  current_user = result;
+		  if(username != "" && password != ""){  
+			  dbService.check_user(username, password, new AsyncCallback<User>(){
 				  
-				  // Things to be done when a user logs in
-				  loginPanel.clear();
-				  loginPanel.removeFromParent();
-				  logged_message();
-				  new_message_panel();
-				  refresh();
-	          }
-	    	
-	          public void onFailure(Throwable caught) {
-	        	Window.alert("Login attempt failed.");
-	      		System.out.println("Fail\n" + caught);
-	          }
-	    } );
+				  public void onSuccess(User result) {
+				
+					  current_user = result;
+					  if(current_user != null){
+						  createToolbar();
+						  refresh();
+					  }else{
+						  Window.alert("User not valid.");
+					  }
+		          }
+		    	
+		          public void onFailure(Throwable caught) {
+		        	Window.alert("Login attempt failed.");
+		      		System.out.println("Fail\n" + caught);
+		          }
+		    } );
+		  }else{
+			  Window.alert("Username or password not valid.");
+		  }
 		 	  
 	  }
 	  
@@ -490,6 +494,8 @@ public class Forum implements EntryPoint {
 	   * Creates a toolbar for the forum
 	   * */
 	  public void createToolbar(){
+		  
+		  toolbarPanel.clear();	// Reset the toolbar panel
 		  
 		  back_button();
 		  refresh_button();
@@ -508,7 +514,9 @@ public class Forum implements EntryPoint {
 			  // only when the user is logged
 			  new_message_panel();
 		  }
-		  
+		  // TODO: Habria que hacer que la barra de herramientas se crease de nuevo cada vez que
+		  // alguien se loguea o desloguea, para evitar el problema de que las cosas se desplacen
+		  // por valores css que no se controlan bien
 		  
 	  }
 	  
@@ -648,15 +656,15 @@ public class Forum implements EntryPoint {
 	   * */
 	  public void user_list_button(){
 		  
-		  Button userListButton = new Button("User List");
+		  Button userListButton = new Button("Users");
 		  userListButton.addStyleDependentName("userList");
 		  userListButton.addClickHandler(new ClickHandler() {
 		    public void onClick(ClickEvent event) {
 		    	load_users();
 		    }
 		  });
-		  
-		  toolbarPanel.add(userListButton);
+		  userlist_panel.add(userListButton);
+		  toolbarPanel.add(userlist_panel);
 	  }
 	  
 	  /**
@@ -679,7 +687,6 @@ public class Forum implements EntryPoint {
 		  insert_text_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) { 
 				  if( currentElementType == 'M'){
-					  
 					  Message m = new Message(textArea.getText(), currentElementId,current_user.user_name);
 					  
 					  dbService.insert_message(m, new AsyncCallback<Message>(){		// Add message to the bd
@@ -775,7 +782,7 @@ public class Forum implements EntryPoint {
 	    
 	  }
 	  
-	  void new_user_zone(){
+	 void new_user_zone(){
 		  loginPanel.clear();
 		  loginPanel.removeFromParent();
 		  
@@ -805,47 +812,27 @@ public class Forum implements EntryPoint {
 		  loginPanel.add(cancel_user);
 		  loginPanel.addStyleName("new_user_Panel");
 		  toolbarPanel.add(loginPanel);
+		 
 
 		// Listen for mouse events on the Login button.
 		  insert_user.addClickHandler(new ClickHandler() {
-			  public void onClick(ClickEvent event) { 		  
-				  
-				  if(username_textbox.getText().isEmpty() || password_textbox.getText().isEmpty()){
-					  	Window.alert("Please fill in username and password.");
-				  }else{
-					  
-					  for(User us:users){
-						  System.out.print("\nUSERS: " + us.user_name);
-						  System.out.print("\nTEXTBOX: " + username_textbox.getText());
-						  if(us.user_name.equals(username_textbox.getText())){
-							  user_inserted = true;
-							  Window.alert("User already in the database");
-							  username_textbox.setText("");
-							  new_user_zone();
-					      	  System.out.println("Fail\n");
-						  }else{
-							  user_inserted = false;
-						  }
-					  }
-					  if(user_inserted==false){
-						  User user = new User(username_textbox.getText(), email_textbox.getText(), password_textbox.getText());
-						  dbService.insert_user(user, new AsyncCallback<User>(){				  
-							  public void onSuccess(User result) {				  
-								  users.add(result);
-								  email_textbox.setText("");
-								  logout();  
-					          }	
-					          public void onFailure(Throwable caught) {
-					        	Window.alert("New message attempt failed.");
-					          }
-						} );	 
-					    
-					  }
-					 		
-			  }	  
-			 }
+			  public void onClick(ClickEvent event) { 
+					  User user = new User(username_textbox.getText(), email_textbox.getText(), password_textbox.getText());
+					  dbService.insert_user(user, new AsyncCallback<User>(){				  
+						  public void onSuccess(User result) {				  
+							  users.add(result);
+							  email_textbox.setText("");
+							  logout();
+							  
+				          }
+				    	
+				          public void onFailure(Throwable caught) {
+				        	Window.alert("New message attempt failed.");
+				      		System.out.println("Fail\n" + caught);
+				          }
+					} );
+			  }
 		  });
-				  
 			// Listen for mouse events on the Login button.
 		  cancel_user.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) {
@@ -855,21 +842,14 @@ public class Forum implements EntryPoint {
 		  });
 		  
 	 }
-	 
-	 private boolean check_user(String username){   	
-
-
-		    return user_inserted;
-	}
-	 
 		public void pruebas_mary(){
 			// TODO: Arreglar margen izquierdo panel del login
 			// TODO: Crear boton de "grant admin priviledges" en el panel de administracion
 			// 		 de usuarios, para que el admin pueda nombrar otros admins
-			//TODO: manejar inserci—n de un usuario ya existente
-			/*
-			 
-			*/
+			//TODO: manejar insercion de un usuario ya existente
+			
+			
+			
 		};
 
 

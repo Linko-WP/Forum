@@ -488,7 +488,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 			     ResultSet rs = stat.executeQuery("select email, is_admin from users where username='"+username+
 			    		 							"' and password='"+password+"';");
 			     while (rs.next()) {
-			        str += ", " + rs.getString("email");
+			        str += rs.getString("email");
 			        str += ", " + rs.getString("is_admin") + ", ";     
 			        //Format the result into a User object if not null
 					  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));

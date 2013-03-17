@@ -500,6 +500,7 @@ public class Forum implements EntryPoint {
 	   * */
 	  public void createToolbar(){
 		  
+		  loginPanel.clear();
 		  toolbarPanel.clear();	// Reset the toolbar panel
 		  
 		  back_button();

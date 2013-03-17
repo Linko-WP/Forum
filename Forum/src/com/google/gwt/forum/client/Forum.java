@@ -103,7 +103,7 @@ public class Forum implements EntryPoint {
 	    // Adding topics to the flextable
 		load_topics();
 		
-		pruebas_mary();
+		//pruebas_mary();
 	}
 
 	/**
@@ -689,6 +689,8 @@ public class Forum implements EntryPoint {
 		  });
 		  
 		  // TODO: BUG-> No es posible entrar en las hebras recien creadas
+		  // TODO: BUG-> Al pulsar volver despues de entrar a una hebra recien creada
+		  //       (cuando lo consigues) se queda en un bucle infinito o algo
 	  }
 	  
 	  /**

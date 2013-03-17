@@ -287,9 +287,17 @@ public class Forum implements EntryPoint {
 	 * */
 	public void remove_row(int id, char type){
 		  
+			
 		  if(type == 'P'){
 			  for(Topics x:topics){
-				  if(x.id == id) topics.remove(x);refresh();			  
+				  System.out.print("X:ID: "+x.id);
+				  System.out.print("ID: "+id);
+				  if(x.id == id){
+					  topics.remove(x);
+					  refresh();
+					  System.out.print("ID: "+x.id);
+				  }
+				  
 				  dbService.erase_topic(id, new AsyncCallback<String>(){
 				    	public void onSuccess(String results) {}
 				        public void onFailure(Throwable caught) {
@@ -300,7 +308,10 @@ public class Forum implements EntryPoint {
 			  }
 		  }else if(type == 'T'){
 			  for(Thread x:threads){
-				  if(x.id == id) threads.remove(x);refresh();
+				  if(x.id == id) {
+					  threads.remove(x);
+					  refresh();
+				  }
 				  	dbService.erase_thread(id, new AsyncCallback<String>(){
 				    	public void onSuccess(String results) {}
 				        public void onFailure(Throwable caught) {
@@ -311,9 +322,12 @@ public class Forum implements EntryPoint {
 			  }
 		  }else if(type == 'M'){
 			  for(Message x:messages){
-				  if(x.id == id) messages.remove(x);refresh();
+				  if(x.id == id){
+					  messages.remove(x);
+					  refresh();
+				  } 
 				  	dbService.erase_message(id, new AsyncCallback<String>(){
-				    	public void onSuccess(String results) {}
+				    	public void onSuccess(String results) {refresh();}
 				        public void onFailure(Throwable caught) {
 				        	Window.alert("THREADS retrive attempt failed.");
 				      		System.out.println("Fail\n" + caught);
@@ -871,10 +885,7 @@ public class Forum implements EntryPoint {
 	 }
 		public void pruebas_mary(){
 			// TODO: Arreglar margen izquierdo panel del login
-			// TODO: Crear boton de "grant admin priviledges" en el panel de administracion
-			// 		 de usuarios, para que el admin pueda nombrar otros admins
-			//TODO: manejar insercion de un usuario ya existente
-			
+
 			
 			
 		};

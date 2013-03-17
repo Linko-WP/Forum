@@ -18,9 +18,6 @@ import com.mysql.jdbc.*;
 
 public class MyServiceImpl extends RemoteServiceServlet implements com.google.gwt.forum.client.MyService {
 
-  /**
-	 * 
-	 */
 	private static final long serialVersionUID = 7081621504101146086L;
 
 	/**
@@ -57,36 +54,34 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
   }
 	
 	/**
-	 * */
-	public String erase_message(Integer id) {
-	  
+	 * Erases a message from the database
+	 * @param id Id of the message to erase
+	 */
+	public String erase_message(Integer id) {  
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-
 	     Statement stat = (Statement) conn.createStatement();	     
 	     stat.executeUpdate("delete from messages where message_id = "+id+";");
-	     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
-	
 	  disconnect(conn);
 	  
-    return str;
-  }
+	  return str;
+    }
 	
 	/**
-	 * */
+	 * Erases a thread from the database and all the associated messages
+	 * @param id Id of the thread to erase
+	 */
 	public String erase_thread(Integer id) {
 	  
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-
 	     Statement stat = (Statement) conn.createStatement();
-	     
 	     stat.executeUpdate("delete from threads where thread_id = "+id+";");
 	     stat.executeUpdate("delete from messages where parent_thread_id = "+id+";");
 	     
@@ -94,51 +89,46 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
-	
-	  disconnect(conn);
-	  
-    return str;
-  }
+	  disconnect(conn);  
+	  return str;
+	}
 	
 
 	/**
-	 * */
+	 * Erases a topic from the database and all the associated messages and threads
+	 * @param id Id of the topic to erase
+	 */
 	public String erase_topic(Integer id) {
 	  
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-
 	     Statement stat = (Statement) conn.createStatement();
 	     Statement consult = (Statement) conn.createStatement();
 	     stat.executeUpdate("delete from topics where topic_id = "+id+";");
 	     ResultSet thread_id = consult.executeQuery("select thread_id from threads"+
-					" where parent_topic_id="+id+";");
-	     
+					" where parent_topic_id="+id+";");	     
 		     while (thread_id.next()) {
 		    	 str +=  thread_id.getString("thread_id");
 		    	 str += ", ";  	
 		     }
-		     
 		   //Format the result into a User object if not null
 			  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 	    		for(int i=0; i<myList.size(); i++){
 	    			Integer t_id = Integer.parseInt(myList.get(i));
 	    			stat.executeUpdate("delete from messages where parent_thread_id = "+t_id+";");
-	    		}
-			     
-	    		
+	    		}		
 		     stat.executeUpdate("delete from threads where parent_topic_id = "+id+";");
 	     } catch (Exception e) {
 	    	 str += e.toString();
 	    	 e.printStackTrace();
 	     } 
-	
 	  disconnect(conn);
 	  
     return str;
   }
 	
+	//TODO: borrar esta funcion, verdaD?
 	/**
 	 * Initializes the database with some default values for the table of cities
 	 * @param s String Not needed 
@@ -194,31 +184,29 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
   }
 	
 	/**
-	 * Obtains the topics from the database
+	 * Obtains all the topics from the database
 	 * */
 	public ArrayList<Topics> get_topics(String s) {
-		
-	
+			
 	  ArrayList<Topics> topics = new ArrayList<Topics>();
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-	     Statement stat = (Statement) conn.createStatement();
-	     
+	     Statement stat = (Statement) conn.createStatement();   
 	     ResultSet rs = stat.executeQuery("select topic_id, name from topics;");
 	     while (rs.next()) {
 	        str +=  rs.getString("topic_id");
 	        str += ", " + rs.getString("name") + ", ";
-	     }
-	     
+	     }	     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
 	
 	  disconnect(conn);
-
-		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
+	  
+	  //Formating of the result
+	  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 		for(int i=0; i<myList.size()-1; i=i+2){
 			int obt_id = Integer.parseInt(myList.get(i));
 			String obt_topic = myList.get(i+1);
@@ -229,7 +217,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
   }
 	
 	/**
-	 * Obtains the users from the database
+	 * Obtains all the users from the database
 	 * */
 	public ArrayList<User> get_users(String s) {
 	  
@@ -245,31 +233,31 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	        str += ", " + rs.getString("email");
 	        str += ", " + rs.getString("password");
 	        str += ", " + rs.getString("is_admin") + ", ";
-	     }
-	     
+	     }     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
 	
 	  disconnect(conn);
-	  
+	  //Formating of the result
 	  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 		for(int i=0; i<myList.size()-3; i=i+4){
 			String user = myList.get(i);
 			String mail = myList.get(i+1);
 			String pass = myList.get(i+2);
 			Boolean admin = Boolean.parseBoolean(myList.get(i+3));
-
 			
 			users.add(new User(user, mail, pass, admin));
 		}
-		
-		
+			
     return users;
   }
+	
+	
 	/**
-	 * Obtains the threads from the database
+	 * Obtains all the threads from a given topic
+	 *@param id parent topic id 	 
 	 * */
 	public ArrayList<Thread> get_threads(Integer id) {
 	  
@@ -277,8 +265,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
-	     Statement stat = (Statement) conn.createStatement();
-	     
+	     Statement stat = (Statement) conn.createStatement();     
 	     ResultSet rs = stat.executeQuery("select thread_id, name, messages_no from threads" +
 	     									" where parent_topic_id="+String.valueOf(id)+";");
 	     while (rs.next()) {
@@ -286,27 +273,25 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	        str += ", " + rs.getString("name");
 	        str += ", " + rs.getString("messages_no") + ", ";
 	        
-	     }
-	     
+	     }    
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
 	
 	  	ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
-		for(int i=0; i<myList.size()-2; i=i+3){
-			
+		for(int i=0; i<myList.size()-2; i=i+3){		
 			Thread output = new Thread(Integer.parseInt(myList.get(i)), id, myList.get(i+1), Integer.parseInt(myList.get(i+2)));
 			result.add(output);
 		}
-		
 	  disconnect(conn);
 	  
     return result;
   }
 	
 	/**
-	 * Obtains the messages from the database
+	 * Obtains the messages from the database given a thread id.
+	 * @param id parent thread id.
 	 * */
 	public ArrayList<Message> get_messages(Integer id) {
 	  
@@ -322,15 +307,12 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	        str +=  rs.getString("message_id");
 	        str += ", " + rs.getString("ts");
 	        str += ", " + rs.getString("content");
-	        str += ", " + rs.getString("author_username") + ", ";
-	        
+	        str += ", " + rs.getString("author_username") + ", ";        
 	     }
-	     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
-	
 	  disconnect(conn);
 	  
 	  //Formating the result
@@ -354,56 +336,46 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	public int insert_topic(String s) {
 	
 	  int auto_id = -1; //If it's null
-	  String str = "Result:";
+	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO topics(name) values('"+ s +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
 	     prep.execute();
 	     
 	     ResultSet rs= prep.getGeneratedKeys();
 	     rs.next();
 	     auto_id = rs.getInt(1);
-	     
-	     str += " Good";
-	     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
-	  } 
-	
+	  } 	
 	  disconnect(conn);
 	  
     return auto_id;
   }
 	
 	/**
-	 * Insert a new message into the database
+	 * Inserts a new message into the database
 	 * */
 	public String insert_message(ArrayList<String> s) {
 	
-	  ArrayList<Integer> result = new ArrayList<Integer>();
 	  int auto_id = -1; //If it's null
-	  String str = "Result:";
-	  
+	  String str = "";  
 	  int parent_id = Integer.parseInt(s.get(1));
+	  
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO messages(parent_thread_id, content, author_username) values("
-				  	+parent_id+", '"+ s.get(0) +"', '"+ s.get(2) +"');";
-		  
+				  	+parent_id+", '"+ s.get(0) +"', '"+ s.get(2) +"');";	  
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-	     prep.execute();
-	     
+	     prep.execute();	     
 	     ResultSet rs= prep.getGeneratedKeys();
 	     rs.next();
 	     str += rs.getString(1);
-	     
-	     str += " Good";
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
@@ -412,39 +384,36 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  
 	  disconnect(conn);
 	  str += obtain_time_stamp(auto_id);
-	  
+	  //TODO: check que pasa con el texto rico.
+	  //TODO: eliminar este system.print
 	  System.out.print("INSER MESSAGE: " + str);
 	  
     return str;
   }
 	
 	/**
-	 * Insert a new message into the database
+	 * Insert a new thread into the database
 	 * */
 	public int insert_thread(ArrayList<String> s) {
 	
 	  int parent_id = Integer.parseInt(s.get(0));
 	  int auto_id = -1; //If it's null
-	  String str = "Result:";
+	  String str = "";
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO threads(parent_topic_id, name) values("+parent_id+", '"+ s.get(1) +"');";
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-	     prep.execute();
-	     
+	     prep.execute();     
 	     ResultSet rs= prep.getGeneratedKeys();
 	     rs.next();
 	     auto_id = rs.getInt(1);
-	     
-	     str += " Good";
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
 	  } 
-	
 	  disconnect(conn);
 	  
     return auto_id;
@@ -459,9 +428,8 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		String email = s.get(1);
 		String password = s.get(2);
 		Boolean admin = Boolean.parseBoolean(s.get(3));
+		String str = "";
 		
-	
-	  String str = "Result:";
 	  Connection conn = connect();	// Connect to database
 	  try {
 		  String sql = "INSERT INTO users values ('"+ name + "', '"+email+"', '"
@@ -469,18 +437,11 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		  
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql);
-
-	     prep.execute();
-	     
-
-	     
-	     str += " Good";
-	     
+	     prep.execute();  
 	  } catch (Exception e) {
 	     str += e.toString();
 	     e.printStackTrace();
-	  } 
-	
+	  } 	
 	  disconnect(conn);
 	  
     return str;
@@ -509,6 +470,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		return conn;
 	}
 	
+	
 	/**									*
 	 * Disconnects from local database	*
 	 * 									*/
@@ -522,6 +484,7 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		
 	}
 
+	
 	/**
 	 * Obtains the timeStamp from the database for the given message_id;
 	 */
@@ -548,20 +511,23 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	    return str;		
 	}
 
+	/**
+	 * Checks if the logged user has the same user data in the database
+	 * @param username
+	 * @param password
+	 */
 	public User check_user(String username, String password){
 			
 		String str = "";
 		User checked = null;
 		Connection conn = connect();	// Connect to database
 			  try {
-			     Statement stat = (Statement) conn.createStatement();
-			     
+			     Statement stat = (Statement) conn.createStatement();		     
 			     ResultSet rs = stat.executeQuery("select email, is_admin from users where username='"+username+
 			    		 							"' and password='"+password+"';");
 			     while (rs.next()) {
 			        str += ", " + rs.getString("email");
-			        str += ", " + rs.getString("is_admin") + ", ";
-			        
+			        str += ", " + rs.getString("is_admin") + ", ";     
 			        //Format the result into a User object if not null
 					  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 			    		for(int i=0; i<myList.size()-1; i=i+2){
@@ -575,13 +541,11 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 			     str += e.toString();
 			     e.printStackTrace();
 			  } 
-			
-			 
 			  disconnect(conn);
 			  
 		    return checked;
 		  }
 		
-		
-	}
+	
+}
 

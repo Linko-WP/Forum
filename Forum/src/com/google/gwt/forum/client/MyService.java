@@ -11,7 +11,7 @@ public interface MyService extends RemoteService {
 	
   public String initialize_db(String s);
   public User check_user(String username, String password);
-  
+  public int count_messages(Integer thread_id);
   
   //Getting from the database
   public ArrayList<Topics> get_topics(String s);

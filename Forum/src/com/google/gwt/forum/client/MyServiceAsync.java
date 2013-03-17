@@ -8,6 +8,7 @@ interface MyServiceAsync {
 	
   public void initialize_db(String s, AsyncCallback<String> callback);
   public void check_user(String username, String password, AsyncCallback<User> callback);
+  public void count_messages(Integer id, AsyncCallback<Integer> callback);
   
   //Getting from the database
   public void get_topics(String s, AsyncCallback<ArrayList<Topics>> callback);

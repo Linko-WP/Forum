@@ -641,9 +641,20 @@ public class Forum implements EntryPoint {
 	  }
 		public void pruebas_mary(){
 			
-			
-			//TODO: check si funciona el get users
-		    
+			dbService.count_messages(5, new AsyncCallback<Integer>(){
+		    	public void onSuccess(Integer results) {
+		    		
+		    		System.out.println("NUMBERS: " + results);
+		    		
+		    		showMessages();
+		        }
+		        public void onFailure(Throwable caught) {
+		        	Window.alert("Messages retrieve attempt failed.");
+		      		System.out.println("Fail\n" + caught);
+		        }
+		    });		
+
+			/*
 		    dbService.get_users(" cadena ", new AsyncCallback<ArrayList<User>>(){
 		    	public void onSuccess(ArrayList<User> result) {
 		    		System.out.println("TOPICS:" + result);
@@ -655,7 +666,7 @@ public class Forum implements EntryPoint {
 		        	Window.alert("Get users failed.");
 		      		System.out.println("Fail\n" + caught);
 		          }
-		    } );	  
+		    } );	 */ 
 			
 		};
 

@@ -547,5 +547,27 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		  }
 		
 	
+	/**
+	 * Counts all the messages that belongs to a thread
+	 * @param thread_id
+	 * @return number_msgs 
+	 */
+	public int count_messages(Integer thread_id) {
+		  int number_msgs = 0;
+		  String str = "";
+		  Connection conn = connect();	// Connect to database
+		  try {
+		    Statement stat = (Statement) conn.createStatement();
+		    ResultSet rs = stat.executeQuery("select count(message_id) from messages where parent_thread_id ="+thread_id+";");
+		    rs.next();
+		    number_msgs = rs.getInt(1);
+		  } catch (Exception e) {
+		     str += e.toString();
+		     e.printStackTrace();
+		  } 
+		  disconnect(conn);  
+		  return number_msgs;
+		}
+	
 }
 

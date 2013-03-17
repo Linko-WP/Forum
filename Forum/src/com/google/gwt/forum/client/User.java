@@ -1,12 +1,7 @@
 package com.google.gwt.forum.client;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Class that implements the user of the forum identified by 
@@ -14,6 +9,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * is administrator.
  */
 public class User implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	public String user_name;
 	public String email;
@@ -52,7 +52,7 @@ public class User implements Serializable{
 	 * @param pass
 	 * @param admin
 	 */
-	void insert_user(String name, String mail, String pass, Boolean admin){
+	/*void insert_user(String name, String mail, String pass, Boolean admin){
 		user_name = name;
 		email = mail;
 		password = pass;
@@ -69,7 +69,7 @@ public class User implements Serializable{
 		        	Window.alert("Insert new user into the Data Base failed.");
 		        }  
 		    } );
-	}
+	}*/
 	
 
 }

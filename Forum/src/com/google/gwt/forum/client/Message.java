@@ -1,22 +1,18 @@
 package com.google.gwt.forum.client;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Date;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Messages into the threads in the forum identified by
  * id, parent thread id, time stamp, content and author.
  */
 public class Message implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	public int id;
 	public int parent_thread_id;
@@ -77,10 +73,6 @@ public class Message implements Serializable{
 		content = message;
 		author = user;
 		//time_stamp = null;
-
 	}
-	
-	
-
 	
 }

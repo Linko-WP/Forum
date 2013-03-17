@@ -2,15 +2,18 @@ package com.google.gwt.forum.client;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Implements the object Topic of the forum identified by the id,
  * the subject and an array of included threads.
  */
 public class Topics implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	int id;
 	public String subject;
 	ArrayList<Thread> threads;
@@ -43,18 +46,10 @@ public class Topics implements Serializable{
 	 */
 	 Topics(String sub){
  		subject = sub;
- 		threads = new ArrayList<Thread>();	
-
-		MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-
-	    Service.insert_topic(this, new AsyncCallback<Integer>(){
-	    	public void onSuccess(Integer obt_id) {
-	    		id = obt_id;
-	          }
-	          public void onFailure(Throwable caught) {
-	        	Window.alert("Topics constructor and inserting into DB failed.");
-	          }
-	    } );	  
+ 		threads = new ArrayList<Thread>();
+ 		// IMPORTANTE: El id debe asignarse a posteriori desde la clase que inserte el
+ 		// nuevo topic en base de datos. Para ello, la llamada a insert_topic devuelve
+ 		// el id autogenerado, que debera ser asignado a nuevo_topic.id	  
 	  }
 
 	

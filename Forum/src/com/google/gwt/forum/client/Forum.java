@@ -789,6 +789,7 @@ public class Forum implements EntryPoint {
 	  }
 	  
 	  void new_user_zone(){
+		  loginPanel.clear();
 		  loginPanel.removeFromParent();
 		  
 		  Label username_label = new Label("Username:");

@@ -1,6 +1,7 @@
 package com.google.gwt.forum.client;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -12,6 +13,7 @@ public interface MyService extends RemoteService {
   public String initialize_db(String s);
   public User check_user(String username, String password);
   public int count_messages(Integer thread_id);
+  public Timestamp obtain_time_stamp(Integer auto_id);
   
   //Getting from the database
   public ArrayList<Topics> get_topics(String s);

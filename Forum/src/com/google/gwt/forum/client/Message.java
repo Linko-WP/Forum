@@ -72,46 +72,15 @@ public class Message implements Serializable{
 	 * @param user
 	 */
 	Message(String message, int p_id, String user){
+		id = -1;
 		parent_thread_id= p_id;	
 		content = message;
 		author = user;
-
-		ArrayList<String> param = new ArrayList<String>(Arrays.asList( message, String.valueOf(parent_thread_id),user));
-	    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-
-	    Service.insert_message(this, new AsyncCallback<String>(){
-	    	public void onSuccess(String results) {	
-	    		ArrayList<String> myList = new ArrayList<String>(Arrays.asList(results.split(", ")));
-	    		for(int i=0; i<myList.size()-2; i=i+3){
-		    		id = Integer.parseInt(myList.get(0));
-		    		time_stamp = Timestamp.valueOf(myList.get(1));
-	    		}
-	          }
-	          public void onFailure(Throwable caught) {
-	        	Window.alert("Constructor and inserting message into BD failed.");
-	      		System.out.println("Fail\n" + caught);
-	          }
-	    } );	
+		time_stamp = null;
 
 	}
 	
 	
-	/**
-	 * Gets the messages from the database given the parent id
-	 * @param parent_id
-	 */
-	 static ArrayList<Message> get_messages(final int parent_id){
 
- 		final ArrayList<Message> result = new ArrayList<Message>();	
-	    MyServiceAsync Service = (MyServiceAsync) GWT.create(MyService.class);
-
-	    Service.get_messages(parent_id,  new AsyncCallback<ArrayList<Message>>(){
-	    	public void onSuccess(ArrayList<Message> results) {}
-	        public void onFailure(Throwable caught) {
-	        	Window.alert("Getting messages from the Data Base failed.");
-	        }
-	    } );
-			return result;	  
-	  }
 	
 }

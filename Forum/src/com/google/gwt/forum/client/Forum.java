@@ -1,5 +1,6 @@
 package com.google.gwt.forum.client;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -194,8 +195,10 @@ public class Forum implements EntryPoint {
 		if(currentElementType == 'M'){
 
 			for(Message ms:messages){
-				if(ms.parent_thread_id == currentElementId)
+				if(ms.parent_thread_id == currentElementId){
+					System.out.print("TIMESTAMP: "+ms.time_stamp);
 					addDataToSource( ms.content, ms.author, ms.time_stamp.toString(), ms.id);
+				}
 			}
 		}else if(currentElementType == 'T'){
 			for(Thread th:threads){
@@ -651,11 +654,10 @@ public class Forum implements EntryPoint {
 				  dbService.insert_message(m, new AsyncCallback<String>(){		// Add message to the bd
 					  
 					  public void onSuccess(String result) {
-						  System.out.println("Mensaje insertado: " + result);
-
+						  System.out.println("Mensaje insertado: " + m.id);
+						  get_timestamp(m);
 						  textArea.setText("");
-						  messages.add(m);	// Add it to the local messages vector
-						  refresh();
+						  
 			          }
 			    	
 			          public void onFailure(Throwable caught) {
@@ -708,8 +710,29 @@ public class Forum implements EntryPoint {
 	    });
 	    
 	  }
+	  
+	  public void get_timestamp(final Message m){
+		  System.out.print("\nID RESULT: "+ m.id);
+		 
+		  dbService.obtain_time_stamp(m.id, new AsyncCallback<Timestamp>(){		// Add message to the bd
+		  
+			  public void onSuccess(Timestamp result) {
+				  m.time_stamp = result;
+				  System.out.print("\nTIMESTAMP RESULT: "+ result);
+				  messages.add(m);	// Add it to the local messages vector
+				  refresh();
+	          }
+	          public void onFailure(Throwable caught) {
+	        	Window.alert("New message attempt failed.");
+	      		System.out.println("Fail\n" + caught);
+	          }
+		  } );
+		  System.out.print("\nTIMESTAMP ASYNC: "+ m.time_stamp);
+
+	  }
+	  
 		public void pruebas_mary(){
-			
+			/*
 			Topics top = new Topics("HOLAAAAA");
 			dbService.insert_topic(top, new AsyncCallback<Integer>(){
 		    	public void onSuccess(Integer results) {
@@ -719,7 +742,7 @@ public class Forum implements EntryPoint {
 		        	Window.alert("Messages retrieve attempt failed.");
 		      		System.out.println("Fail\n" + caught);
 		        }
-		    });		
+		    });	*/	
 
 			/*
 		    dbService.get_users(" cadena ", new AsyncCallback<ArrayList<User>>(){

@@ -374,10 +374,12 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		  PreparedStatement prep = (PreparedStatement) conn
 				  .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-	     prep.execute();	     
-	     ResultSet rs= prep.getGeneratedKeys();
-	     rs.next();
-	     str += rs.getString(1);
+	      prep.execute();	     
+	      ResultSet rs= prep.getGeneratedKeys();
+	      rs.next();
+	      auto_id = rs.getInt(1);
+		  msg.id = auto_id;
+	   //   msg.time_stamp = obtain_time_stamp(auto_id);
 	     
 	  } catch (Exception e) {
 	     str += e.toString();
@@ -385,12 +387,12 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	  } 
 	  
 	  disconnect(conn);
-	  msg.id = auto_id;
-	  msg.time_stamp = Timestamp.valueOf(obtain_time_stamp(auto_id));
 
+	  
+	  
 	  //TODO: check que pasa con el texto rico.
 	  //TODO: eliminar este system.print
-	  System.out.print("INSERT MESSAGE: " + str);
+	//  System.out.print("TIME STAMP EN INSER MSG " + msg.time_stamp);
 	  
     return str;
   }
@@ -492,27 +494,26 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 	/**
 	 * Obtains the timeStamp from the database for the given message_id;
 	 */
-	String obtain_time_stamp(int auto_id){
-	
-		 
+	public Timestamp obtain_time_stamp(Integer auto_id){
+		System.out.print("\nAUTO ID: "+auto_id);
+		Timestamp ts=null;
 		  String str = "";
 		  Connection conn = connect();	// Connect to database
 		  try {
 		     Statement stat = (Statement) conn.createStatement();
 		     
-		     ResultSet rs = stat.executeQuery("select ts from messages where parent_thread_id="+String.valueOf(auto_id)+";");
+		     ResultSet rs = stat.executeQuery("select ts from messages where message_id="+String.valueOf(auto_id)+";");
 		     while (rs.next()) {
-		        str += ", " + rs.getString("ts");        
+		    	 ts = rs.getTimestamp("ts");
+		    	 System.out.print("\nTIMESTAMP: "+ts);
 		     }
 		     
 		  } catch (Exception e) {
 		     str += e.toString();
 		     e.printStackTrace();
 		  } 
-		
-		  disconnect(conn);
-		  
-	    return str;		
+	  
+	    return ts;		
 	}
 
 	/**

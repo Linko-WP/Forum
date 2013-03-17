@@ -112,8 +112,10 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 		   //Format the result into a User object if not null
 			  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 	    		for(int i=0; i<myList.size(); i++){
+	    			if(myList.get(i)!=""){
 	    			Integer t_id = Integer.parseInt(myList.get(i));
 	    			stat.executeUpdate("delete from messages where parent_thread_id = "+t_id+";");
+	    			}
 	    		}		
 		     stat.executeUpdate("delete from threads where parent_topic_id = "+id+";");
 	     } catch (Exception e) {
@@ -208,8 +210,10 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 			String user = myList.get(i);
 			String mail = myList.get(i+1);
 			String pass = myList.get(i+2);
-			Boolean admin = Boolean.parseBoolean(myList.get(i+3));
-			
+			int temp =Integer.parseInt(myList.get(i+3));
+			boolean admin=false;
+			if(temp==1) admin=true;
+			System.out.print("IS ADMIN: "+admin);
 			users.add(new User(user, mail, pass, admin));
 		}
 			

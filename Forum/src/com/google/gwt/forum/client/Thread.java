@@ -73,8 +73,6 @@ public class Thread implements Serializable{
 		title = tit;
 		messages = new ArrayList<Message>();
 		parent_topic_id = parent_id;
-		//TODO: obtener el autor de algun sitio
-		//author = user;	
 	}
 	
 	/**

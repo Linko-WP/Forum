@@ -47,9 +47,7 @@ public class Topics implements Serializable{
 	 Topics(String sub){
  		subject = sub;
  		threads = new ArrayList<Thread>();
- 		// IMPORTANTE: El id debe asignarse a posteriori desde la clase que inserte el
- 		// nuevo topic en base de datos. Para ello, la llamada a insert_topic devuelve
- 		// el id autogenerado, que debera ser asignado a nuevo_topic.id	  
+ 		 
 	  }
 
 	

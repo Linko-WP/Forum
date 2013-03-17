@@ -297,45 +297,52 @@ public class Forum implements EntryPoint {
 					  topics.remove(x);
 					  refresh();
 					  System.out.print("ID: "+x.id);
+					  
+					  dbService.erase_topic(id, new AsyncCallback<String>(){
+					    	public void onSuccess(String results) {}
+					        public void onFailure(Throwable caught) {
+					        	Window.alert("THREADS retrive attempt failed.");
+					      		System.out.println("Fail\n" + caught);
+					        }});		
+					  return;
 				  }
+			  	} 
 				  
-				  dbService.erase_topic(id, new AsyncCallback<String>(){
-				    	public void onSuccess(String results) {}
-				        public void onFailure(Throwable caught) {
-				        	Window.alert("THREADS retrive attempt failed.");
-				      		System.out.println("Fail\n" + caught);
-				        }});		
-				  return;
-			  }
+			  
 		  }else if(type == 'T'){
 			  for(Thread x:threads){
 				  if(x.id == id) {
 					  threads.remove(x);
 					  refresh();
+					  dbService.erase_thread(id, new AsyncCallback<String>(){
+					    	public void onSuccess(String results) {}
+					        public void onFailure(Throwable caught) {
+					        	Window.alert("THREADS retrive attempt failed.");
+					      		System.out.println("Fail\n" + caught);
+					        }});		
+					  return;
 				  }
-				  	dbService.erase_thread(id, new AsyncCallback<String>(){
-				    	public void onSuccess(String results) {}
-				        public void onFailure(Throwable caught) {
-				        	Window.alert("THREADS retrive attempt failed.");
-				      		System.out.println("Fail\n" + caught);
-				        }});		
-				  return;
 			  }
+				  	
+			  
 		  }else if(type == 'M'){
 			  for(Message x:messages){
 				  if(x.id == id){
 					  messages.remove(x);
 					  refresh();
+					  
+					  dbService.erase_message(id, new AsyncCallback<String>(){
+					    	public void onSuccess(String results) {refresh();}
+					        public void onFailure(Throwable caught) {
+					        	Window.alert("THREADS retrive attempt failed.");
+					      		System.out.println("Fail\n" + caught);
+					        }});		
+					  
+					  return;
 				  } 
-				  	dbService.erase_message(id, new AsyncCallback<String>(){
-				    	public void onSuccess(String results) {refresh();}
-				        public void onFailure(Throwable caught) {
-				        	Window.alert("THREADS retrive attempt failed.");
-				      		System.out.println("Fail\n" + caught);
-				        }});		
-				  
-				  return;
 			  }
+				  	
+			  
 		  }else{
 			  System.out.println("Error: fail when trying to erase a row.");
 		  }

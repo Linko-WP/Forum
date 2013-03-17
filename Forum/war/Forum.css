@@ -10,6 +10,9 @@ h1 {
   	text-align: center;
 }
 
+#bkg{
+	background: white url(/resources/kirka.jpg) left center no-repeat;
+}
 #container{
 	clear:both;	
 	position: relative;

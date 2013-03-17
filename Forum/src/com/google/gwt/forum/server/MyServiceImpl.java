@@ -494,7 +494,9 @@ public class MyServiceImpl extends RemoteServiceServlet implements com.google.gw
 					  ArrayList<String> myList = new ArrayList<String>(Arrays.asList(str.split(", ")));
 			    		for(int i=0; i<myList.size()-1; i=i+2){
 			    			String mail = myList.get(i);
-			    			Boolean admin = Boolean.parseBoolean(myList.get(i+1));	
+			    			int temp =Integer.parseInt(myList.get(i+1));
+			    			boolean admin=false;
+			    			if(temp==1) admin=true;
 							checked = new User(username, mail, password, admin);
 			    		}
 			     }

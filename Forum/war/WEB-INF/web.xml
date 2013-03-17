@@ -6,17 +6,7 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.google.gwt.forum.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/forum/greet</url-pattern>
-  </servlet-mapping>
-  
-  <!-- Example servlet loaded into servlet container -->
+
 	<servlet>
 	  <servlet-name>myServiceImpl</servlet-name>
 	  <servlet-class>com.google.gwt.forum.server.MyServiceImpl</servlet-class>

@@ -819,12 +819,10 @@ public class Forum implements EntryPoint {
 		  
 	 }
 		public void pruebas_mary(){
-			// TODO: Eliminar GreetingService y asegurarse de que no se le llama desde ningun sitio
-			// TODO: Borrar el servlet GreetingService del web.xml
 			// TODO: Arreglar margen izquierdo panel del login
 			// TODO: Crear boton de "grant admin priviledges" en el panel de administracion
 			// 		 de usuarios, para que el admin pueda nombrar otros admins
-			
+			//TODO: manejar inserci—n de un usuario ya existente
 			
 			
 			

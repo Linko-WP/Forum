@@ -646,10 +646,24 @@ public class Forum implements EntryPoint {
 		  insert_text_button.addClickHandler(new ClickHandler() {
 			  public void onClick(ClickEvent event) { 
 				  //TODO: obtener el parent_topic (yo diria mas bien parent_thread, a ver si esto rula)
-				  new Message(textArea.getText(), currentElementId, current_user.user_name);	// Save on BD
+				  final Message m = new Message(textArea.getText(), currentElementId, current_user.user_name);
 				  
-				  textArea.setText(""); //TODO: limpiar el texto despues de guardarlo
-				  refresh();
+				  dbService.insert_message(m, new AsyncCallback<String>(){		// Add message to the bd
+					  
+					  public void onSuccess(String result) {
+						  System.out.println("Mensaje insertado: " + result);
+
+						  textArea.setText("");
+						  messages.add(m);	// Add it to the local messages vector
+						  refresh();
+			          }
+			    	
+			          public void onFailure(Throwable caught) {
+			        	Window.alert("New message attempt failed.");
+			      		System.out.println("Fail\n" + caught);
+			          }
+			    } );
+
 			  }
 		  });
 	  }

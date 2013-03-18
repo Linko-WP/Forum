@@ -11,12 +11,18 @@ h1 {
 }
 
 #bkg{
-	background: white url(/resources/kirka.jpg) left center no-repeat;
+	background: url(/resources/kirka.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
 }
 #container{
 	clear:both;	
 	position: relative;
-  	float: left;
+	background-color:transparent;
+  	float: center;
   	margin-top:12px;
 }
 #img{
@@ -24,20 +30,23 @@ h1 {
 	height: 152px;
 	width:300px;
 	background: white url(/resources/logo.jpg) left center no-repeat;
+	opacity:0.2;
 }
 
 #text_header {
 	height: 152px;
 	margin-left:12px;
-	float:left;
+	float:center;
 	font-size: 4em;
   	font-weight: bold;
+  	background-color:transparent;
   	color: #777777;
   	margin: 40px 0px 0px;
   	text-align: center;
 }
 
 #footer {
+	background-color:transparent;
   clear: both;
 }
 .sendButton {
@@ -81,7 +90,6 @@ h1 {
 
 /** List styles */
 .watchListHeader{
-	color: white;
   	font-weight: bold;
 	text-align: center;
 	background-color: blue;
